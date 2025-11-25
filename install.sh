@@ -14,34 +14,40 @@ REPO_NAME="teamkit"
 BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
 
-# ソースディレクトリ（このスクリプトからの相対パス）
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
-SOURCE_DIR="${SCRIPT_DIR}/.claude/commands/teamkit"
-
-# リモート実行かローカル実行かを判定
-# 1. stdinがパイプかどうか（curlの場合）
-# 2. BASH_SOURCE[0]がファイルとして存在しない
-# 3. ソースディレクトリが存在しない
-REMOTE_MODE=false
-
-# stdinがパイプ（curlでパイプされている）かチェック
-if [ -p /dev/stdin ] || [ ! -t 0 ]; then
-    REMOTE_MODE=true
-# BASH_SOURCE[0]がファイルとして存在しないか、/dev/fd/*で始まる場合
-elif [ ! -f "${BASH_SOURCE[0]}" ] 2>/dev/null || echo "${BASH_SOURCE[0]}" | grep -q "^/dev/fd/"; then
-    REMOTE_MODE=true
-# ソースディレクトリが存在しない場合
-elif [ ! -d "$SOURCE_DIR" ]; then
-    REMOTE_MODE=true
-fi
-
-if [ "$REMOTE_MODE" = true ]; then
-    echo -e "${BLUE}リモートモードで実行します（GitHubからダウンロード）${NC}"
-fi
-
 # 引数チェック
 FORCE_OVERWRITE=false
 TARGET_DIR=""
+
+# 引数を解析
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --yes|-y|--force|-f)
+            FORCE_OVERWRITE=true
+            shift
+            ;;
+        *)
+            if [ -z "$TARGET_DIR" ]; then
+                TARGET_DIR="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$TARGET_DIR" ]; then
+    echo -e "${RED}エラー: ターゲットディレクトリのパスを指定してください${NC}"
+    echo ""
+    echo "使用方法:"
+    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- <ターゲットディレクトリのパス>"
+    echo ""
+    echo "オプション:"
+    echo "  --yes, -y, --force, -f  既存ファイルを確認せずに上書き"
+    echo ""
+    echo "例:"
+    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- ."
+    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- --yes /path/to/target-project"
+    exit 1
+fi
 
 # 引数を解析
 while [[ $# -gt 0 ]]; do
@@ -87,15 +93,9 @@ fi
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 
-if [ "$REMOTE_MODE" = true ]; then
-    echo -e "${BLUE}Team Kit コマンドのインストールを開始します${NC}"
-    echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
-    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
-else
-    echo -e "${BLUE}.claude/commands/teamkit ファイルのコピーを開始します${NC}"
-    echo -e "${BLUE}ソース: $SOURCE_DIR${NC}"
-    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
-fi
+echo -e "${BLUE}Team Kit コマンドのインストールを開始します${NC}"
+echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
+echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
 echo ""
 
 # ダウンロード関数（リモートモード用）
@@ -151,71 +151,32 @@ should_overwrite() {
     fi
 }
 
-# ファイルコピー関数
-copy_file() {
-    local source_file="$1"
-    local filename="$(basename "$source_file")"
-    local target_file="$TARGET_DIR/.claude/commands/teamkit/$filename"
-    local target_dir_path="$(dirname "$target_file")"
+# .claude/commands/teamkit/ 以下の全ファイルを処理
+echo -e "${YELLOW}ファイルをダウンロード中...${NC}"
 
-    echo -n "  ${filename} ... "
-
+# GitHubからダウンロード
+for file in "${COMMAND_FILES[@]}"; do
+    target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
+    target_dir="$(dirname "$target_file")"
+    
     # ターゲットディレクトリが存在しない場合は作成
-    if [ ! -d "$target_dir_path" ]; then
-        mkdir -p "$target_dir_path"
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir"
     fi
-
+    
     # ファイルが既に存在する場合
     if [ -f "$target_file" ]; then
-        echo -e "${YELLOW}警告: ファイルが既に存在します${NC}"
+        echo -e "${YELLOW}警告: $file は既に存在します${NC}"
         if should_overwrite "$target_file"; then
-            cp "$source_file" "$target_file"
+            download_file "$file" "$target_file"
             echo -e "    ${GREEN}✓ 上書きしました${NC}"
-            return 0
         else
             echo -e "    ${BLUE}スキップしました${NC}"
-            return 0
         fi
     else
-        cp "$source_file" "$target_file"
-        echo -e "${GREEN}✓${NC}"
-        return 0
+        download_file "$file" "$target_file"
     fi
-}
-
-# .claude/commands/teamkit/ 以下の全ファイルを処理
-echo -e "${YELLOW}ファイルを処理中...${NC}"
-
-if [ "$REMOTE_MODE" = true ]; then
-    # リモートモード: GitHubからダウンロード
-    for file in "${COMMAND_FILES[@]}"; do
-        target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
-        target_dir="$(dirname "$target_file")"
-        
-        # ターゲットディレクトリが存在しない場合は作成
-        if [ ! -d "$target_dir" ]; then
-            mkdir -p "$target_dir"
-        fi
-        
-        # ファイルが既に存在する場合
-        if [ -f "$target_file" ]; then
-            echo -e "${YELLOW}警告: $file は既に存在します${NC}"
-            if should_overwrite "$target_file"; then
-                download_file "$file" "$target_file"
-                echo -e "    ${GREEN}✓ 上書きしました${NC}"
-            else
-                echo -e "    ${BLUE}スキップしました${NC}"
-            fi
-        else
-            download_file "$file" "$target_file"
-        fi
-    done
-else
-    # ローカルモード: ファイルコピー
-    find "$SOURCE_DIR" -type f | while read -r source_file; do
-        copy_file "$source_file"
-    done
-fi
+done
 
 echo ""
 echo -e "${GREEN}完了しました！${NC}"
