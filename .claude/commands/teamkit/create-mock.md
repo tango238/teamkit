@@ -13,8 +13,8 @@ Execute the following instructions using `baseDir` and `specDir`.
 ## Execution Steps
 
 - 1. Check if `{{baseDir}}/{{specDir}}/status.json` and `{{baseDir}}/{{specDir}}/feature.yml` exist. If not, display error and exit.
-- 2. `/tk-generate-story {{specDir}}`
-- 3. `/tk-generate-usecase {{specDir}}`
-- 4. `/tk-generate-ui {{specDir}}`
-- 5. `/tk-generate-mock {{specDir}}`
-- 6. `/tk-generate-screenflow {{specDir}}`
+- 2. `/teamkit:generate-story {{specDir}}`
+- 3. `/teamkit:generate-usecase {{specDir}}`
+- 4. `/teamkit:generate-ui {{specDir}}`
+- 5. `/teamkit:generate-mock {{specDir}}`
+- 6. `/teamkit:generate-screenflow {{specDir}}`
