@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-mock`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-mock <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-mock <specDir>`" and **STOP** execution immediately.
 
 # Execution
 

@@ -128,7 +128,8 @@ Apply the modifications to the file:
 
 Record the processing step in status.json:
 
-- Execute `/update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
+- Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
+- **This step must be executed for each file regardless of whether changes were actually applied or not**
 
 **Repeat steps 6-1 through 6-5 for each file in the order specified in step 6-1.**
 
@@ -145,7 +146,7 @@ Mark processed items as completed:
 
 Regenerate mock HTML files to reflect the changes:
 
-- Execute `/generate-mock {{specDir}}`
+- Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
 ### 9. Report Results
@@ -165,7 +166,7 @@ Display the processing results:
 ### Input
 
 ```bash
-/apply-feedback YourFeature
+/teamkit:apply-feedback YourFeature
 ```
 
 ### Processing Flow
@@ -178,10 +179,10 @@ Display the processing results:
    - Load file
    - Plan modifications based on TODO items
    - Show diff preview
-   - Apply changes
-   - Update status
+   - Apply changes (if applicable)
+   - Update status (always execute regardless of whether changes were applied)
 6. Update feedback.md: change `[o]` to `[x]`
-7. Execute `/generate-mock YourFeature`
+7. Execute `/teamkit:generate-mock YourFeature`
 8. Report results
 
 ---

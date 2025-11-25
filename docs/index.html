@@ -101,30 +101,27 @@
             </div>
             <div class="features-grid">
                 <div class="feature-card glass-card animate-on-scroll">
+                    <div class="feature-icon">🤖</div>
+                    <h3 class="feature-title">自動化されたワークフロー</h3>
+                    <ul class="feature-list">
+                        <li>要件定義の自動生成</li>
+                        <li>モックアップの自動生成</li>
+                    </ul>
+                </div>
+                <div class="feature-card glass-card animate-on-scroll">
                     <div class="feature-icon">📋</div>
                     <h3 class="feature-title">要件の整合性チェック</h3>
                     <ul class="feature-list">
                         <li>要件の整合性を自動検証</li>
-                        <li>ロジックの妥当性検証</li>
-                        <li>自動的な指摘事項の生成</li>
+                        <li>検証項目を自動で反映</li>
                     </ul>
                 </div>
                 <div class="feature-card glass-card animate-on-scroll">
                     <div class="feature-icon">👥</div>
                     <h3 class="feature-title">ユーザー視点での評価</h3>
                     <ul class="feature-list">
-                        <li>カスタムフィードバックの収集</li>
-                        <li>デザインの改善提案</li>
-                        <li>使いやすさの向上</li>
-                    </ul>
-                </div>
-                <div class="feature-card glass-card animate-on-scroll">
-                    <div class="feature-icon">🤖</div>
-                    <h3 class="feature-title">自動化されたワークフロー</h3>
-                    <ul class="feature-list">
-                        <li>フィーチャー定義の自動生成</li>
-                        <li>ユーザーストーリーの作成</li>
-                        <li>モックアップの自動生成</li>
+                        <li>ユーザーからのフィードバックを収集して反映</li>
+                        <li>要件とモックアップの整合性を維持</li>
                     </ul>
                 </div>
             </div>
@@ -143,7 +140,10 @@
                     <div class="step-number">01</div>
                     <div class="step-content">
                         <h3 class="step-title">プロジェクトの初期化</h3>
-                        <p class="step-description">README.mdに要件を記述し、specsディレクトリを作成</p>
+                        <p class="step-description">specsディレクトリを作成し、README.mdに要件を記述
+                            <small>(※フォーマットの指定はありません)</small>
+                        </p>
+
                         <div class="code-block">
                             <code>specs/YourFeature/README.md</code>
                             <button class="copy-btn" aria-label="コピー">
@@ -196,8 +196,8 @@
                 <div class="workflow-step animate-on-scroll">
                     <div class="step-number">04</div>
                     <div class="step-content">
-                        <h3 class="step-title">フィードバックの提出</h3>
-                        <p class="step-description">仕様に対する改善要望をフィードバックとして提出</p>
+                        <h3 class="step-title">フィードバック</h3>
+                        <p class="step-description">要件やモックアップに対するフィードバックを登録</p>
                         <div class="code-block">
                             <code>/teamkit:feedback YourFeature "住所を詳細に分割"</code>
                             <button class="copy-btn" aria-label="コピー">
@@ -214,8 +214,8 @@
                 <div class="workflow-step animate-on-scroll">
                     <div class="step-number">05</div>
                     <div class="step-content">
-                        <h3 class="step-title">フィードバックの適用</h3>
-                        <p class="step-description">フィードバック反映してモックアップを再生成</p>
+                        <h3 class="step-title">フィードバックの反映</h3>
+                        <p class="step-description">フィードバックを反映してモックアップを再生成</p>
                         <div class="code-block">
                             <code>/teamkit:apply-feedback YourFeature</code>
                             <button class="copy-btn" aria-label="コピー">
