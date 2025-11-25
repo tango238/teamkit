@@ -19,8 +19,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
 SOURCE_DIR="${SCRIPT_DIR}/.claude/commands/teamkit"
 
 # リモート実行かローカル実行かを判定
+# curlでパイプされた場合は、BASH_SOURCE[0]が存在しないか/dev/fd/*になる
 REMOTE_MODE=false
-if [ ! -d "$SOURCE_DIR" ]; then
+if [[ "${BASH_SOURCE[0]}" == "/dev/fd/"* ]] || [ -z "${BASH_SOURCE[0]}" ] || [ ! -f "${BASH_SOURCE[0]}" ]; then
+    REMOTE_MODE=true
+    echo -e "${BLUE}リモートモードで実行します（GitHubからダウンロード）${NC}"
+elif [ ! -d "$SOURCE_DIR" ]; then
     REMOTE_MODE=true
     echo -e "${BLUE}リモートモードで実行します（GitHubからダウンロード）${NC}"
 fi
