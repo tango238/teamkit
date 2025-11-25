@@ -80,7 +80,7 @@ Display the result in the following format:
 
 ### Input
 ```bash
-/update-status 1_FacilityManagement generate-story 2
+/teamkit:update-status 1_FacilityManagement generate-story 2
 ```
 
 ### Output Example

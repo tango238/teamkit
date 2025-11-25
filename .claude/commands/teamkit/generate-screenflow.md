@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-screenflow`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-generate-screenflow <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-screenflow <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -22,7 +22,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Check Argument
 // turbo
 if [ -z "{{specDir}}" ]; then
-    echo "エラー: specDir 引数が指定されていません。使用法: /tk-generate-screen-flow [specDir]"
+    echo "エラー: specDir 引数が指定されていません。使用法: /generate-screen-flow [specDir]"
     exit 1
 fi
 
@@ -62,7 +62,7 @@ stakeholders with a clear understanding of how different screens connect and wha
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
 ### 2. Load Context
 
@@ -133,10 +133,10 @@ For critical transitions, document:
 - **Verify that the output language is Japanese.**
 
 ### 10. Set Version Number
-- `/tk-get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+- `/teamkit:get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
 ### 11. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 ## Output Specification

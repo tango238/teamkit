@@ -125,12 +125,12 @@ This command only processes items marked with `[o]`.
 - 4. 3の値に +1 をした値を **versionNumber** に設定する
 
 ### 12. Update Status
-- `/update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
 
 ### 13. Generate Downstream Artifacts
 
-* Execute `/generate-story {{specDir}}`.
-* If `/generate-story` completes successfully, execute `/generate-usecase {{specDir}}`.
+* Execute `/teamkit:generate-story {{specDir}}`.
+* If `/teamkit:generate-story` completes successfully, execute `/teamkit:generate-usecase {{specDir}}`.
 * If an error occurs during generation, report it.
 
 ### 14. Report Results

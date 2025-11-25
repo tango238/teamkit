@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-mock`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-generate-mock <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-mock <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -18,12 +18,12 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 <if condition="!$1">
 echo "エラー: specDirを指定してください。"
-echo "使用法: /tk-generate-mock [specDir]"
+echo "使用法: /generate-mock [specDir]"
 exit 1
 </if>
 
 if [ ! -f "specs/{{specDir}}/status.json" ] || [ ! -f "specs/{{specDir}}/feature.yml" ]; then
-  echo "エラー: status.json または feature.yml が存在しません。/tk-create-feature を実行してください。"
+  echo "エラー: status.json または feature.yml が存在しません。/create-feature を実行してください。"
   exit 1
 fi
 
@@ -279,7 +279,7 @@ After creating each mock HTML file, update the corresponding line in `screens.ym
 
 ### 6. Set Version Number
 
-Execute `/tk-get-step-info {{specDir}} screenflow` to get the version number and set it as `{{versionNumber}}`.
+Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version number and set it as `{{versionNumber}}`.
 
 ### 7. Update Status File
 

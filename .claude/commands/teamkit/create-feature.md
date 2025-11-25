@@ -158,7 +158,7 @@ feature:
 - {{versionNumber}} に `1` を設定します。
 
 ### 9. Update Status
-- `/update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 

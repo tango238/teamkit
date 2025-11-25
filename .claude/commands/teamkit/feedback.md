@@ -65,7 +65,7 @@ Based on the verification results, write out the issues and recommended correcti
 
 **Command**:
 ```
-/feedback YourFeature "施設の削除機能が必要です"
+/teamkit:feedback YourFeature "施設の削除機能が必要です"
 ```
 
 **Process**:

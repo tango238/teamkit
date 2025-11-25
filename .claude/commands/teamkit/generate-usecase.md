@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-usecase`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-generate-usecases <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-usecases <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -41,7 +41,7 @@ Often, multiple use cases are derived from a single user story.
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Read Input Files
 Read the following files and understand their content:
@@ -172,10 +172,10 @@ usecases:
 -   Save automatically without asking user.
 
 ### 6. Set Version Number
-- `/tk-get-step-info {{specDir}} story` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+- `/teamkit:get-step-info {{specDir}} story` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
 ### 7. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 ## Execution Example

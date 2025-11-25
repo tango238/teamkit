@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-screenflow`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-generate-story <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-story <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -39,7 +39,7 @@ Execute the following processing immediately without asking the user for confirm
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Load Input Files
 Read the following files and understand their contents:
@@ -151,10 +151,10 @@ stories:
 - Automatically overwrite and save without asking the user for confirmation
 
 ### 7. Set Version Number
-- `/tk-get-step-info {{specDir}} feature` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+- `/teamkit:get-step-info {{specDir}} feature` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
 ### 8. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 

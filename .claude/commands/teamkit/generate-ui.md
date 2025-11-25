@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `generate-ui`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-generate-ui <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-ui <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -22,7 +22,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 ### 1. Check arguments
 ```bash
 if [ -z "$1" ]; then
-  echo "Error: specDir argument is required. Usage: /tk-generate-ui <specDir>"
+  echo "Error: specDir argument is required. Usage: /generate-ui <specDir>"
   exit 1
 fi
 ```
@@ -33,7 +33,7 @@ fi
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
 ### 3. Read input files
 1. Read `{{baseDir}}/{{specDir}}/stories.yml`
@@ -44,10 +44,10 @@ fi
 Generate `{{baseDir}}/{{specDir}}/ui.yml` following the rules and schema defined below.
 
 ### 5. Set Version Number
-- `/tk-get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+- `/get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
 ### 6. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 ---
 
@@ -61,10 +61,10 @@ Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` b
 - `{{baseDir}}/{{specDir}}/usecases.yml`: Use cases defining interactions and steps.
 
 ### 4. Set Version Number
-- `/tk-get-step-info {{specDir}} usecase` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+- `/teamkit:get-step-info {{specDir}} usecase` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
 ### 5. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 # Task

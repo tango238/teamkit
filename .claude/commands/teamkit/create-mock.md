@@ -16,5 +16,5 @@ Execute the following instructions using `baseDir` and `specDir`.
 - 2. `/teamkit:generate-story {{specDir}}`
 - 3. `/teamkit:generate-usecase {{specDir}}`
 - 4. `/teamkit:generate-ui {{specDir}}`
-- 5. `/teamkit:generate-mock {{specDir}}`
-- 6. `/teamkit:generate-screenflow {{specDir}}`
+- 5. `/teamkit:generate-screenflow {{specDir}}`
+- 6. `/teamkit:generate-mock {{specDir}}`
