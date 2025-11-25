@@ -33,13 +33,14 @@ Team Kitは、Claude や Cursor などのAIエディタと連携して、要件�
 
 
 ```bash
-
-
-# カレントディレクトリに移行
+# カレントディレクトリにインストール
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- .
 
-# 特定のプロジェクトに移行
-curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- /path/to/target-project
+# 強制上書き（確認なし）
+curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- --yes .
+
+# 特定のディレクトリにインストール
+curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- /path/to/project
 ```
 
 **オプション:**
@@ -84,8 +85,8 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 
 **生成ファイル:**
 - `specs/YourFeature/index.html` - モックアップのインデックスページ
-- `specs/YourFeature/*.html` - 各画面のモックアップ
-- `specs/YourFeature/screens.yml` - 画面生成ステータス
+- `specs/YourFeature/mock/*.html` - 各画面のモックアップ
+- `specs/YourFeature/mock/screens.yml` - 画面生成ステータス
 
 ## 便利なコマンド
 
