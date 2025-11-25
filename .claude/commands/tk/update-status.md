@@ -3,7 +3,7 @@
 
 1. **Set `baseDir`**: `specs`
 2. **Get `specDir`**: Read the first argument from the slash command.
-   - If no argument is provided, display error message "Error: `specDir` argument is required. Usage: `/tk-update-status <specDir> <commandName> <versionNumber>`" and **terminate execution**.
+   - If no argument is provided, display error message "Error: `specDir` argument is required. Usage: `/update-status <specDir> <commandName> <versionNumber>`" and **terminate execution**.
 3. **Get `commandName`**: Read the second argument from the slash command.
 4. **Get `versionNumber`**: Read the third argument from the slash command.
 
@@ -80,7 +80,7 @@ Display the result in the following format:
 
 ### Input
 ```bash
-/tk-update-status 1_FacilityManagement generate-story 2
+/update-status 1_FacilityManagement generate-story 2
 ```
 
 ### Output Example

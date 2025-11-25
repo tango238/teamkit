@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `update-feature`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-update-feature <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/update-feature <specDir>`" and **STOP** execution immediately.
 
 # Instruction 
 Read TODOs from `{{baseDir}}/{{specDir}}/check.md`, and applies items marked as "scheduled for processing" to update `{{baseDir}}/{{specDir}}/feature.yml` (YAML file).
@@ -52,7 +52,7 @@ This command only processes items marked with `[o]`.
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
 ### 2. Load Check File
 
@@ -125,12 +125,12 @@ This command only processes items marked with `[o]`.
 - 4. 3の値に +1 をした値を **versionNumber** に設定する
 
 ### 12. Update Status
-- `/tk-update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
+- `/update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
 
 ### 13. Generate Downstream Artifacts
 
-* Execute `/tk-generate-story {{specDir}}`.
-* If `/tk-generate-story` completes successfully, execute `/tk-generate-usecase {{specDir}}`.
+* Execute `/generate-story {{specDir}}`.
+* If `/generate-story` completes successfully, execute `/generate-usecase {{specDir}}`.
 * If an error occurs during generation, report it.
 
 ### 14. Report Results

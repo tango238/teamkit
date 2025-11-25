@@ -4,7 +4,7 @@
 1. **Set `commandName`**: `apply-feedback`
 2. **Set `baseDir`**: `specs`
 3. **Get `specDir`**: Read the first argument passed to the slash command.
-   - If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-apply-feedback <specDir>`" and **STOP** execution immediately.
+   - If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/apply-feedback <specDir>`" and **STOP** execution immediately.
 
 ---
 
