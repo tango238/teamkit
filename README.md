@@ -98,6 +98,15 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 /teamkit:check YourFeature
 ```
 
+AIが `feature.yml` を確認して、`check.md` に指摘事項を記載します。
+
+内容を確認して、適用する場合はTODOに `[o]` をつけます。
+
+Summary にある Recommended action を変更すると、適用内容を調整できます。
+
+`o` をしたチェック内容を適用する場合は、 `/teamkit:update-feature YourFeature` を実行します。
+
+
 ### フィードバック機能
 
 仕様に対するフィードバックを提出:
@@ -105,6 +114,12 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 ```
 /teamkit:feedback YourFeature "住所フィールドを詳細に分割してください"
 ```
+
+フィードバックを提出すると、AIが影響範囲を確認して、`feedback.md` に詳細とTODOを作成します。
+
+内容を確認して、適用する場合はTODOに `[o]` をつけます。
+
+Summary にある Recommended action を変更すると、フィードバックを適用内容を調整できます。
 
 フィードバックを適用:
 
