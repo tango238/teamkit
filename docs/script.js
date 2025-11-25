@@ -68,11 +68,11 @@ window.addEventListener('scroll', () => {
     const currentScroll = window.pageYOffset;
 
     if (currentScroll > 100) {
-        navbar.style.background = 'rgba(22, 27, 34, 0.95)';
-        navbar.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.3)';
+        navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+        navbar.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.08)';
     } else {
-        navbar.style.background = 'rgba(22, 27, 34, 0.8)';
-        navbar.style.boxShadow = 'none';
+        navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+        navbar.style.boxShadow = '0 1px 2px 0 rgba(0, 0, 0, 0.05)';
     }
 
     lastScroll = currentScroll;
