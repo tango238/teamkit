@@ -19,13 +19,23 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd)"
 SOURCE_DIR="${SCRIPT_DIR}/.claude/commands/teamkit"
 
 # リモート実行かローカル実行かを判定
-# curlでパイプされた場合は、BASH_SOURCE[0]が存在しないか/dev/fd/*になる
+# 1. stdinがパイプかどうか（curlの場合）
+# 2. BASH_SOURCE[0]がファイルとして存在しない
+# 3. ソースディレクトリが存在しない
 REMOTE_MODE=false
-if [[ "${BASH_SOURCE[0]}" == "/dev/fd/"* ]] || [ -z "${BASH_SOURCE[0]}" ] || [ ! -f "${BASH_SOURCE[0]}" ]; then
+
+# stdinがパイプ（curlでパイプされている）かチェック
+if [ -p /dev/stdin ] || [ ! -t 0 ]; then
     REMOTE_MODE=true
-    echo -e "${BLUE}リモートモードで実行します（GitHubからダウンロード）${NC}"
+# BASH_SOURCE[0]がファイルとして存在しないか、/dev/fd/*で始まる場合
+elif [ ! -f "${BASH_SOURCE[0]}" ] 2>/dev/null || echo "${BASH_SOURCE[0]}" | grep -q "^/dev/fd/"; then
+    REMOTE_MODE=true
+# ソースディレクトリが存在しない場合
 elif [ ! -d "$SOURCE_DIR" ]; then
     REMOTE_MODE=true
+fi
+
+if [ "$REMOTE_MODE" = true ]; then
     echo -e "${BLUE}リモートモードで実行します（GitHubからダウンロード）${NC}"
 fi
 
