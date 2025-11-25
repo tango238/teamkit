@@ -76,11 +76,11 @@ TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 if [ "$REMOTE_MODE" = true ]; then
     echo -e "${BLUE}Team Kit コマンドのインストールを開始します${NC}"
     echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
-    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/${NC}"
+    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
 else
     echo -e "${BLUE}.claude/commands/teamkit ファイルのコピーを開始します${NC}"
     echo -e "${BLUE}ソース: $SOURCE_DIR${NC}"
-    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/${NC}"
+    echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
 fi
 echo ""
 
@@ -141,7 +141,7 @@ should_overwrite() {
 copy_file() {
     local source_file="$1"
     local filename="$(basename "$source_file")"
-    local target_file="$TARGET_DIR/.claude/commands/$filename"
+    local target_file="$TARGET_DIR/.claude/commands/teamkit/$filename"
     local target_dir_path="$(dirname "$target_file")"
 
     echo -n "  ${filename} ... "
@@ -169,13 +169,13 @@ copy_file() {
     fi
 }
 
-# .claude/commands/ 以下の全ファイルを処理
+# .claude/commands/teamkit/ 以下の全ファイルを処理
 echo -e "${YELLOW}ファイルを処理中...${NC}"
 
 if [ "$REMOTE_MODE" = true ]; then
     # リモートモード: GitHubからダウンロード
     for file in "${COMMAND_FILES[@]}"; do
-        target_file="$TARGET_DIR/.claude/commands/$file"
+        target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
         target_dir="$(dirname "$target_file")"
         
         # ターゲットディレクトリが存在しない場合は作成

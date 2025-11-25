@@ -95,7 +95,7 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 仕様の整合性をチェック:
 
 ```
-/check YourFeature
+/teamkit:check YourFeature
 ```
 
 ### フィードバック機能
@@ -103,13 +103,13 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 仕様に対するフィードバックを提出:
 
 ```
-/feedback YourFeature "住所フィールドを詳細に分割してください"
+/teamkit:feedback YourFeature "住所フィールドを詳細に分割してください"
 ```
 
 フィードバックを適用:
 
 ```
-/apply-feedback YourFeature
+/teamkit:apply-feedback YourFeature
 ```
 
 ### フィーチャーの更新
@@ -117,7 +117,7 @@ UI定義からインタラクティブなHTMLモックアップを生成しま�
 check.mdが更新された際にフィーチャーを再生成:
 
 ```
-/update-feature YourFeature
+/teamkit:update-feature YourFeature
 ```
 
 ### ステータス確認
@@ -125,7 +125,7 @@ check.mdが更新された際にフィーチャーを再生成:
 現在のステップ情報を確認:
 
 ```
-/get-step-info YourFeature
+/teamkit:get-step-info YourFeature
 ```
 
 ### クリーンアップ（未実装）
@@ -133,7 +133,7 @@ check.mdが更新された際にフィーチャーを再生成:
 生成されたファイルをクリーンアップ:
 
 ```
-/clean YourFeature
+/teamkit:clean YourFeature
 ```
 
 ## ディレクトリ構造
@@ -144,7 +144,7 @@ check.mdが更新された際にフィーチャーを再生成:
 your-project/
 ├── .claude/
 │   └── commands/
-│       └── tk/           # Team Kitコマンド
+│       └── teamkit/            # Team Kitコマンド
 │           ├── create-feature.md
 │           ├── generate-story.md
 │           ├── generate-usecase.md
@@ -182,22 +182,22 @@ your-project/
 ```bash
 # 1. 要件をREADME.mdに記述
 # 2. フィーチャー定義から始める
-/create-feature OrderManagement
+/teamkit:create-feature OrderManagement
 
 # 3. すべてのステップを自動実行
-/create-mock OrderManagement
+/teamkit:create-mock OrderManagement
 
 # 4. 生成されたモックアップを確認
 # specs/OrderManagement/index.html をブラウザで開く
 
 # 5. フィードバックがあれば提出
-/feedback OrderManagement "注文キャンセル機能を追加してください"
+/teamkit:feedback OrderManagement "注文キャンセル機能を追加してください"
 
 # 6. フィードバックを反映
-/apply-feedback OrderManagement
+/teamkit:apply-feedback OrderManagement
 
 # 7. 整合性チェック
-/check OrderManagement
+/teamkit:check OrderManagement
 ```
 
 ## 出力言語
