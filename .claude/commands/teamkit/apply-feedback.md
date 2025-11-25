@@ -31,7 +31,7 @@ Verify that required files exist before proceeding:
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Load Feedback File
 
@@ -128,7 +128,7 @@ Apply the modifications to the file:
 
 Record the processing step in status.json:
 
-- Execute `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
+- Execute `/update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
 
 **Repeat steps 6-1 through 6-5 for each file in the order specified in step 6-1.**
 
@@ -145,7 +145,7 @@ Mark processed items as completed:
 
 Regenerate mock HTML files to reflect the changes:
 
-- Execute `/tk-generate-mock {{specDir}}`
+- Execute `/generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
 ### 9. Report Results
@@ -165,12 +165,12 @@ Display the processing results:
 ### Input
 
 ```bash
-/tk-apply-feedback 1_FacilityManagement
+/apply-feedback YourFeature
 ```
 
 ### Processing Flow
 
-1. Load `specs/1_FacilityManagement/feedback.md`
+1. Load `specs/YourFeature/feedback.md`
 2. Find TODO items marked with `[o]`
 3. Load corresponding details from Summary section
 4. Get latest version from `status.json` and increment
@@ -181,7 +181,7 @@ Display the processing results:
    - Apply changes
    - Update status
 6. Update feedback.md: change `[o]` to `[x]`
-7. Execute `/tk-generate-mock 1_FacilityManagement`
+7. Execute `/generate-mock YourFeature`
 8. Report results
 
 ---

@@ -4,7 +4,7 @@
 1.  **Set `commandName`**: `create-feature`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-create-feature <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/create-feature <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -38,7 +38,7 @@ Execute the following process immediately without asking for user confirmation.
 
 - **Existing File Handling**:
   - If the `status.json` already exists and the `feature.yml` does not exist → Display the message "Error: `status.json` already exists, but `feature.yml` does not exist. Please delete `status.json` and re-run this command." and **STOP** execution immediately.
-  - If the files already exist → Display the message "Error: `status.json` and `feature.yml` already exist. Please use `/tk-check` or `/tk-update-feature` to modify it." and **STOP** execution immediately.
+  - If the files already exist → Display the message "Error: `status.json` and `feature.yml` already exist. Please use `/check` or `/update-feature` to modify it." and **STOP** execution immediately.
   - If the files do not exist → Proceed to Step 3.
 
 ### 3. Read Input
@@ -104,9 +104,8 @@ feature:
     "feature_name": "{{specDir}}",
     "created_at": "{{currentTime}}",
     "updated_at": "{{currentTime}}",
-    "language": "ja",
+    "language": "Japanese",
     "last_execution": "{{commandName}}",
-    "log": "logs",
     "readme": {
         "checksum": "{{checksum}}",
         "last_modified": "{{mtime}}"
@@ -159,7 +158,7 @@ feature:
 - {{versionNumber}} に `1` を設定します。
 
 ### 9. Update Status
-- `/tk-update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+- `/update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
 

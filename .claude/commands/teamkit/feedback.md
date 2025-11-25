@@ -4,9 +4,9 @@
 1.  **Set `commandName`**: `submit-feedback`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/tk-submit-feedback <specDir> <comment>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment>`" and **STOP** execution immediately.
 4.  **Get `comment`**: Read the second argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/tk-submit-feedback <specDir> <comment>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -65,15 +65,15 @@ Based on the verification results, write out the issues and recommended correcti
 
 **Command**:
 ```
-/tk-submit-feedback 1_FacilityManagement "施設の削除機能が必要です"
+/feedback YourFeature "施設の削除機能が必要です"
 ```
 
 **Process**:
 1. Verify arguments are provided
-2. Check `specs/1_FacilityManagement/status.json` exists
+2. Check `specs/YourFeature/status.json` exists
 3. Analyze the feedback: "施設の削除機能が必要です"
 4. Verify impact across all specification files
-5. Generate or update `specs/1_FacilityManagement/feedback.md`
+5. Generate or update `specs/YourFeature/feedback.md`
 
 ---
 
