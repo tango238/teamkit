@@ -78,7 +78,7 @@ Determine the next version number for tracking changes:
 
 ### 6. Load Target Files and Apply Changes
 
-Process each specification file in the defined order:
+Process each specification file in the defined order. **Execute this process for all files continuously without interruption.**
 
 #### 6-1. File Processing Order
 
@@ -131,7 +131,7 @@ Record the processing step in status.json:
 - Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
 - **This step must be executed for each file regardless of whether changes were actually applied or not**
 
-**Repeat steps 6-1 through 6-5 for each file in the order specified in step 6-1.**
+**Repeat steps 6-1 through 6-5 for each file in the order specified in step 6-1. Do not stop execution between files. Process all files in a single continuous run.**
 
 ### 7. Update feedback.md Status
 
@@ -146,6 +146,7 @@ Mark processed items as completed:
 
 Regenerate mock HTML files to reflect the changes:
 
+- Delete all files in `{{baseDir}}/{{specDir}}/mock` and `{{baseDir}}/{{specDir}}/index.html`
 - Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 

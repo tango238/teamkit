@@ -56,7 +56,6 @@ Display the result in the following format:
 バージョン: {{versionNumber}}
 チェックサム: {{checkSum}}
 最終更新日時: {{lastModified}}
-メッセージ: ステップ情報を取得しました。
 ```
 
 ---
