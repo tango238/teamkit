@@ -12,7 +12,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 **IMPORTANT**:
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
--   The content of the generated YAML file (`usecases.yml`) must be in **Japanese**. The structure keys (feature, actor, story, usecase, description, tracking) must remain in English as defined in the format.
+-   The content of the generated YAML file (`usecases.yml`) must be in **Japanese**. The structure keys (usecase, name, stories, trackings, actor, before, after, boundary, control, entity, steps, step, label, note) must remain in English as defined in the format.
 -   Do not ask for user confirmation before saving files.
 
 ---
@@ -20,17 +20,8 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract specific use cases (usage scenarios) from `{{baseDir}}/{{specDir}}/stories.yml` and `{{baseDir}}/{{specDir}}/check.md` validation items, and document them in YAML format.
-Pay close attention to completed tasks in `check.md`.
-
-Especially note that items in `check.md` contain instructions from the creator, so pay special attention to the content summarized in `[x]` items.
-
-## Difference between User Story and Use Case
-
--   **User Story**: The "Goal/Value" the user wants to achieve (e.g., "I want to ship an order").
--   **Use Case**: The "Specific Steps/Scenario" to realize that goal (e.g., "Process standard shipping for in-stock items").
-
-Often, multiple use cases are derived from a single user story.
+Extract use cases from `{{baseDir}}/{{specDir}}/stories.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
+Ensure all stories in `stories.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
@@ -46,123 +37,79 @@ Often, multiple use cases are derived from a single user story.
 ### 2. Read Input Files
 Read the following files and understand their content:
 -   `{{baseDir}}/{{specDir}}/stories.yml`: List of user stories
--   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items (TODO list format)
+-   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
 
-**How to read check.md**:
--   Lines starting with `- [x]` are completed tasks -> Use as basis for use case generation.
--   Lines starting with `- [ ]` are incomplete tasks -> Can be used as reference, but do not write as if implemented.
--   Derive concrete, working use cases from completed tasks.
+### 3. Use Case Creation Policy (Robustness Analysis)
 
-### 2. Use Case Creation Policy
+Create use cases based on the **Robustness Diagram** concept.
+Instead of just listing steps, identify the **Actor**, **Boundary**, **Control**, and **Entity** involved in each use case.
 
-#### 2.1 Use Cases per Story
-Create use cases for each user story considering:
+#### Elements:
+-   **Actor**: The user or external system initiating the action.
+-   **Boundary**: The interface (screen, API, button) the actor interacts with.
+-   **Control**: The logic or controller processing the action.
+-   **Entity**: The data object being manipulated.
 
-**Perspectives**:
--   **Normal Flow**: Standard operation flow (most common usage).
--   **Alternative Flow**: Different routes based on conditions or choices.
--   **Exception Flow**: Behavior during errors or constraint violations.
--   **Variation**: Different means or settings for the same goal.
+#### Structure:
+-   **Preconditions (before)**: State before the use case starts.
+-   **Postconditions (after)**: State after the use case ends.
+-   **Steps**: Interaction flow (Actor -> Boundary -> Control -> Entity).
 
-**Naming Convention**:
--   Concise and unique (recommended within 20 characters).
--   Start with a verb (e.g., "Create", "Edit", "Verify").
--   Include specific target (e.g., "Shipping Label", "Inventory").
+### 4. Generate Use Cases
 
-**Good Use Case Examples (Logistics Domain)**:
--   ✅ 具体的: "新規出荷を作成する"
--   ✅ 明確なストーリー: "注文確認後に支払いを承認する"
--   ✅ ユニーク: "在庫僅少アラートを送信する"
--   ❌ 曖昧: "出荷を管理する"
--   ❌ ストーリーと同じ: "出荷したい"
--   ❌ 技術的すぎる: "データベースにINSERTする"
-
-#### 2.2 Cross-Story Use Cases
-Consider comprehensive use cases combining multiple stories:
-
-**Patterns**:
--   End-to-End flow (Order -> Payment -> Pick -> Pack -> Ship).
--   Automation scenarios (Order received -> Auto-assign warehouse -> Print label -> Notify).
--   Multi-actor collaboration (Customer orders -> System validates -> Warehouse packs).
-
-Use the `feature` and `actor` of the main story for these.
-
-#### 2.3 Level of Detail
-Include the following in the use case description:
-
-**Essential Elements**:
-1.  **Preconditions**: State before use case begins.
-2.  **Trigger**: What starts the use case.
-3.  **Main Steps**: Interaction between actor and system (approx. 3-7 steps).
-4.  **Postconditions**: State after use case completes.
-5.  **Alternative/Exception Flows**: Briefly if any.
-
-**Description Example**:
-```
-前提条件: 倉庫管理者がログインしており、注文#123が「準備完了」状態である。
-トリガー: 管理者が「注文処理」ボタンをクリックする。
-手順:
-1. システムが注文詳細を表示する。
-2. 管理者が商品バーコードをスキャンする。
-3. 管理者が「梱包確認」をクリックする。
-4. システムが商品と注文の一致を検証する。
-5. システムが注文ステータスを「梱包済み」に更新する。
-6. システムが出荷ラベルを生成する。
-事後条件: 注文が梱包され、ラベル印刷の準備が整う。
-```
-
-### 3. Record Tracking Information
-Record which requirement each use case was derived from:
-
-**Format**:
-```
-"Filename:LineNumber - Brief summary of relevant part"
-```
-
-**Example**:
-```yaml
-tracking: "stories.yml:5 - Want to process bulk orders"
-tracking: "check.md:12 - Bulk order validation logic verified"
-```
-
-### 4. Generate YAML File
+Generate the content for `usecases.yml` following the format below.
+**Group by Use Case**, not by Feature.
 
 **Output Format**:
 ```yaml
 usecases:
-  # Comment: Group by Feature Name
-  - feature: Feature Name
-    actor: Actor Name
-    story: Original User Story
-    usecase: Use Case Name (Concise & Unique)
-    description: |
-      Preconditions: ...
-      Trigger: ...
-      Steps:
-      1. ...
-      2. ...
-      Postconditions: ...
-    tracking: "SourceFile:Line - Summary of content"
-  - feature: Same Feature
-    actor: Same Actor
-    story: Same User Story
-    usecase: Another Use Case Name
-    description: |
-      Details...
-    tracking: "SourceFile:Line - Summary of content"
+  - usecase:
+    name: [Use Case Name]
+    stories:
+      - [Related User Story 1]
+      - [Related User Story 2]
+    trackings:
+     - "stories.yml:[Line] - [Summary]"
+     - "check.md:[Line] - [Summary]"
+    actor: 
+      name: "[Actor Name]" 
+      as: [ActorAlias]
+    before: [Precondition]
+    after: [Postcondition]
+    boundary: 
+      name: "[Boundary Name]"
+      as: [BoundaryAlias]
+    control:
+      name: "[Control Name]"
+      as: [ControlAlias]
+    entity: 
+      name: "[Entity Name]"
+      as: [EntityAlias]
+    steps:
+        - step: [ActorAlias] --> [BoundaryAlias]
+          label: [Action Label]
+          note: [Optional Note]
+        - step: [BoundaryAlias] --> [ControlAlias]
+          label: [Action Label]
+        - step: [ControlAlias] --> [EntityAlias]
+          label: [Action Label]
 ```
 
-**Writing Rules**:
--   `feature`: Inherit from `stories.yml`.
--   `actor`: Inherit from `stories.yml`.
--   `story`: Inherit from `stories.yml`.
--   `usecase`: Unique name (max 20 chars).
--   `description`: Multi-line description using `|`.
--   `tracking`: Must specify source.
--   Group by feature using comments.
--   **Language**: All values (except keys) must be in **Japanese**.
+**Rules**:
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `stories.yml` (and `check.md` if applicable) is being covered.
+-   Use `-->` for arrows in steps.
+-   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
+-   Names should be descriptive in Japanese.
+-   `usecase` key should be empty (null).
 
-### 5. File Saving and Diff Management
+### 5. Verification (Self-Correction)
+
+**After generating the initial list of use cases, perform a check:**
+1.  Review `stories.yml` and ensure **EVERY** story is referenced in the `trackings` of at least one use case.
+2.  If any story is missing, create an additional use case to cover it.
+3.  Ensure no "orphan" stories are left behind.
+
+### 6. File Saving
 
 #### If file exists:
 -   Delete the existing file and regenerate it completely.
@@ -171,75 +118,51 @@ usecases:
 -   Save generated content as `{{baseDir}}/{{specDir}}/usecases.yml`.
 -   Save automatically without asking user.
 
-### 6. Set Version Number
+### 7. Set Version Number
 - `/teamkit:get-step-info {{specDir}} story` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
-### 7. Update Status
+### 8. Update Status
 - `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
-
 
 ## Execution Example
 
-### Input Example
-
-**stories.yml**:
+### Input Example (stories.yml)
 ```yaml
 stories:
-  # 注文管理
-  - feature: 注文処理
-    actor: 倉庫管理者
-    story: 即日出荷を保証するために、注文を効率的に処理したい。
-    tracking: "feature.yml:2 - 注文処理機能"
-```
-
-**check.md**:
-```markdown
-## 注文処理
-- [x] 一括注文選択の実装
-- [x] ワンクリックラベル生成
-- [x] 在庫検証ロジック
-- [ ] 海外発送（未実装）
+  - feature: 契約管理
+    actor: ホスト
+    story: サービスを利用開始するために、契約を申し込みたい
 ```
 
 ### Output Example (usecases.yml)
-
 ```yaml
 usecases:
-  # 注文管理
-  - feature: 注文処理
-    actor: 倉庫管理者
-    story: 即日出荷を保証するために、注文を効率的に処理したい。
-    usecase: 一括注文処理
-    description: |
-      前提条件: 複数の「準備完了」ステータスの注文が存在する。
-      トリガー: 管理者が注文を選択し、「一括処理」ボタンをクリックする。
-      手順:
-      1. システムが選択された全注文の在庫を検証する。
-      2. システムが有効な注文の出荷ラベルを生成する。
-      3. システムがステータスを「出荷済み」に更新する。
-      4. システムがサマリーレポートを表示する。
-      事後条件: 選択された注文が出荷済みとなり、ラベルが生成される。
-    tracking: "stories.yml:4 - 注文を効率的に処理"
-
-  - feature: 注文処理
-    actor: 倉庫管理者
-    story: 即日出荷を保証するために、注文を効率的に処理したい。
-    usecase: 在庫切れ対応
-    description: |
-      前提条件: 注文に在庫切れの商品が含まれている。
-      トリガー: 管理者が注文処理を試みる。
-      手順:
-      1. システムが在庫不足を検知する。
-      2. システムが注文を「入荷待ち」フラグを立てる。
-      3. システムが購買部門に通知する。
-      事後条件: 注文が一時停止され、通知が送信される。
-    tracking: "check.md:3 - 在庫検証ロジック"
+  - usecase:
+    name: サービス契約の申し込みと管理アカウント作成
+    stories:
+      - ホストとして、Spotlyサービスを利用開始するために、サービス契約を申し込み管理アカウントを作成したい
+    trackings:
+     - "stories.yml:5 - サービス契約を申し込み管理アカウントを作成"
+    actor: 
+      name: "ホスト\n(スペース掲載者)" 
+      as: Host1
+    before: ホストがサービス利用を希望している
+    after: 契約が完了し、管理画面へのログインアカウントが発行される
+    boundary: 
+      name: "サービス契約画面\n(基本情報入力)"
+      as: ContractBasicUI
+    control:
+      name: "契約情報検証\nコントローラ"
+      as: ContractValidator
+    entity: 
+      name: "ホストアカウント"
+      as: HostAccount
+    steps:
+        - step: Host1 --> ContractBasicUI
+          label: 基本情報を入力
+          note: # if any
+        - step: ContractBasicUI --> ContractValidator
+          label: 入力内容を送信
+        - step: ContractValidator --> HostAccount
+          label: アカウントを作成
 ```
-
-## Notes
--   **Fully Automated**: No user confirmation. No interruption.
--   **Auto Apply**: Automatically update/save.
--   **Detail**: Write for implementers.
--   **Traceability**: Always include `tracking`.
--   **1 Use Case = 1 Record**.
--   **Multi-line**: Use `|` for `description`.

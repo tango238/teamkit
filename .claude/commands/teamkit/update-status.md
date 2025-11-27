@@ -30,8 +30,8 @@ Execute the following process immediately without requesting user confirmation.
   - For `mock`: Reference root-level `mock.version`.
   - For others: Reference `version` of the corresponding key (e.g., `feature`, `story`) under `steps`.
 - **Validation logic**:
-  - If current version >= `versionNumber` (argument): Display error message "The specified version ({{versionNumber}}) is less than or equal to the current version." and terminate.
-  - If current version < `versionNumber` (argument): Proceed to next step.
+  - If current version > `versionNumber` (argument): Display error message "The specified version ({{versionNumber}}) is less than the current version." and terminate.
+  - If current version <= `versionNumber` (argument): Proceed to next step.
 
 ### 3. Update Status
 - Identify the target file path:
@@ -55,7 +55,7 @@ Execute the following process immediately without requesting user confirmation.
   | generate-screenflow | screenflow        |
   | update-screenflow   | screenflow        |
   | create-mock         | <none>            |
-  | generate-mock       | <none>            |
+  | generate-mock       | mock              |
 
 - Get the **MD5 checksum** and **last modified timestamp (Unix Timestamp)** of the target file.
 - Update `status.json`:
@@ -96,7 +96,7 @@ Display the result in the following format:
 ### Output Format
 
 The command updates `status.json` with:
-- Version number incremented for the corresponding step
+- Version number updated to the specified value
 - Updated checksum and last_modified timestamp
 - Root-level updated_at timestamp
 - Root-level last_execution command name

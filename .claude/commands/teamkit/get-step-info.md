@@ -73,7 +73,7 @@ Display the result in the following format:
 ```
 ステータス: 成功
 ステップ: feature
-バージョン: 1.0.0
+バージョン: 1
 チェックサム: abc123def456
 最終更新日時: 2025-11-24T10:30:00+09:00
 メッセージ: ステップ情報を取得しました。

@@ -283,14 +283,7 @@ Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version numbe
 
 ### 7. Update Status File
 
-1. Read `{{baseDir}}/{{specDir}}/status.json`
-2. Get the last modified timestamp of `{{baseDir}}/{{specDir}}/mock/screens.yml`
-3. Update `status.json`:
-   - Set `mock.version` to `{{versionNumber}}`
-   - Set `mock.last_modified` to the timestamp from `screens.yml`
-   - Set root `updated_at` to current timestamp (ISO 8601)
-   - Set root `last_execution` to `{{commandName}}`
-4. Save `status.json`
+Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}`.
 
 ---
 
