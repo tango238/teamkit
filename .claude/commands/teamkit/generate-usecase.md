@@ -87,12 +87,14 @@ usecases:
       as: [EntityAlias]
     steps:
         - step: [ActorAlias] --> [BoundaryAlias]
-          label: [Action Label]
+          label: [No. of step][Action Label]
           note: [Optional Note]
         - step: [BoundaryAlias] --> [ControlAlias]
-          label: [Action Label]
+          label: [No. of step][Action Label]
+          note: [Optional Note]
         - step: [ControlAlias] --> [EntityAlias]
-          label: [Action Label]
+          label: [No. of step][Action Label]
+          note: [Optional Note]
 ```
 
 **Rules**:
@@ -159,10 +161,10 @@ usecases:
       as: HostAccount
     steps:
         - step: Host1 --> ContractBasicUI
-          label: 基本情報を入力
+          label: 1.基本情報を入力
           note: # if any
         - step: ContractBasicUI --> ContractValidator
-          label: 入力内容を送信
+          label: 2.入力内容を送信
         - step: ContractValidator --> HostAccount
-          label: アカウントを作成
+          label: 3.アカウントを作成
 ```
