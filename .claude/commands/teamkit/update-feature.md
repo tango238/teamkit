@@ -120,20 +120,13 @@ This command only processes items marked with `[o]`.
 
 ### 11. 最新のバージョン番号を取得し、 +1 したバージョンを設定する
 - 1. `{{baseDir}}/{{specDir}}/status.json` を取得する
-- 2. steps にあるすべてのオブジェクト情報から `version` のリストを取得
-- 3. 取得した `version` リストから一番大きい値を取得する
-- 4. 3の値に +1 をした値を **versionNumber** に設定する
+- 2. steps.feature から `version` 情報を取得
+- 3. 2の値に +1 をした値を **versionNumber** に設定する
 
 ### 12. Update Status
 - `/teamkit:update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
 
-### 13. Generate Downstream Artifacts
-
-* Execute `/teamkit:generate-story {{specDir}}`.
-* If `/teamkit:generate-story` completes successfully, execute `/teamkit:generate-usecase {{specDir}}`.
-* If an error occurs during generation, report it.
-
-### 14. Report Results
+### 13. Report Results
 
 * Report processing results:
   * Number of applied items

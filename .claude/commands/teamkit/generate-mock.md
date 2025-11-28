@@ -1,3 +1,8 @@
+---
+description: Generate mock HTML files from UI and screen flow
+allowed-tools: Bash, Read, Write, Grep, Glob, LS
+argument-hint: <specDir>
+---
 
 # Setup
 
@@ -30,13 +35,13 @@ fi
 echo "モックHTMLを生成しています: specs/{{specDir}}/mock/"
 
 # Generate Mock HTML
-$ llm_prompt context="specs/{{specDir}}/ui.yml" context="specs/{{specDir}}/screen-flow.md"
+$ llm_prompt context="specs/{{specDir}}/ui.yml" context="specs/{{specDir}}/screenflow.md"
 
 ---
 
 ## Mission
 
-Generate mock HTML files based on UI definitions (`ui.yml`) and screen flow diagrams (`screen-flow.md`). Create an index page, screen list tracker, and individual mock screens with proper navigation and minimal styling.
+Generate mock HTML files based on UI definitions (`ui.yml`) and screen flow diagrams (`screenflow.md`). Create an index page, screen list tracker, and individual mock screens with proper navigation and minimal styling.
 
 **IMPORTANT:** Execute the following steps immediately without asking the user for confirmation.
 
@@ -48,15 +53,22 @@ Generate mock HTML files based on UI definitions (`ui.yml`) and screen flow diag
 
 Read the following files:
 - `{{baseDir}}/{{specDir}}/ui.yml`
-- `{{baseDir}}/{{specDir}}/screen-flow.md`
+- `{{baseDir}}/{{specDir}}/screenflow.md`
 
-### 2. Generate Index Page
+### 2. Check Status
+
+1. Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version number.
+2. Set the obtained version as `{{targetVersion}}`.
+3. Execute `/teamkit:check-status {{specDir}} generate-mock {{targetVersion}}`.
+   - If an error occurs, **STOP** execution immediately.
+
+### 3. Generate Index Page
 
 Create `{{baseDir}}/{{specDir}}/index.html` (in the parent directory, NOT in the mock subdirectory).
 
 **Key Requirements:**
 - Extract feature name from directory name and README.md
-- Group screens by category headers (##) from `screen-flow.md`
+- Group screens by category headers (##) from `screenflow.md`
 - All links must use `mock/` prefix (e.g., `href="mock/facility_list.html"`)
 - Include a flow diagram section summarizing the main screen flow
 
@@ -167,7 +179,7 @@ Create `{{baseDir}}/{{specDir}}/index.html` (in the parent directory, NOT in the
 
         <div class="flow-diagram">
             <h3>Main Screen Flow</h3>
-            <p>【Summarize main flow from screen-flow.md】</p>
+            <p>【Summarize main flow from screenflow.md】</p>
         </div>
 
         <!-- Group by Category -->
@@ -187,35 +199,35 @@ Create `{{baseDir}}/{{specDir}}/index.html` (in the parent directory, NOT in the
 </html>
 ```
 
-### 3. Create Screen List Tracker
+### 4. Create Screen List Tracker
 
 Create `{{baseDir}}/{{specDir}}/mock/screens.yml` to track generation progress.
 
 **Steps:**
-1. Extract all screen names from `screen-flow.md` in order
+1. Extract all screen names from `screenflow.md` in order
 2. Convert screen names to alphanumeric filenames (e.g., "Order Basic Info List" -> `order_list`)
 3. Create directory `{{baseDir}}/{{specDir}}/mock` if it doesn't exist
 4. Generate `screens.yml` with unchecked items
 
 **Important:**
 - Do not include file extensions (.html), only the screen ID
-- Use `screen-flow.md` headers (##) as comments for categorization
+- Use `screenflow.md` headers (##) as comments for categorization
 - Mark completed screens with `- [x]`
 
 #### Output Format
 
 ```yaml
 screens:
-  # Category Name (Extracted from screen-flow.md headers)
+  # Category Name (Extracted from screenflow.md headers)
   - [ ] screen_id
   - [ ] another_screen_id
 ```
 
-### 4. Generate Mock HTML Files
+### 5. Generate Mock HTML Files
 
 Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files in `{{baseDir}}/{{specDir}}/mock/`.
 
-#### 4.1 Basic HTML Structure
+#### 5-1. Basic HTML Structure
 
 ```html
 <!DOCTYPE html>
@@ -237,7 +249,7 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 </html>
 ```
 
-#### 4.2 UI Element Implementation Guidelines
+#### 5-2. UI Element Implementation Guidelines
 
 **Form Elements (from `ui.yml`):**
 - Wrap each input item in `.form-group`
@@ -262,7 +274,7 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 <button onclick="location.href='next_screen.html'">Button Name</button>
 ```
 
-#### 4.3 Design Principles
+#### 5-3. Design Principles
 
 - **Minimal Decoration:** Borders, padding, basic coloring only
 - **Focus:** Input types, display content, screen transition flow
@@ -273,15 +285,15 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
   - Success: #28a745
   - Delete: #dc3545
 
-### 5. Update Progress
+### 6. Update Progress
 
 After creating each mock HTML file, update the corresponding line in `screens.yml` from `- [ ]` to `- [x]`.
 
-### 6. Set Version Number
+### 7. Set Version Number
 
 Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version number and set it as `{{versionNumber}}`.
 
-### 7. Update Status File
+### 8. Update Status File
 
 Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}`.
 

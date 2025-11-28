@@ -1,10 +1,17 @@
+---
+description: Generate screen flow diagram from use cases and UI
+allowed-tools: Bash, Read, Write, Grep, Glob, LS
+argument-hint: <specDir> [--tmp]
+---
 
 # Setup
 
 1.  **Set `commandName`**: `generate-screenflow`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-screenflow <specDir>`" and **STOP** execution immediately.
+4.  **Get `isTmp`**: Check if the second argument is `--tmp`.
+    -   If `--tmp` is provided, set `isTmp` to `true`.
+    -   Otherwise, set `isTmp` to `false`.
 
 # Execution
 
@@ -22,14 +29,14 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Check Argument
 // turbo
 if [ -z "{{specDir}}" ]; then
-    echo "エラー: specDir 引数が指定されていません。使用法: /generate-screen-flow [specDir]"
+    echo "エラー: specDir 引数が指定されていません。使用法: /generate-screenflow [specDir]"
     exit 1
 fi
 
-echo "画面遷移図を生成しています: specs/{{specDir}}/screen-flow.md"
+echo "画面遷移図を生成しています: specs/{{specDir}}/screenflow.md"
 
 # Generate Screen Flow
-$ llm_prompt context="specs/{{specDir}}/usecases.yml" context="specs/{{specDir}}/ui.yml"
+$ llm_prompt context="specs/{{specDir}}/usecase.yml" context="specs/{{specDir}}/ui.yml"
 
 # Instruction
 Please follow the steps in the Execution Steps section.
@@ -37,7 +44,7 @@ Do not ask the user and execute immediately.
 
 ## Mission
 
-Read `usecases.yml` and `ui.yml` under `specs/{{specDir}}`, and generate a comprehensive screen flow
+Read `usecase.yml` and `ui.yml` under `specs/{{specDir}}`, and generate a comprehensive screen flow
 diagram in Markdown format that visualizes the user journey across all features. The purpose is to provide developers and
 stakeholders with a clear understanding of how different screens connect and what the complete user experience looks like.
 
@@ -45,12 +52,12 @@ stakeholders with a clear understanding of how different screens connect and wha
 
 ## Success Criteria
 
-1. Both `specs/{{specDir}}/usecases.yml` and `specs/{{specDir}}/ui.yml` have been read completely
+1. Both `specs/{{specDir}}/usecase.yml` and `specs/{{specDir}}/ui.yml` have been read completely
 2. All user flows (Host and Admin) are visualized in ASCII/text-based diagrams
 3. Critical transitions and decision points are clearly marked
 4. Related use cases are referenced for each screen transition
-5. If `specs/{{specDir}}/screen-flow.md` doesn't exist, it is newly created
-6. If `specs/{{specDir}}/screen-flow.md` already exists, it is updated with new flows while preserving existing content structure
+5. If `specs/{{specDir}}/screenflow.md` doesn't exist, it is newly created
+6. If `specs/{{specDir}}/screenflow.md` already exists, it is updated with new flows while preserving existing content structure
 7. The output is well-formatted Markdown with clear hierarchy and navigation aids
 8. **All output text is in Japanese.**
 
@@ -64,27 +71,34 @@ stakeholders with a clear understanding of how different screens connect and wha
 - **Existing File Handling**:
   - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
-### 2. Load Context
+### 2. Check Status
 
-- Read `specs/{{specDir}}/usecases.yml` to understand all use cases and their sequences
+1. Execute `/teamkit:get-step-info {{specDir}} ui` to get the version number.
+2. Set the obtained version as `{{targetVersion}}`.
+3. Execute `/teamkit:check-status {{specDir}} generate-screenflow {{targetVersion}}`.
+   - If an error occurs, **STOP** execution immediately.
+
+### 3. Load Context
+
+- Read `specs/{{specDir}}/usecase.yml` to understand all use cases and their sequences
 - Read `specs/{{specDir}}/ui.yml` to understand all screens, inputs, actions, and transitions
 - Identify distinct user roles (e.g., Host, Platform Admin)
 - If files cannot be read, report that and exit
 
-### 3. Extract Screen Information
+### 4. Extract Screen Information
 
 - List all screens from `ui.yml` grouped by actor
 - Identify input fields, actions, and validations for each screen
 - Map actions to screen transitions (e.g., "Login" button → "Authentication Code Screen")
 - Note conditional flows (e.g., "if validation fails", "if no active bookings")
 
-### 4. Map Use Cases to Screens
+### 5. Map Use Cases to Screens
 
-- Match each use case from `usecases.yml` to corresponding screens in `ui.yml`
+- Match each use case from `usecase.yml` to corresponding screens in `ui.yml`
 - Identify multi-screen flows that span multiple use cases
 - Note dependencies between features (e.g., "Payment method must be registered before ordering")
 
-### 5. Identify User Journeys
+### 6. Identify User Journeys
 
 Extract complete user journeys such as:
 - Initial onboarding (registration → account creation → first login)
@@ -92,7 +106,7 @@ Extract complete user journeys such as:
 - Settings updates (edit profile → save → view history)
 - Order processing (create order → approval → shipping)
 
-### 6. Create Flow Diagrams
+### 7. Create Flow Diagrams
 
 Generate ASCII-based flow diagrams using:
 - `[Screen Name]` for screens
@@ -109,22 +123,25 @@ Example format (Logistics Domain):
 ├─→ [3] Edit Shipment (action: edit)
 └─→ [4] Cancel Shipment (action: cancel)
 
-### 7. Document Key Transitions
+### 8. Document Key Transitions
 
 For critical transitions, document:
 - Trigger: What action causes the transition
 - Condition: What must be true for transition to succeed
-- Related Use Case: Reference to `usecases.yml`
+- Related Use Case: Reference to `usecase.yml`
 - Notes: Any special considerations
 
-### 8. Prepare Output File
+### 9. Prepare Output File
+- **Determine Output Filename**:
+  - If `isTmp` is `true` → Set `outputFile` to `screenflow_tmp.md`.
+  - If `isTmp` is `false` → Set `outputFile` to `screenflow.md`.
 
-- Output destination is always `specs/{{specDir}}/screen-flow.md`
+- Output destination is always `specs/{{specDir}}/{{outputFile}}`
 - If file doesn't exist, create it with the template structure below
 - If file exists, update relevant sections while preserving structure
 - Ensure all diagrams are properly formatted and readable
 
-### 9. Quality Check
+### 10. Quality Check
 
 - Verify all screens from `ui.yml` are represented
 - Ensure all major use cases have corresponding flows
@@ -132,10 +149,10 @@ For critical transitions, document:
 - Confirm that related models and validations are referenced where relevant
 - **Verify that the output language is Japanese.**
 
-### 10. Set Version Number
+### 11. Set Version Number
 - `/teamkit:get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
-### 11. Update Status
+### 12. Update Status
 - `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 
@@ -150,7 +167,7 @@ This includes:
 
 ## Output Format Template
 
-`specs/{{specDir}}/screen-flow.md` should have the following structure (Translate headers to Japanese):
+`specs/{{specDir}}/screenflow.md` should have the following structure (Translate headers to Japanese):
 
   ```markdown
   # Screen Flow - [Feature Name]
@@ -199,19 +216,19 @@ This includes:
 
   Important Constraints
 
-  - Do NOT modify `usecases.yml` or `ui.yml`
+  - Do NOT modify `usecase.yml` or `ui.yml`
   - Ensure diagrams are properly formatted and use consistent notation
   - Keep descriptions concise but complete
   - Use exact screen names from `ui.yml`
   - Reference use case line numbers or identifiers when possible
-  - Preserve existing content structure if `screen-flow.md` already exists
+  - Preserve existing content structure if `screenflow.md` already exists
   - **Output MUST be in Japanese.**
 
   Error Scenarios & Fallback
 
   - If YAML files don't exist or can't be read:
-    - Output "必要なYAMLファイルが見つからないため、画面遷移図を生成できませんでした" and don't create `screen-flow.md`
+    - Output "必要なYAMLファイルが見つからないため、画面遷移図を生成できませんでした" and don't create `screenflow.md`
   - If YAML files have broken structure:
     - Document which elements couldn't be parsed and create partial flow with available data
-  - If `screen-flow.md` exists but has non-standard structure:
+  - If `screenflow.md` exists but has non-standard structure:
     - Append new content at the end with proper headings rather than trying to merge

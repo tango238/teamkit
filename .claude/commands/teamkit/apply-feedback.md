@@ -71,10 +71,19 @@ For each TODO item marked with `[o]`, load the detailed information:
 
 Determine the next version number for tracking changes:
 
-1. Load `{{baseDir}}/{{specDir}}/status.json`
-2. Extract all `version` values from all objects in the `steps` array
-3. Find the maximum value from the extracted version list
-4. Add 1 to the maximum value and set it as **versionNumber**
+1. Read `{{baseDir}}/{{specDir}}/status.json` directly (do NOT use slash commands)
+2. Extract the version numbers from:
+   - `steps[0].feature.version`
+   - `steps[1].story.version`
+   - `steps[2].usecase.version`
+   - `steps[3].ui.version`
+   - `steps[4].screenflow.version`
+   - `mock.version`
+3. Find the maximum version among all values
+4. Add 1 to get **newVersionNumber**
+5. Display: `バージョン番号: {{newVersionNumber}}`
+
+**CRITICAL: Immediately proceed to Step 6 after determining the version number. Do not wait for user input.**
 
 ### 6. Load Target Files and Apply Changes
 
@@ -84,54 +93,56 @@ Process each specification file in the defined order. **Execute this process for
 
 Process files in the following order:
 
-| Order | File Name      | Command Name      |
-|-------|----------------|-------------------|
-| 1     | screen-flow.md | update-screenflow |
-| 2     | ui.yml         | update-ui         |
-| 3     | usecases.yml   | update-usecase    |
-| 4     | stories.yml    | update-story      |
-| 5     | feature.yml    | update-feature    |
+| Order | File Name      | Step Name  | Approval File Name   | 
+|-------|----------------|------------|----------------------|
+| 1     | screenflow.md  | screenflow | screenflow.md        |
+| 2     | ui.yml         | ui         | ui.md                |
+| 3     | usecase.yml    | usecase    | usecase.md           |
+| 4     | story.yml      | story      | story.md             |
+| 5     | feature.yml    | feature    | feature.md           |
 
 For each file:
 - Load `{{baseDir}}/{{specDir}}/{{fileName}}`
 - Parse as YAML or markdown and understand the current structure
 - If it cannot be loaded or YAML is broken, report error and exit
 
-#### 6-2. Plan Modifications
+#### 6-2. Consider basic rules based on Summary
 
 For each `[o]` TODO item, determine the specific modifications:
 
-- Consider modification method based on Summary's "Recommended Action" and "Notes"
-- Specify which part of the YAML/markdown structure to change and how
-- Select the most appropriate method if multiple modification approaches exist
-- Display a list of modification plans
+- Consider basic rules based on Summary's "Recommended Action" and "Notes"
+- Select the most appropriate rule if multiple rules exist
+- Set a list of basic rules as approval document
 
-#### 6-3. Show Diff Preview
+#### 6-3. Write the approval document
 
-Display the changes before applying:
+- Consider the approval document from basic rules
+- If the approval directory does not exist, create it
+- Write the approval document to `{{baseDir}}/{{specDir}}/approval/{{approvalFileName}}`
+- If the approval document already exists, modify the existing file
 
-- Display diff when modifications are applied:
+#### 6-4. Generate applied chages version
+
+- How to generate:
+  - Apply the rules from the approval document to the content of `{{fileName}}`
+  - Save the result to `{{baseDir}}/{{specDir}}/{{fileName}}_tmp.yml` or `{{baseDir}}/{{specDir}}/{{fileName}}_tmp.md`
+  - **Do NOT use `/teamkit:generate-{{stepName}}` commands here**, as they rely on upstream files that have not been updated yet.
+
+#### 6-5. Compare to applied changes version
+
+- Compare the tmp file to the original file:
+  - Check the diff and changes are appropriate or not, also there are no unexpected changes
+  - If the changes are appropriate, continue to the next step
+  - If the changes are not appropriate, back to 6-2
+
+#### 6-6. Display diff when the rules in the approval document are applied to the original file
+
+- Display diff when the rules in the approval document are applied to the original file:
   - Compare YAML/markdown before and after changes
   - Added lines displayed with `+ `
   - Deleted lines displayed with `- `
   - Changed lines displayed as `- ` and `+ ` pair
 - Display diff in an easy-to-read format (unified diff or side-by-side)
-
-#### 6-4. Apply Changes
-
-Apply the modifications to the file:
-
-- Apply changes to each file without user approval
-- Overwrite and save the original file
-
-#### 6-5. Update Step Status
-
-Record the processing step in status.json:
-
-- Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` to update the status
-- **This step must be executed for each file regardless of whether changes were actually applied or not**
-
-**Repeat steps 6-1 through 6-5 for each file in the order specified in step 6-1. Do not stop execution between files. Process all files in a single continuous run.**
 
 ### 7. Update feedback.md Status
 
@@ -142,15 +153,34 @@ Mark processed items as completed:
 - Save feedback.md
 - Do not change existing other items (`[ ]`, `[~]`, already `[x]` items)
 
-### 8. Execute Generate Mock
+#### 8. Update All Step Versions
 
-Regenerate mock HTML files to reflect the changes:
+Record the new version number in status.json for ALL steps:
+
+- **IMPORTANT: Update version for ALL steps, regardless of whether changes were applied to that file or not**
+- This ensures all specification files maintain synchronized version numbers
+- **Do NOT use `/teamkit:update-status` slash commands here** - directly edit the `status.json` file instead to avoid interruption
+- Edit `{{baseDir}}/{{specDir}}/status.json` directly:
+  - Update `steps[0].feature.version` to `{{newVersionNumber}}`
+  - Update `steps[1].story.version` to `{{newVersionNumber}}`
+  - Update `steps[2].usecase.version` to `{{newVersionNumber}}`
+  - Update `steps[3].ui.version` to `{{newVersionNumber}}`
+  - Update `steps[4].screenflow.version` to `{{newVersionNumber}}`
+  - Update `mock.version` to `{{newVersionNumber}}`
+  - Update `updated_at` to current timestamp
+  - Update `last_execution` to `apply-feedback`
+- The version number represents the feedback application batch, not individual file changes
+- **CRITICAL: Proceed immediately to Step 9 after updating status.json. Do not wait for user input.**
+
+### 9. Execute Create Mock
+
+Regenerate all files to reflect the changes:
 
 - Delete all files in `{{baseDir}}/{{specDir}}/mock` and `{{baseDir}}/{{specDir}}/index.html`
 - Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
-### 9. Report Results
+### 10. Report Results
 
 Display the processing results:
 
@@ -175,16 +205,16 @@ Display the processing results:
 1. Load `specs/YourFeature/feedback.md`
 2. Find TODO items marked with `[o]`
 3. Load corresponding details from Summary section
-4. Get latest version from `status.json` and increment
-5. For each file (screen-flow.md, ui.yml, usecases.yml, stories.yml, feature.yml):
+4. Read `status.json` directly and calculate new version number (max version + 1)
+5. For each file (screenflow.md, ui.yml, usecase.yml, story.yml, feature.yml):
    - Load file
    - Plan modifications based on TODO items
    - Show diff preview
    - Apply changes (if applicable)
-   - Update status (always execute regardless of whether changes were applied)
 6. Update feedback.md: change `[o]` to `[x]`
-7. Execute `/teamkit:generate-mock YourFeature`
-8. Report results
+7. Directly edit `status.json` to update ALL step versions to newVersionNumber (do NOT use slash commands)
+8. Execute `/teamkit:generate-mock YourFeature`
+9. Report results
 
 ---
 
@@ -200,7 +230,7 @@ Display the processing results:
 
 バージョン番号: 5
 
-=== ファイル処理: screen-flow.md ===
+=== ファイル処理: screenflow.md ===
 変更プラン:
 - TODO 1: 住所フィールドを詳細化
 
@@ -213,18 +243,25 @@ Diff:
 + building: 建物名
 + room: 部屋番号
 
-✓ screen-flow.md を更新しました
-✓ ステータスを更新しました (update-screenflow, version: 5)
+✓ screenflow.md を更新しました
 
 === ファイル処理: ui.yml ===
 ...
 
 ✓ feedback.md のステータスを更新しました
+✓ status.json を直接更新しました (version: 5)
+  - feature: 5
+  - story: 5
+  - usecase: 5
+  - ui: 5
+  - screenflow: 5
+  - mock: 5
 ✓ モックHTMLを生成しました
 
 処理完了:
 - 適用項目数: 2件
-- 更新ファイル: screen-flow.md, ui.yml, usecases.yml, stories.yml, feature.yml
+- 更新ファイル: screenflow.md, ui.yml, usecase.yml, story.yml, feature.yml
+- バージョン: 5 (全ステップ共通)
 ```
 
 ### feedback.md Update Example

@@ -1,3 +1,8 @@
+---
+description: Create feature.yml from README.md
+allowed-tools: Bash, Read, Write, Grep, Glob, LS
+argument-hint: <specDir>
+---
 
 # Setup
 
@@ -14,6 +19,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
 -   The content of the generated YAML file (`feature.yml`) must be in **Japanese**.
 -   Do not ask for user confirmation before saving files.
+-   **Do NOT use SlashCommand tool to call other teamkit commands.** Execute all logic directly within this command.
 
 ---
 
@@ -25,21 +31,23 @@ Execute the following process immediately without asking for user confirmation.
 
 ## Execution Steps
 
-### 1. Pre-check 1
+### 1. Pre-check: README.md
 - **Target File**: `{{baseDir}}/{{specDir}}/README.md`
-- **Existing File Handling**:
-  - If the files already exist → Proceed to Step 2.
-  - If the files does not exist → Display the message "Error: `README.md` does not exist. Please create it." and **STOP** execution immediately.
+- **Action**:
+  - If the file exists → Proceed to Step 2.
+  - If the file does not exist → Display the message "エラー: `README.md` が存在しません。作成してください。" and **STOP** execution immediately.
 
-### 2. Pre-check 2
-- **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
-  - `{{baseDir}}/{{specDir}}/status.json`
-
-- **Existing File Handling**:
-  - If the `status.json` already exists and the `feature.yml` does not exist → Display the message "Error: `status.json` already exists, but `feature.yml` does not exist. Please delete `status.json` and re-run this command." and **STOP** execution immediately.
-  - If the files already exist → Display the message "Error: `status.json` and `feature.yml` already exist. Please use `/check` or `/update-feature` to modify it." and **STOP** execution immediately.
-  - If the files do not exist → Proceed to Step 3.
+### 2. Check Status (Version Validation)
+- **Target File**: `{{baseDir}}/{{specDir}}/status.json`
+- **Action**:
+  - If `status.json` exists:
+    - Read `status.json`
+    - Get `steps[0].feature.version` as `currentVersion` (if not found, treat as `0`)
+    - Calculate `diff = 1 - currentVersion`
+    - If `diff > 1`: Display "エラー: バージョンが飛んでいます。現在のバージョン: {{currentVersion}}, 指定されたバージョン: 1" and **STOP**
+    - If `diff <= 1`: Display "バージョンチェック: OK (現在: {{currentVersion}} -> 次: 1)" and proceed to Step 3
+  - If `status.json` does not exist:
+    - Proceed to Step 3 (will be created in Step 7)
 
 ### 3. Read Input
 - Read `{{baseDir}}/{{specDir}}/README.md`.
@@ -93,28 +101,29 @@ feature:
 - Save the generated content as `{{baseDir}}/{{specDir}}/feature.yml`.
 - Execute the save automatically without asking for user confirmation.
 
-### 7. Create Status File
-- 1. Create `{{baseDir}}/{{specDir}}/status.json`
-- 2. Retrieve the checksum and mtime of `README.md` and set them to `{{checksum}}` and `{{mtime}}` respectively.
-- 3. Get the current time and set it to `{{currentTime}}`.
-- 4. Update the content of `status.json` with the following structure:
+### 7. Create or Update Status File
+- **If `status.json` does not exist**:
+  - Retrieve the checksum of `README.md` using `md5 -q`
+  - Retrieve the mtime of `README.md` using `stat -f "%Sm" -t "%Y-%m-%dT%H:%M:%S"`
+  - Get the current time using `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+  - Create `{{baseDir}}/{{specDir}}/status.json` with the following structure:
 
-```
+```json
 {
     "feature_name": "{{specDir}}",
     "created_at": "{{currentTime}}",
     "updated_at": "{{currentTime}}",
     "language": "Japanese",
-    "last_execution": "{{commandName}}",
+    "last_execution": "create-feature",
     "readme": {
-        "checksum": "{{checksum}}",
-        "last_modified": "{{mtime}}"
+        "checksum": "{{README checksum}}",
+        "last_modified": "{{README mtime}}"
     },
     "steps": [
         {
             "feature": {
                 "version": 0,
-                "checksum": ""
+                "checksum": "",
                 "last_modified": ""
             }
         },
@@ -154,13 +163,24 @@ feature:
 }
 ```
 
-### 8. Set Version Number
-- {{versionNumber}} に `1` を設定します。
+- **If `status.json` already exists**: Proceed to Step 8.
 
-### 9. Update Status
-- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+### 8. Update Status (Feature Version)
+- Read `{{baseDir}}/{{specDir}}/status.json`
+- Retrieve the checksum of `feature.yml` using `md5 -q`
+- Retrieve the mtime of `feature.yml` using `stat -f "%Sm" -t "%Y-%m-%dT%H:%M:%S"`
+- Get the current time using `date -u +"%Y-%m-%dT%H:%M:%SZ"`
+- Update `status.json` with:
+  - `updated_at`: current time
+  - `last_execution`: `create-feature`
+  - `steps[0].feature.version`: `1`
+  - `steps[0].feature.checksum`: checksum of `feature.yml`
+  - `steps[0].feature.last_modified`: mtime of `feature.yml`
+- Save the updated `status.json`
 
-
+### 9. Completion
+- Display completion message: "feature.yml の作成が完了しました。"
+- Display summary of extracted features (feature names list)
 
 ## Execution Example
 
@@ -212,3 +232,4 @@ feature:
 ## Notes
 -   **No User Confirmation**: This command is fully automated.
 -   **Japanese Output**: Ensure all status messages to the user are in Japanese. Generated YAML content should be in Japanese.
+-   **No SlashCommand Calls**: Do not call other slash commands (like `/teamkit:check-status` or `/teamkit:update-status`). Execute all logic directly.

@@ -36,24 +36,19 @@ Execute the following process immediately without requesting user confirmation.
 ### 3. Update Status
 - Identify the target file path:
   - `feature` → `feature.yml`
-  - `story` → `stories.yml`
-  - `usecase` → `usecases.yml`
+  - `story` → `story.yml`
+  - `usecase` → `usecase.yml`
   - `ui` → `ui.yml`
-  - `screenflow` → `screen-flow.md`
+  - `screenflow` → `screenflow.md`
   - `mock` → `mock/screens.yml`
 - Command to step mapping:
   | Command Name         | Corresponding Step |
   |---------------------|-------------------|
   | create-feature      | feature           |
-  | update-feature      | feature           |
   | generate-story      | story             |
-  | update-story        | story             |
   | generate-usecase    | usecase           |
-  | update-usecase      | usecase           |
   | generate-ui         | ui                |
-  | update-ui           | ui                |
   | generate-screenflow | screenflow        |
-  | update-screenflow   | screenflow        |
   | create-mock         | <none>            |
   | generate-mock       | mock              |
 

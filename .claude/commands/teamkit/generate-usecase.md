@@ -1,10 +1,17 @@
+---
+description: Generate use cases from stories and check list
+allowed-tools: Bash, Read, Write, Grep, Glob, LS
+argument-hint: <specDir> [--tmp]
+---
 
 # Setup
 
 1.  **Set `commandName`**: `generate-usecase`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-usecases <specDir>`" and **STOP** execution immediately.
+4.  **Get `isTmp`**: Check if the second argument is `--tmp`.
+    -   If `--tmp` is provided, set `isTmp` to `true`.
+    -   Otherwise, set `isTmp` to `false`.
 
 # Execution
 
@@ -12,7 +19,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 **IMPORTANT**:
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
--   The content of the generated YAML file (`usecases.yml`) must be in **Japanese**. The structure keys (usecase, name, stories, trackings, actor, before, after, boundary, control, entity, steps, step, label, note) must remain in English as defined in the format.
+-   The content of the generated YAML file (`usecase.yml`) must be in **Japanese**. The structure keys (usecase, name, stories, trackings, actor, before, after, boundary, control, entity, steps, step, label, note) must remain in English as defined in the format.
 -   Do not ask for user confirmation before saving files.
 
 ---
@@ -20,8 +27,8 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract use cases from `{{baseDir}}/{{specDir}}/stories.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
-Ensure all stories in `stories.yml` are covered (Tracking is mandatory).
+Extract use cases from `{{baseDir}}/{{specDir}}/story.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
+Ensure all stories in `story.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
@@ -34,12 +41,19 @@ Ensure all stories in `stories.yml` are covered (Tracking is mandatory).
 - **Validation**:
   - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
 
-### 2. Read Input Files
+### 2. Check Status
+
+1. Execute `/teamkit:get-step-info {{specDir}} story` to get the version number.
+2. Set the obtained version as `{{targetVersion}}`.
+3. Execute `/teamkit:check-status {{specDir}} generate-usecase {{targetVersion}}`.
+   - If an error occurs, **STOP** execution immediately.
+
+### 3. Read Input Files
 Read the following files and understand their content:
--   `{{baseDir}}/{{specDir}}/stories.yml`: List of user stories
+-   `{{baseDir}}/{{specDir}}/story.yml`: List of user stories
 -   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
 
-### 3. Use Case Creation Policy (Robustness Analysis)
+### 4. Use Case Creation Policy (Robustness Analysis)
 
 Create use cases based on the **Robustness Diagram** concept.
 Instead of just listing steps, identify the **Actor**, **Boundary**, **Control**, and **Entity** involved in each use case.
@@ -55,9 +69,9 @@ Instead of just listing steps, identify the **Actor**, **Boundary**, **Control**
 -   **Postconditions (after)**: State after the use case ends.
 -   **Steps**: Interaction flow (Actor -> Boundary -> Control -> Entity).
 
-### 4. Generate Use Cases
+### 5. Generate Use Cases
 
-Generate the content for `usecases.yml` following the format below.
+Generate the content for `usecase.yml` following the format below.
 **Group by Use Case**, not by Feature.
 
 **Output Format**:
@@ -69,7 +83,7 @@ usecases:
       - [Related User Story 1]
       - [Related User Story 2]
     trackings:
-     - "stories.yml:[Line] - [Summary]"
+     - "story.yml:[Line] - [Summary]"
      - "check.md:[Line] - [Summary]"
     actor: 
       name: "[Actor Name]" 
@@ -98,37 +112,40 @@ usecases:
 ```
 
 **Rules**:
--   **`trackings` is MANDATORY**. You must explicitly state which line in `stories.yml` (and `check.md` if applicable) is being covered.
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `story.yml` (and `check.md` if applicable) is being covered.
 -   Use `-->` for arrows in steps.
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.
 -   `usecase` key should be empty (null).
 
-### 5. Verification (Self-Correction)
+### 6. Verification (Self-Correction)
 
 **After generating the initial list of use cases, perform a check:**
-1.  Review `stories.yml` and ensure **EVERY** story is referenced in the `trackings` of at least one use case.
+1.  Review `story.yml` and ensure **EVERY** story is referenced in the `trackings` of at least one use case.
 2.  If any story is missing, create an additional use case to cover it.
 3.  Ensure no "orphan" stories are left behind.
 
-### 6. File Saving
+### 7. File Saving
+- **Determine Output Filename**:
+  - If `isTmp` is `true` → Set `outputFile` to `usecases_tmp.yml`.
+  - If `isTmp` is `false` → Set `outputFile` to `usecase.yml`.
 
 #### If file exists:
--   Delete the existing file and regenerate it completely.
+-   Delete the existing `{{baseDir}}/{{specDir}}/{{outputFile}}` and regenerate it completely.
 
 #### New creation:
--   Save generated content as `{{baseDir}}/{{specDir}}/usecases.yml`.
+-   Save generated content as `{{baseDir}}/{{specDir}}/{{outputFile}}`.
 -   Save automatically without asking user.
 
-### 7. Set Version Number
+### 8. Set Version Number
 - `/teamkit:get-step-info {{specDir}} story` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
-### 8. Update Status
+### 9. Update Status
 - `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 ## Execution Example
 
-### Input Example (stories.yml)
+### Input Example (story.yml)
 ```yaml
 stories:
   - feature: 契約管理
@@ -136,7 +153,7 @@ stories:
     story: サービスを利用開始するために、契約を申し込みたい
 ```
 
-### Output Example (usecases.yml)
+### Output Example (usecase.yml)
 ```yaml
 usecases:
   - usecase:
@@ -144,7 +161,7 @@ usecases:
     stories:
       - ホストとして、Spotlyサービスを利用開始するために、サービス契約を申し込み管理アカウントを作成したい
     trackings:
-     - "stories.yml:5 - サービス契約を申し込み管理アカウントを作成"
+     - "story.yml:5 - サービス契約を申し込み管理アカウントを作成"
     actor: 
       name: "ホスト\n(スペース掲載者)" 
       as: Host1

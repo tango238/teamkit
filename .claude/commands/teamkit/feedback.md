@@ -44,10 +44,10 @@ Verify that both `specDir` and `comment` arguments are provided. If either is mi
 
 ### 4. Verify Impact
 Verify the impact on each specification file in the following order (each step should consider the impact from the previous step):
-1. Verify impact on `screen-flow.md`
+1. Verify impact on `screenflow.md`
 2. Considering the impact from step 1, verify impact on `ui.yml`
-3. Considering the impact from step 2, verify impact on `usecases.yml`
-4. Considering the impact from step 3, verify impact on `stories.yml`
+3. Considering the impact from step 2, verify impact on `usecase.yml`
+4. Considering the impact from step 3, verify impact on `story.yml`
 5. Considering the impact from step 4, verify impact on `feature.yml`
 
 ### 5. Generate Feedback Document

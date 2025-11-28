@@ -1,10 +1,17 @@
+---
+description: Generate UI definition from use cases and stories
+allowed-tools: Bash, Read, Write, Grep, Glob, LS
+argument-hint: <specDir> [--tmp]
+---
 
 # Setup
 
 1.  **Set `commandName`**: `generate-ui`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-ui <specDir>`" and **STOP** execution immediately.
+4.  **Get `isTmp`**: Check if the second argument is `--tmp`.
+    -   If `--tmp` is provided, set `isTmp` to `true`.
+    -   Otherwise, set `isTmp` to `false`.
 
 # Execution
 
@@ -35,18 +42,29 @@ fi
 - **Existing File Handling**:
   - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
-### 3. Read input files
-1. Read `{{baseDir}}/{{specDir}}/stories.yml`
-2. Read `{{baseDir}}/{{specDir}}/usecases.yml`
+### 3. Check Status
+
+1. Execute `/teamkit:get-step-info {{specDir}} usecase` to get the version number.
+2. Set the obtained version as `{{targetVersion}}`.
+3. Execute `/teamkit:check-status {{specDir}} generate-ui {{targetVersion}}`.
+   - If an error occurs, **STOP** execution immediately.
+
+### 4. Read input files
+1. Read `{{baseDir}}/{{specDir}}/story.yml`
+2. Read `{{baseDir}}/{{specDir}}/usecase.yml`
 3. Read `{{baseDir}}/{{specDir}}/check.md` (check for `[x]` items)
 
-### 4. Generate UI definition
-Generate `{{baseDir}}/{{specDir}}/ui.yml` following the rules and schema defined below.
+### 5. Generate UI definition
+- **Determine Output Filename**:
+  - If `isTmp` is `true` → Set `outputFile` to `ui_tmp.yml`.
+  - If `isTmp` is `false` → Set `outputFile` to `ui.yml`.
 
-### 5. Set Version Number
+Generate `{{baseDir}}/{{specDir}}/{{outputFile}}` following the rules and schema defined below.
+
+### 6. Set Version Number
 - `/get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
 
-### 6. Update Status
+### 7. Update Status
 - `/update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
 
 ---
@@ -57,15 +75,8 @@ You are an expert UI/UX designer and System Architect.
 Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` based on the following inputs:
 
 - `{{baseDir}}/{{specDir}}/check.md`: Checklist containing status and specific instructions.
-- `{{baseDir}}/{{specDir}}/stories.yml`: User stories defining value and acceptance criteria.
-- `{{baseDir}}/{{specDir}}/usecases.yml`: Use cases defining interactions and steps.
-
-### 4. Set Version Number
-- `/teamkit:get-step-info {{specDir}} usecase` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
-
-### 5. Update Status
-- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
-
+- `{{baseDir}}/{{specDir}}/story.yml`: User stories defining value and acceptance criteria.
+- `{{baseDir}}/{{specDir}}/usecase.yml`: Use cases defining interactions and steps.
 
 # Task
 Generate `{{baseDir}}/{{specDir}}/ui.yml` in YAML format.
@@ -81,7 +92,7 @@ Pay special attention to items marked as completed `[x]`, as they contain finali
 # Schema & Rules
 
 ## 1. Screen Extraction
-- Analyze `usecases.yml` to identify necessary screens.
+- Analyze `usecase.yml` to identify necessary screens.
 - Group screens by `actor` (e.g., Host, Guest, Platform).
 - Combine related use cases into single screens where logical.
 - For System actors, decide if a UI is needed (Management Console) or if it's a background process.
@@ -142,27 +153,27 @@ view:
 
     # Related Use Cases
     related_usecases:
-      - "Exact use_case string from usecases.yml"
+      - "Exact use_case string from usecase.yml"
 ```
 
 ## 3. Field Types
 Map requirements to these types. Use these Logistics/Sales examples as a guide:
 
-| Requirement Example (Logistics/Sales) | Field Type | Note |
-|---------------------|------------|------|
-| Product Name, Customer Name | `text` | Single line text |
-| Description, Shipping Instructions | `textarea` | Multi-line text |
-| Price, Quantity, Weight | `number` | Numeric input |
-| Category, Shipping Method | `select` | Dropdown |
-| Delivery Time Slot | `radio_group` | Radio selection |
-| Tags, Multiple Categories | `multi_select` | Multiple selection |
-| Available Days | `checkbox_group` | Checkbox group |
-| Delivery Date | `date_picker` | Date selection |
-| Pickup Time (HH:MM) | `time_picker` | Time selection |
-| Duration (e.g. 2 hours) | `duration_picker` | Duration selection |
-| Warranty Period (e.g. 2 years) | `duration_input` | Number + Unit |
-| Product Image, Invoice PDF | `file_upload` | File upload |
-| Line Items (Product, Qty, Price) | `repeater` | Dynamic list of items |
+| Requirement Example (Logistics/Sales) | Field Type        | Note                  |
+|---------------------------------------|-------------------|-----------------------|
+| Product Name, Customer Name           | `text`            | Single line text      |
+| Description, Shipping Instructions    | `textarea`        | Multi-line text       |
+| Price, Quantity, Weight               | `number`          | Numeric input         |
+| Category, Shipping Method             | `select`          | Dropdown              |
+| Delivery Time Slot                    | `radio_group`     | Radio selection       |
+| Tags, Multiple Categories             | `multi_select`    | Multiple selection    |
+| Available Days                        | `checkbox_group`  | Checkbox group        |
+| Delivery Date                         | `date_picker`     | Date selection        |
+| Pickup Time (HH:MM)                   | `time_picker`     | Time selection        |
+| Duration (e.g. 2 hours)               | `duration_picker` | Duration selection    |
+| Warranty Period (e.g. 2 years)        | `duration_input`  | Number + Unit         |
+| Product Image, Invoice PDF            | `file_upload`     | File upload           |
+| Line Items (Product, Qty, Price)      | `repeater`        | Dynamic list of items |
 
 ## 4. Grouping Example (Logistics Domain)
 Organize screens logically. Example:
@@ -200,7 +211,7 @@ validations:
 ```
 
 ## 7. Important Principles
-- **related_usecases**: Must match `usecases.yml` exactly.
+- **related_usecases**: Must match `usecase.yml` exactly.
 - **input_fields**: Analyze `description` in use cases carefully to find all inputs.
 - **Business Rules**: Include rules like "Cannot edit after shipment" in validations.
 
