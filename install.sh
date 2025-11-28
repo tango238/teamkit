@@ -118,6 +118,7 @@ download_file() {
 # コマンドファイルのリスト
 COMMAND_FILES=(
     "apply-feedback.md"
+    "check-status.md"
     "check.md"
     "clean.md"
     "create-feature.md"
