@@ -1,6 +1,6 @@
 ---
 description: Generate user stories from feature and check list
-allowed-tools: Bash, Read, Write, Grep, Glob, LS
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
 
@@ -48,12 +48,16 @@ Execute the following processing immediately without asking the user for confirm
 - **Validation**:
   - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
 
-### 2. Check Status
+### 2. Check Status (Direct Read - No SlashCommand)
 
-1. Execute `/teamkit:get-step-info {{specDir}} feature` to get the version number.
-2. Set the obtained version as `{{targetVersion}}`.
-3. Execute `/teamkit:check-status {{specDir}} generate-story {{targetVersion}}`.
-   - If an error occurs, **STOP** execution immediately.
+1. Read `{{baseDir}}/{{specDir}}/status.json`
+2. Extract `version` from the `feature` step in the `steps` array
+3. Set this as `{{targetVersion}}`
+4. Extract `version` from the `story` step - this is `{{currentVersion}}`
+5. **Validation**:
+   - If `{{currentVersion}}` >= `{{targetVersion}}` → Display "スキップ: story は既に最新です (version {{currentVersion}})" and **STOP**
+   - If `{{targetVersion}}` - `{{currentVersion}}` > 1 → Display warning but continue
+   - Otherwise → Continue execution
 
 ### 3. Load Input Files
 Read the following files and understand their contents:
@@ -173,11 +177,18 @@ stories:
 - Save the generated content to `{{baseDir}}/{{specDir}}/{{outputFile}}`
 - Automatically overwrite and save without asking the user for confirmation
 
-### 9. Set Version Number
-- `/teamkit:get-step-info {{specDir}} feature` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+### 9. Update Status (Direct Write - No SlashCommand)
 
-### 10. Update Status
-- `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+1. Get the MD5 checksum of the saved file: `md5 -q {{baseDir}}/{{specDir}}/{{outputFile}}`
+2. Get current timestamp in ISO format: `date -u +"%Y-%m-%dT%H:%M:%S"`
+3. Read `{{baseDir}}/{{specDir}}/status.json`
+4. Update the `story` step with:
+   - `version`: Set to `{{targetVersion}}` (from Step 2)
+   - `checksum`: Set to the MD5 hash obtained
+   - `last_modified`: Set to the timestamp obtained
+5. Update `last_execution`: Set to `generate-story`
+6. Update `updated_at`: Set to current timestamp
+7. Save the modified `status.json`
 
 
 

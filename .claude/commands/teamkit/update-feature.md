@@ -76,7 +76,7 @@ This command only processes items marked with `[o]`.
 * Extract the following information:
   * **Target**: Which YAML path/key to modify
   * **Issue**: What is the problem
-  * **Recommended Action**: How to fix it
+  * **Next Action**: How to fix it
   * **Notes**: Other important considerations
 
 ### 5. Load Target YAML
@@ -88,7 +88,7 @@ This command only processes items marked with `[o]`.
 ### 6. Plan Modifications
 
 * For each `[o]` TODO item, determine specific modification content:
-  * Consider modification method based on Summary's "Recommended Action"
+  * Consider modification method based on Summary's "Next Action"
   * Specify which part of the YAML structure to change and how
   * Select the most appropriate method if multiple modification approaches exist
 * Display a list of modification plans.
@@ -116,15 +116,32 @@ This command only processes items marked with `[o]`.
 
 ### 10. 更新をチェックする
 - 1. 9で更新があるかどうか確認する
-- 2. 更新がある場合 → 11 に進む。更新がない場合 → 12 に進む
+- 2. 更新がある場合 → 11 に進む。更新がない場合 → 13 に進む
 
 ### 11. 最新のバージョン番号を取得し、 +1 したバージョンを設定する
 - 1. `{{baseDir}}/{{specDir}}/status.json` を取得する
 - 2. steps.feature から `version` 情報を取得
 - 3. 2の値に +1 をした値を **versionNumber** に設定する
 
-### 12. Update Status
-- `/teamkit:update-status {{specDir}} update-feature {{versionNumber}}` を実行し、ステータスを更新します。
+### 12. Update Status (インライン実行)
+**重要**: スラッシュコマンドを呼び出さず、以下の処理を直接実行してください。
+
+1. `{{baseDir}}/{{specDir}}/feature.yml` の **MD5チェックサム** と **最終更新日時** を取得する
+2. `{{baseDir}}/{{specDir}}/status.json` を更新する:
+   - `steps[0].feature.version` を **versionNumber** に更新
+   - `steps[0].feature.checksum` を取得したMD5チェックサムに更新
+   - `steps[0].feature.last_modified` を取得した最終更新日時に更新
+   - `updated_at` を現在のタイムスタンプ (ISO 8601) に更新
+   - `last_execution` を `update-feature` に更新
+3. `status.json` を保存する
+4. 以下の形式で結果を表示する:
+   ```
+   ステータス: 成功
+   コマンド: update-feature
+   バージョン: {{versionNumber}}
+   日時: <現在のタイムスタンプ (ISO 8601)>
+   メッセージ: ステータスを更新しました。
+   ```
 
 ### 13. Report Results
 

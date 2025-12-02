@@ -1,6 +1,6 @@
 ---
 description: Generate mock HTML files from UI and screen flow
-allowed-tools: Bash, Read, Write, Grep, Glob, LS
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir>
 ---
 
@@ -55,16 +55,20 @@ Read the following files:
 - `{{baseDir}}/{{specDir}}/ui.yml`
 - `{{baseDir}}/{{specDir}}/screenflow.md`
 
-### 2. Check Status
+### 2. Check Status (Direct Read - No SlashCommand)
 
-1. Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version number.
-2. Set the obtained version as `{{targetVersion}}`.
-3. Execute `/teamkit:check-status {{specDir}} generate-mock {{targetVersion}}`.
-   - If an error occurs, **STOP** execution immediately.
+1. Read `{{baseDir}}/{{specDir}}/status.json`
+2. Extract `version` from the `screenflow` step in the `steps` array
+3. Set this as `{{targetVersion}}`
+4. Extract `version` from the `mock` section - this is `{{currentVersion}}`
+5. **Validation**:
+   - If `{{currentVersion}}` >= `{{targetVersion}}` → Display "スキップ: mock は既に最新です (version {{currentVersion}})" and **STOP**
+   - If `{{targetVersion}}` - `{{currentVersion}}` > 1 → Display warning but continue
+   - Otherwise → Continue execution
 
 ### 3. Generate Index Page
 
-Create `{{baseDir}}/{{specDir}}/index.html` (in the parent directory, NOT in the mock subdirectory).
+Create `{{baseDir}}/{{specDir}}/mock/index.html` (in the mock subdirectory).
 
 **Key Requirements:**
 - Extract feature name from directory name and README.md
@@ -289,13 +293,16 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 
 After creating each mock HTML file, update the corresponding line in `screens.yml` from `- [ ]` to `- [x]`.
 
-### 7. Set Version Number
+### 7. Update Status (Direct Write - No SlashCommand)
 
-Execute `/teamkit:get-step-info {{specDir}} screenflow` to get the version number and set it as `{{versionNumber}}`.
-
-### 8. Update Status File
-
-Execute `/teamkit:update-status {{specDir}} {{commandName}} {{versionNumber}}`.
+1. Get current timestamp in ISO format: `date -u +"%Y-%m-%dT%H:%M:%S"`
+2. Read `{{baseDir}}/{{specDir}}/status.json`
+3. Update the `mock` section with:
+   - `version`: Set to `{{targetVersion}}` (from Step 2)
+   - `last_modified`: Set to the timestamp obtained
+4. Update `last_execution`: Set to `generate-mock`
+5. Update `updated_at`: Set to current timestamp
+6. Save the modified `status.json`
 
 ---
 

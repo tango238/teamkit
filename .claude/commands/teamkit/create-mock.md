@@ -16,6 +16,8 @@ allowed-tools:
   - Read
   - Edit
   - Write
+  - Glob
+  - SlashCommand
 ---
 
 # Setup
@@ -30,29 +32,108 @@ allowed-tools:
 ## Prerequisites
 Verify `{{baseDir}}/{{specDir}}/status.json` and `{{baseDir}}/{{specDir}}/feature.yml` exist. If not, display error and exit.
 
+## ⚠️ CRITICAL: Execution Model
+
+**Problem**: When using SlashCommand to call sub-commands (like `/teamkit:get-step-info`), the execution context is lost after the sub-command returns, causing the workflow to stop.
+
+**Solution**: This command uses a **SEQUENTIAL EXECUTION MODEL** where each step is a single SlashCommand call, and after each call completes, YOU MUST IMMEDIATELY call the next SlashCommand without waiting.
+
 ## Main Workflow
 
-**⚠️ CRITICAL EXECUTION RULES:**
-1. **NEVER STOP** between commands - execute all 5 commands in immediate succession
-2. **NEVER DISPLAY** intermediate results or progress to the user
-3. **NEVER WAIT** for user confirmation between commands
-4. **IMMEDIATELY PROCEED** to the next command after each slash command returns
-5. **ONLY REPORT** final completion status after ALL 5 commands finish
+**EXECUTION RULES:**
+1. Call each SlashCommand in sequence
+2. After each SlashCommand completes (you will see its output), IMMEDIATELY call the next one
+3. Do NOT stop to display results or ask questions
+4. Continue until all 5 commands are complete
 
-**Execution sequence (run ALL without interruption):**
+---
+
+## Step-by-Step Execution
+
+You will execute exactly 5 SlashCommand calls. After each one completes, proceed to the next.
+
+### Step 1: Generate Story
 ```
 /teamkit:generate-story {{specDir}}
+```
+When this command finishes (story.yml is saved), IMMEDIATELY proceed to Step 2.
+
+### Step 2: Generate Usecase
+```
 /teamkit:generate-usecase {{specDir}}
+```
+When this command finishes (usecase.yml is saved), IMMEDIATELY proceed to Step 3.
+
+### Step 3: Generate UI
+```
 /teamkit:generate-ui {{specDir}}
+```
+When this command finishes (ui.yml is saved), IMMEDIATELY proceed to Step 4.
+
+### Step 4: Generate Screenflow
+```
 /teamkit:generate-screenflow {{specDir}}
+```
+When this command finishes (screenflow.md is saved), IMMEDIATELY proceed to Step 5.
+
+### Step 5: Generate Mock
+```
 /teamkit:generate-mock {{specDir}}
 ```
+When this command finishes (mock/ directory is created), proceed to Completion.
 
-**⚠️ IMPORTANT**: Each slash command will expand into instructions. After completing those instructions (including any sub-commands like `get-step-info` and `update-status`), IMMEDIATELY call the next slash command. Do NOT pause, do NOT summarize, do NOT ask questions.
+---
+
+## ⚠️ CRITICAL: After Each Sub-command Returns
+
+Each generate-* command will internally call helper commands like:
+- `/teamkit:get-step-info` - Returns version info, then parent command continues
+- `/teamkit:check-status` - Returns status, then parent command continues
+- `/teamkit:update-status` - Updates status, then parent command continues
+
+**WHEN YOU SEE OUTPUT FROM THESE HELPER COMMANDS:**
+1. The helper command has finished
+2. You are now back in the parent generate-* command
+3. **CONTINUE EXECUTING** the remaining steps of the parent command
+4. Do NOT stop or wait for user input
+
+**Example**: If you're running `generate-story` and it calls `get-step-info`:
+```
+get-step-info returns: "バージョン: 2"
+↓
+You are now back in generate-story
+↓
+Continue with check-status call
+↓
+Continue generating story.yml
+↓
+Continue with update-status call
+↓
+generate-story is COMPLETE
+↓
+IMMEDIATELY call generate-usecase (Step 2)
+```
+
+---
 
 ## Completion
-After ALL 5 commands finish:
-- Verify all TODOs/FIXMEs are resolved (run `grep -r "TODO\|FIXME" {{baseDir}}/{{specDir}}` if needed)
-- Report final status summary in Japanese
 
-**Do not create a todo list. Do not pause between commands. Do not display intermediate status.**
+After ALL 5 steps finish:
+1. Verify files exist using Glob:
+   - `{{baseDir}}/{{specDir}}/story.yml`
+   - `{{baseDir}}/{{specDir}}/usecase.yml`
+   - `{{baseDir}}/{{specDir}}/ui.yml`
+   - `{{baseDir}}/{{specDir}}/screenflow.md`
+   - `{{baseDir}}/{{specDir}}/mock/*.html`
+2. Report final status summary in Japanese
+
+---
+
+## 重要な注意事項
+
+**絶対に途中で止まらないこと。**
+
+サブコマンドが結果を返したら、それは「次のステップに進め」という合図です。
+ユーザーの入力を待たずに、即座に次の処理を実行してください。
+
+5つのステップすべてが完了し、最終レポートを出力するまで、処理を継続してください。

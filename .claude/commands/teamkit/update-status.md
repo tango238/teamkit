@@ -30,6 +30,7 @@ Execute the following process immediately without requesting user confirmation.
   - For `mock`: Reference root-level `mock.version`.
   - For others: Reference `version` of the corresponding key (e.g., `feature`, `story`) under `steps`.
 - **Validation logic**:
+  - If current version = 0: Proceed to next step.
   - If current version > `versionNumber` (argument): Display error message "The specified version ({{versionNumber}}) is less than the current version." and terminate.
   - If current version <= `versionNumber` (argument): Proceed to next step.
 

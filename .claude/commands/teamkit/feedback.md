@@ -26,7 +26,7 @@ Analyze the user's feedback comment and generate a structured feedback document 
 1. Records the original comment
 2. Identifies specific issues and impacts across all specification files
 3. Provides actionable TODO items
-4. Documents recommended solutions with detailed notes for each affected specification layer
+4. Documents next actions with detailed notes for each affected specification layer
 
 ## Execution Steps
 
@@ -40,7 +40,7 @@ Verify that both `specDir` and `comment` arguments are provided. If either is mi
 ### 3. Understand & Think
 - Understand the feedback content provided in the `comment` argument
 - Consider the impact on functionality and UI/UX
-- Think about recommended solutions and approaches to address the feedback
+- Think about next actions and approaches to address the feedback
 
 ### 4. Verify Impact
 Verify the impact on each specification file in the following order (each step should consider the impact from the previous step):
@@ -51,7 +51,7 @@ Verify the impact on each specification file in the following order (each step s
 5. Considering the impact from step 4, verify impact on `feature.yml`
 
 ### 5. Generate Feedback Document
-Based on the verification results, write out the issues and recommended corrections:
+Based on the verification results, write out the issues and next actions:
 
 1. Check if a feedback file already exists at `{{baseDir}}/{{specDir}}/feedback.md`
 2. If the file exists, append new content to the `Comment`, `TODO`, and `Summary` sections
@@ -99,7 +99,7 @@ The generated `feedback.md` should follow this structure:
 ## 1. {{short name of correction item 1 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Recommended action: {{how to fix it}}
+- Next action: {{how to fix it}}
 - Notes: 
   - feature: {{if any notes or consideration if the user applies the action to this step}}
   - story: {{if any notes or consideration if the user applies the action to this step}}
@@ -111,7 +111,7 @@ The generated `feedback.md` should follow this structure:
 ## 2. {{short name of correction item 2 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Recommended action: {{how to fix it}}
+- Next action: {{how to fix it}}
 - Notes: 
   - feature: {{if any notes or consideration}}
   - story: {{if any notes or consideration}}
@@ -122,6 +122,23 @@ The generated `feedback.md` should follow this structure:
 <!-- Continue for all correction items -->
 
 ```
+### 「次のアクション」の記載ルール
+
+「次のアクション」は、ユーザーが迷わず修正できるよう、**具体的な変更内容と例を必ず記載**してください。
+
+**NG例（曖昧で具体性がない）:**
+- 「意図を明確にしてください」
+- 「具体的に記述してください」
+- 「適切な値を設定してください」
+- 「検討してください」
+
+**OK例（具体的で実行可能）:**
+- 「`description: 適宜処理する` を `description: 入力値が空の場合はエラーメッセージ"必須項目です"を表示する` に変更する」
+- 「`precondition` に `ユーザーがログイン済みであること` を追加する」
+- 「`error_cases` セクションを追加し、以下のケースを記載する: 1) 入力値が空の場合、2) 文字数が100文字を超える場合、3) 不正な文字が含まれる場合」
+- 「`役割: 管理者` を `役割: システム管理者（全機能へのアクセス権限を持つ）` に変更し、権限の範囲を明示する」
+- 「重複している `feature_A` と `feature_A_new` を統合し、`feature_A` に一本化する。`feature_A_new` 固有の内容は `feature_A.scenarios` 配下に移動する」
+
 
 ### Output Location
 - **Directory**: `{{baseDir}}/{{specDir}}`

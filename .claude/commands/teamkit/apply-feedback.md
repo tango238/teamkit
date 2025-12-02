@@ -121,12 +121,54 @@ For each `[o]` TODO item, determine the specific modifications:
 - Write the approval document to `{{baseDir}}/{{specDir}}/approval/{{approvalFileName}}`
 - If the approval document already exists, modify the existing file
 
+#### 6-3-1. Approval Document Output Example
+
+Example of approval document (`approval/ui.md`):
+
+```markdown
+# 承認ドキュメント: ui.yml
+
+## 適用するTODO項目
+- TODO 1: 施設登録画面の住所フィールド分割
+- TODO 2: 施設更新画面の住所フィールド分割
+
+## 基本ルール
+
+### ルール1: 施設登録画面のinput_fieldsを修正
+- 変更箇所: 施設登録画面の「住所」フィールド（行21-26）
+- 変更内容: 「住所」フィールドを削除し、「都道府県」「市区町村」「番地」「建物名」の4フィールドを追加
+- 詳細:
+  - 都道府県: type=select, required=true, 47都道府県から選択
+  - 市区町村: type=text, required=true, 100文字以内
+  - 番地: type=text, required=true, 100文字以内
+  - 建物名: type=text, required=false, 100文字以内
+- 適用バージョン: 2
+
+### ルール2: 施設更新画面のinput_fieldsを修正
+- 変更箇所: 施設更新画面の「住所」フィールド（行71-75）
+- 変更内容: 施設登録画面と同様に4フィールドに分割
+- 適用バージョン: 2
+
+### ルール3: validationsセクションに住所関連フィールドを追加
+- 変更箇所: validationsセクション
+- 変更内容: 都道府県、市区町村、番地、建物名のバリデーションルールを追加
+- 適用バージョン: 2
+```
+
+**Approval Document Structure:**
+- **適用するTODO項目**: List of TODO items being applied
+- **基本ルール**: Numbered rules with:
+  - 変更箇所: Where to change (with line numbers if applicable)
+  - 変更内容: What to change
+  - 詳細: Detailed specifications (optional)
+  - 適用バージョン: Version number being applied
+
 #### 6-4. Generate applied chages version
 
 - How to generate:
-  - Apply the rules from the approval document to the content of `{{fileName}}`
+  - Execute `/teamkit:generate-{{stepName}} {{specDir}} --tmp` command
+  - This command will apply the rules from the approval document to the content of `{{fileName}}`
   - Save the result to `{{baseDir}}/{{specDir}}/{{fileName}}_tmp.yml` or `{{baseDir}}/{{specDir}}/{{fileName}}_tmp.md`
-  - **Do NOT use `/teamkit:generate-{{stepName}}` commands here**, as they rely on upstream files that have not been updated yet.
 
 #### 6-5. Compare to applied changes version
 

@@ -1,3 +1,9 @@
+---
+role: Senior Business Analyst
+description: Inspect feature.yml for logical, descriptive, and coverage issues
+allowed-tools: Read, Write, Glob, Grep
+argument-hint: <specDir>
+---
 
 # Setup
 
@@ -98,14 +104,40 @@ The purpose is NOT to "let AI rewrite the specifications arbitrarily" but to "le
 
 # Summary
 ## 1. {{short name of correction item 1}}
-- Target: {{path or key name in the YAML file}}
-- Issue: {{specifically what the problem is}}
-- Recommended action: {{how to fix it}}
-- Notes: {{if any}}
+- 対象箇所: {{path or key name in the YAML file}}
+- 問題点: {{specifically what the problem is}}
+- 次のアクション: {{concrete change with specific example}}
+- 備考: {{if any}}
 
 ## 2. {{short name of correction item 2}}
 ... (continue similarly)
 ```
+
+### 「次のアクション」の記載ルール
+
+「次のアクション」は、ユーザーが迷わず修正できるよう、**具体的な変更内容と例を必ず記載**してください。
+
+**NG例（曖昧で具体性がない）:**
+- 「意図を明確にしてください」
+- 「具体的に記述してください」
+- 「適切な値を設定してください」
+- 「検討してください」
+
+**OK例（具体的で実行可能）:**
+- 「`description: 適宜処理する` を `description: 入力値が空の場合はエラーメッセージ"必須項目です"を表示する` に変更する」
+- 「`precondition` に `ユーザーがログイン済みであること` を追加する」
+- 「`error_cases` セクションを追加し、以下のケースを記載する: 1) 入力値が空の場合、2) 文字数が100文字を超える場合、3) 不正な文字が含まれる場合」
+- 「`役割: 管理者` を `役割: システム管理者（全機能へのアクセス権限を持つ）` に変更し、権限の範囲を明示する」
+- 「重複している `feature_A` と `feature_A_new` を統合し、`feature_A` に一本化する。`feature_A_new` 固有の内容は `feature_A.scenarios` 配下に移動する」
+
+### 記載時のチェックポイント
+
+次のアクションを記載する際は、以下を満たしているか確認してください:
+
+1. **変更対象が特定できるか**: YAMLパス（例: `features.login.precondition[0]`）または具体的なキー名が明示されているか
+2. **変更前の値が分かるか**: 現在の記述内容（または「未記載」）が示されているか
+3. **変更後の値が分かるか**: 修正後の具体的な文言・構造が示されているか
+4. **判断が不要か**: ユーザーが追加で考える必要なく、そのまま適用できる内容か
 
 - The "Short name" must contain a numbered label and be 20–60 characters long, suitable for display in a TODO list.
 - The Summary must also include the same number as the "Short name". It may use bullet points, but must clearly indicate which YAML element each point refers to.

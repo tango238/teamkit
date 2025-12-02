@@ -1,6 +1,6 @@
 ---
 description: Generate UI definition from use cases and stories
-allowed-tools: Bash, Read, Write, Grep, Glob, LS
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
 
@@ -42,12 +42,16 @@ fi
 - **Existing File Handling**:
   - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
 
-### 3. Check Status
+### 3. Check Status (Direct Read - No SlashCommand)
 
-1. Execute `/teamkit:get-step-info {{specDir}} usecase` to get the version number.
-2. Set the obtained version as `{{targetVersion}}`.
-3. Execute `/teamkit:check-status {{specDir}} generate-ui {{targetVersion}}`.
-   - If an error occurs, **STOP** execution immediately.
+1. Read `{{baseDir}}/{{specDir}}/status.json`
+2. Extract `version` from the `usecase` step in the `steps` array
+3. Set this as `{{targetVersion}}`
+4. Extract `version` from the `ui` step - this is `{{currentVersion}}`
+5. **Validation**:
+   - If `{{currentVersion}}` >= `{{targetVersion}}` → Display "スキップ: ui は既に最新です (version {{currentVersion}})" and **STOP**
+   - If `{{targetVersion}}` - `{{currentVersion}}` > 1 → Display warning but continue
+   - Otherwise → Continue execution
 
 ### 4. Read input files
 1. Read `{{baseDir}}/{{specDir}}/story.yml`
@@ -61,11 +65,18 @@ fi
 
 Generate `{{baseDir}}/{{specDir}}/{{outputFile}}` following the rules and schema defined below.
 
-### 6. Set Version Number
-- `/get-step-info {{specDir}} ui` を実行して、バージョン番号を取得し、{{versionNumber}} として設定します。
+### 6. Update Status (Direct Write - No SlashCommand)
 
-### 7. Update Status
-- `/update-status {{specDir}} {{commandName}} {{versionNumber}}` を実行し、ステータスを更新します。
+1. Get the MD5 checksum of the saved file: `md5 -q {{baseDir}}/{{specDir}}/{{outputFile}}`
+2. Get current timestamp in ISO format: `date -u +"%Y-%m-%dT%H:%M:%S"`
+3. Read `{{baseDir}}/{{specDir}}/status.json`
+4. Update the `ui` step with:
+   - `version`: Set to `{{targetVersion}}` (from Step 3)
+   - `checksum`: Set to the MD5 hash obtained
+   - `last_modified`: Set to the timestamp obtained
+5. Update `last_execution`: Set to `generate-ui`
+6. Update `updated_at`: Set to current timestamp
+7. Save the modified `status.json`
 
 ---
 

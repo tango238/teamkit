@@ -59,6 +59,9 @@ If a gap is detected (difference > 1), display an error and stop execution.
 - **Calculation**:
   - `diff = versionNumber - currentVersion`
 - **Validation Logic**:
+  - if `currentVersion` is `0`:
+    - Display message: "バージョンチェック: OK (現在: {{currentVersion}} -> 次: {{versionNumber}})"
+    - Proceed (Exit successfully).
   - If `diff > 1`:
     - Display error message: "エラー: バージョンが飛んでいます。現在のバージョン: {{currentVersion}}, 指定されたバージョン: {{versionNumber}}。バージョンは1つずつインクリメントする必要があります。"
     - **STOP** execution immediately (Exit with error).
