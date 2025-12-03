@@ -1,165 +1,161 @@
 # Team Kit
 
-AI駆動開発における周辺業務の自動化ツール
+Automation tool for peripheral tasks in AI-driven development
 
-Team Kitは、Claude などのAIエディタと連携して、要件定義から仕様書作成、モックアップ生成までを自動化するコマンド集です。
+Team Kit is a collection of commands that works with AI editors like Claude to automate everything from requirements definition to specification creation and mockup generation.
 
-## 主な機能
+## Main Features
 
-### 🤖 自動化されたワークフロー
-- 要件定義の自動生成
-- ユーザーストーリーの作成
-- ユースケースの抽出
-- UI定義の生成
-- 画面遷移図の作成
-- HTMLモックアップの自動生成
+### 🤖 Automated Workflows
+- Automated generation of requirements definitions
+- Creation of user stories
+- Extraction of use cases
+- Generation of UI definitions
+- Creation of screen flow diagrams
+- Automated generation of HTML mockups
 
-### 📋 要件の整合性チェック
-- 要件の整合性を自動検証
-- 検証項目を自動で反映
+### 📋 Requirements Consistency Check
+- Automated verification of requirements consistency
+- Automated reflection of verification items
 
-### 👥 ユーザー視点での評価
-- ユーザーからのフィードバックを収集して反映
-- 要件とモックアップの整合性を維持
+### 👥 User-Centric Evaluation
+- Collection and reflection of user feedback
+- Maintenance of consistency between requirements and mockups
 
 
-## インストール
+## Installation
 
-### 前提条件
+### Prerequisites
 - Claude Code
-- bash シェル環境
+- bash shell environment
 
-### インストール手順
+### Installation Steps
 
 
 ```bash
-# カレントディレクトリにインストール
+# Install to current directory
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- .
 
-# 強制上書き（確認なし）
+# Force overwrite (no confirmation)
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- --yes .
 
-# 特定のディレクトリにインストール
+# Install to a specific directory
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- /path/to/project
 ```
 
-**オプション:**
-- `--yes`, `-y`, `--force`, `-f`: 既存ファイルを確認せずに上書き
+**Options:**
+- `--yes`, `-y`, `--force`, `-f`: Overwrite existing files without confirmation
 
-インストールスクリプトは `.claude/commands/teamkit` ディレクトリ以下のすべてのコマンドファイルを、指定したプロジェクトディレクトリに同じ構造でコピーします。
+The installation script copies all command files under the `.claude/commands/teamkit` directory to the specified project directory with the same structure.
 
-## 基本的な使い方
+## Basic Usage
 
-Team Kitは、段階的な仕様書作成ワークフローを提供します。各ステップは `/teamkit:*` というスラッシュコマンドとして利用できます。
+Team Kit provides a step-by-step specification creation workflow. Each step is available as a slash command `/teamkit:*`.
 
-### 1. プロジェクトの初期化
+### 1. Project Initialization
 
-まず、仕様書を管理するディレクトリを作成します:
+First, create a directory to manage specifications:
 
 ```
 your-project/
 └── specs/
     └── YourFeature/
-        └── README.md  # 要件を記述
+        └── README.md  # Describe requirements
 ```
 
-### 2. フィーチャーの作成
+### 2. Create Feature
 
-`README.md` から要件を抽出し、フィーチャー定義を生成します:
+Extract requirements from `README.md` and generate feature definitions:
 
 ```
 /teamkit:create-feature YourFeature
 ```
 
-**生成ファイル:**
-- `specs/YourFeature/feature.yml` - フィーチャー定義
-- `specs/YourFeature/status.json` - ステータス管理ファイル
+**Generated Files:**
+- `specs/YourFeature/feature.yml` - Feature definition
+- `specs/YourFeature/status.json` - Status management file
 
-### 3. HTMLモックアップの生成
+### 3. Generate HTML Mockup
 
-UI定義からインタラクティブなHTMLモックアップを生成します:
+Generate interactive HTML mockups from UI definitions:
 
 ```
 /teamkit:create-mock YourFeature
 ```
 
-**生成ファイル:**
-- `specs/YourFeature/index.html` - モックアップのインデックスページ
-- `specs/YourFeature/mock/*.html` - 各画面のモックアップ
-- `specs/YourFeature/mock/screens.yml` - 画面生成ステータス
+**Generated Files:**
+- `specs/YourFeature/index.html` - Mockup index page
+- `specs/YourFeature/mock/*.html` - Mockups for each screen
+- `specs/YourFeature/mock/screens.yml` - Screen generation status
 
-## 便利なコマンド
+## Useful Commands
 
-### チェック機能
+### Check Function
 
-仕様の整合性をチェック:
+Check specification consistency:
 
 ```
 /teamkit:check YourFeature
 ```
 
-AIが `feature.yml` を確認して、`check.md` に指摘事項を記載します。
+The AI checks `feature.yml` and lists issues in `check.md`.
 
-内容を確認して、適用する場合はTODOに `[o]` をつけます。
+Review the content and mark TODOs with `[o]` if you want to apply them.
 
-Summary にある Recommended action を変更すると、適用内容を調整できます。
+You can adjust the application content by changing the Recommended action in the Summary.
 
-`o` をしたチェック内容を適用する場合は、 `/teamkit:update-feature YourFeature` を実行します。
+To apply the checked items marked with `o`, run `/teamkit:update-feature YourFeature`.
 
 
-### フィードバック機能
+### Feedback Function
 
-仕様に対するフィードバックを提出:
+Submit feedback on specifications:
 
 ```
-/teamkit:feedback YourFeature "住所フィールドを詳細に分割してください"
+/teamkit:feedback YourFeature --preview "Please split the address field into details"
 ```
 
-フィードバックを提出すると、AIが影響範囲を確認して、`feedback.md` に詳細とTODOを作成します。
+When you submit feedback, the AI checks the scope of impact and creates details and TODOs in `feedback.md`.
 
-内容を確認して、適用する場合はTODOに `[o]` をつけます。
+Review the content and mark TODOs with `[o]` if you want to apply them.
 
-Summary にある Recommended action を変更すると、フィードバックを適用内容を調整できます。
+If you add the `-p` or `--preview` option, the changes will be immediately reflected in the mockup, allowing you to confirm the feedback content.
 
-フィードバックを適用:
+You can adjust the feedback application content by changing the Next action in the Summary.
+
+Apply feedback:
 
 ```
 /teamkit:apply-feedback YourFeature
 ```
 
-### フィーチャーの更新
+### Update Feature
 
-check.mdが更新された際にフィーチャーを再生成:
+Regenerate the feature when check.md is updated:
 
 ```
 /teamkit:update-feature YourFeature
 ```
 
-### ステータス確認
+### Check Status
 
-現在のステップ情報を確認:
+Check current step information:
 
 ```
 /teamkit:get-step-info YourFeature
 ```
 
-### クリーンアップ（未実装）
 
-生成されたファイルをクリーンアップ:
+## Directory Structure
 
-```
-/teamkit:clean YourFeature
-```
-
-## ディレクトリ構造
-
-インストール後、プロジェクトは以下の構造になります:
+After installation, the project will have the following structure:
 
 ```
 your-project/
 ├── .claude/
+├── .claude/
 │   └── commands/
-│       └── teamkit/            # Team Kitコマンド
+│       └── teamkit/            # Team Kit commands
 │           ├── create-feature.md
 │           ├── generate-story.md
 │           ├── generate-usecase.md
@@ -177,56 +173,55 @@ your-project/
 │           └── clean.md
 └── specs/
     └── <feature-name>/
-        ├── README.md          # 要件定義
-        ├── feature.yml        # 機能要件の定義
-        ├── stories.yml        # ユーザーストーリー
-        ├── usecases.yml       # ユースケース
-        ├── ui.yml             # UI定義
-        ├── screen-flow.md     # 画面遷移図
-        ├── status.json        # ステータス管理
-        ├── feedback.md        # フィードバック
-        ├── index.html         # モックアップインデックス
-        ├── mock/screens.yml   # 画面生成ステータス
-        └── mock/*.html        # 各画面のモックアップ
+        ├── README.md          # Requirements definition
+        ├── feature.yml        # Functional requirements definition
+        ├── story.yml          # User stories
+        ├── usecase.yml        # Use cases
+        ├── ui.yml             # UI definition
+        ├── screenflow.md      # Screen flow diagram
+        ├── status.json        # Status management
+        ├── feedback.md        # Feedback
+        ├── mock/screens.yml   # Screen generation status
+        └── mock/*.html        # Mockups for each screen
 ```
 
-## ワークフロー例
+## Workflow Example
 
-典型的な開発フローの例:
+Example of a typical development flow:
 
 ```bash
-# 1. 要件をREADME.mdに記述
-# 2. フィーチャー定義から始める
+# 1. Describe requirements in README.md
+# 2. Start with feature definition
 /teamkit:create-feature OrderManagement
 
-# 3. すべてのステップを自動実行
+# 3. Automatically execute all steps
 /teamkit:create-mock OrderManagement
 
-# 4. 生成されたモックアップを確認
-# specs/OrderManagement/index.html をブラウザで開く
+# 4. Check the generated mockup
+# Open specs/OrderManagement/index.html in a browser
 
-# 5. フィードバックがあれば提出
-/teamkit:feedback OrderManagement "注文キャンセル機能を追加してください"
+# 5. Submit feedback if any and check the mockup
+/teamkit:feedback OrderManagement -p "Please add an order cancellation function"
 
-# 6. フィードバックを反映
+# 6. Apply feedback
 /teamkit:apply-feedback OrderManagement
 
-# 7. 整合性チェック
+# 7. Consistency check
 /teamkit:check OrderManagement
 ```
 
-## 出力言語
+## Output Language
 
-- **コマンドの説明**: 英語
-- **生成される仕様書**: 日本語
-- **ステータスメッセージ**: 日本語
+- **Command Descriptions**: English
+- **Generated Specifications**: Japanese
+- **Status Messages**: Japanese
 
-これにより、LLMが正確に理解しつつ、日本語の仕様書を生成できます。
+This allows the LLM to understand accurately while generating specifications in Japanese.
 
-## ライセンス
+## License
 
-このプロジェクトのライセンスについては [LICENSE](LICENSE) ファイルを参照してください。
+See the [LICENSE](LICENSE) file for the license of this project.
 
-## サポート
+## Support
 
-問題が発生した場合や機能リクエストがある場合は、GitHubのIssuesセクションで報告してください。
+If you encounter any issues or have feature requests, please report them in the Issues section on GitHub.
