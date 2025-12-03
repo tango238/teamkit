@@ -1,12 +1,15 @@
 
 # Setup
 
-1.  **Set `commandName`**: `submit-feedback`
+1.  **Set `commandName`**: `feedback`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment> [-p|--preview]`" and **STOP** execution immediately.
 4.  **Get `comment`**: Read the second argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment> [-p|--preview]`" and **STOP** execution immediately.
+5.  **Check for preview mode**: Check if `-p` or `--preview` option is passed as any argument.
+    -   If found, set `previewMode` to `true`.
+    -   If not found, set `previewMode` to `false`.
 
 # Execution
 
@@ -15,8 +18,12 @@ Execute the following instructions using `baseDir` and `specDir`.
 **IMPORTANT**:
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
 -   The content of the generated markdown file (`feedback.md`) must be in **Japanese**.
--   Do not ask for user confirmation before saving files.
--   Execute immediately without asking the user.
+-   Do not ask for user confirmation before saving files. Execute immediately without asking the user.
+-   **Preview mode behavior**:
+    -   If `previewMode` is `true`:
+        -   Save the file with TODO items marked as `[p]` (preview flag) instead of `[ ]`.
+        -   Generate preview mock HTML files for affected screens only (see Step 6).
+    -   If `previewMode` is `false`: Save the file with TODO items marked as `[ ]` (normal unchecked state).
 
 ---
 
@@ -42,7 +49,24 @@ Verify that both `specDir` and `comment` arguments are provided. If either is mi
 - Consider the impact on functionality and UI/UX
 - Think about next actions and approaches to address the feedback
 
-### 4. Verify Impact
+### 4. Generate Preview Mock (Preview Mode Only)
+**Skip this step if `previewMode` is `false`.**
+
+If `previewMode` is `true`, generate preview mock HTML files for the affected screens first, so the user can visually confirm the changes:
+
+1. **Identify affected screens**: Based on the feedback comment, identify which screens in `screenflow.md` and `ui.yml` are likely affected.
+
+2. **Read status.json**: Read `{{baseDir}}/{{specDir}}/status.json` and get the current `mock` version number.
+
+3. **Generate mock files**: For each affected screen:
+   - Apply the feedback content to the screen
+   - Overwrite the existing mock file to: `{{baseDir}}/{{specDir}}/mock/{{screen_name}}.html`
+
+4. **Update status.json**: Update the `mock` version number as preview version (e.g. `v1-preview`) in `{{baseDir}}/{{specDir}}/status.json`.
+
+5. **Output**: Display the list of updated mock files to the user.
+
+### 5. Verify Impact
 Verify the impact on each specification file in the following order (each step should consider the impact from the previous step):
 1. Verify impact on `screenflow.md`
 2. Considering the impact from step 1, verify impact on `ui.yml`
@@ -50,12 +74,17 @@ Verify the impact on each specification file in the following order (each step s
 4. Considering the impact from step 3, verify impact on `story.yml`
 5. Considering the impact from step 4, verify impact on `feature.yml`
 
-### 5. Generate Feedback Document
+### 6. Generate Feedback Document
 Based on the verification results, write out the issues and next actions:
 
 1. Check if a feedback file already exists at `{{baseDir}}/{{specDir}}/feedback.md`
-2. If the file exists, append new content to the `Comment`, `TODO`, and `Summary` sections
-3. If the file does not exist, create a new file following the format specified in the "Output Format" section below
+2. Generate the content following the format specified in the "Output Format" section below
+3. **TODO marker based on mode**:
+   - If `previewMode` is `true`: Use `[p]` for TODO items (preview flag)
+   - If `previewMode` is `false`: Use `[ ]` for TODO items (normal unchecked state)
+4. Save the file:
+   - If the file exists, append new content to the `Comment`, `TODO`, and `Summary` sections
+   - If the file does not exist, create a new file
 
 **IMPORTANT**: All content must be written in **Japanese**.
 
@@ -63,17 +92,34 @@ Based on the verification results, write out the issues and next actions:
 
 ## Execution Example
 
-**Command**:
+**Command (通常モード)**:
 ```
 /teamkit:feedback YourFeature "施設の削除機能が必要です"
 ```
 
+**Command (プレビューモード)**:
+```
+/teamkit:feedback YourFeature "施設の削除機能が必要です" -p
+```
+または
+```
+/teamkit:feedback YourFeature "施設の削除機能が必要です" --preview
+```
+
 **Process**:
 1. Verify arguments are provided
-2. Check `specs/YourFeature/status.json` exists
-3. Analyze the feedback: "施設の削除機能が必要です"
-4. Verify impact across all specification files
-5. Generate or update `specs/YourFeature/feedback.md`
+2. Check for `-p` or `--preview` option
+3. Check `specs/YourFeature/status.json` exists
+4. Analyze the feedback: "施設の削除機能が必要です"
+5. (Preview mode only) Generate preview mock HTML files first:
+   - Read `mock` version from `status.json`
+   - Apply feedback to affected screens
+   - Overwrite existing mock files in `specs/YourFeature/mock/`
+   - Update `status.json` with preview version
+6. Verify impact across all specification files
+7. Generate or update `specs/YourFeature/feedback.md`
+   - If preview mode: TODO items are marked with `[p]`
+   - If normal mode: TODO items are marked with `[ ]`
 
 ---
 
@@ -92,39 +138,45 @@ The generated `feedback.md` should follow this structure:
 # TODO
 - [ ] 1. {{short name of correction item 1 from feedback 1}}
 - [ ] 2. {{short name of correction item 2 from feedback 1}}
-- [ ] 3. {{short name of correction item 3 from feedback 1}}
-<!-- Continue adding newly found items -->
+- [p] 3. {{short name of correction item 3 from feedback 2 (created in preview mode)}}
+<!--
+  - [ ] = normal mode (unchecked)
+  - [p] = preview mode (preview flag)
+  - [x] = completed
+  Continue adding newly found items
+-->
 
 # Summary
 ## 1. {{short name of correction item 1 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Next action: {{how to fix it}}
-- Notes: 
-  - feature: {{if any notes or consideration if the user applies the action to this step}}
-  - story: {{if any notes or consideration if the user applies the action to this step}}
-  - usecase: {{if any notes or consideration if the user applies the action to this step}}
-  - ui: {{if any notes or consideration if the user applies the action to this step}}
-  - screenflow: {{if any notes or consideration if the user applies the action to this step}}
-
+- Next action: 
+  - feature: {{how to fix it and consideration}}
+  - story: {{how to fix it and consideration}}
+  - usecase: {{how to fix it and consideration}}
+  - ui: {{how to fix it and consideration}}
+  - screenflow: {{how to fix it and consideration}}
+- Notes: {{if any notes or consideration}}
 
 ## 2. {{short name of correction item 2 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Next action: {{how to fix it}}
-- Notes: 
-  - feature: {{if any notes or consideration}}
-  - story: {{if any notes or consideration}}
-  - usecase: {{if any notes or consideration}}
-  - ui: {{if any notes or consideration}}
-  - screenflow: {{if any notes or consideration}}
-
-<!-- Continue for all correction items -->
+- Next action: 
+  - feature: {{how to fix it and consideration}}
+  - story: {{how to fix it and consideration}}
+  - usecase: {{how to fix it and consideration}}
+  - ui: {{how to fix it and consideration}}
+  - screenflow: {{how to fix it and consideration}}
+- Notes: {{if any notes or consideration}}
+<!-- Continue for all correction items -->  
 
 ```
-### 「次のアクション」の記載ルール
 
-「次のアクション」は、ユーザーが迷わず修正できるよう、**具体的な変更内容と例を必ず記載**してください。
+### 「次のアクション」の記載ルール
+- 1つのTODO項目に対して、影響を受ける全ての仕様ファイル（feature, story, usecase, ui, screenflow）への変更指示を**1つの統合された説明**として記載する
+- プロセスごとに分けずに、論理的な流れで変更内容を説明する
+- 具体的なファイル名や変更箇所は必要に応じて言及するが、箇条書きでプロセス別に分けない
+- 「次のアクション」は、ユーザーが迷わず修正できるよう、**具体的な変更内容と例を必ず記載**してください。
 
 **NG例（曖昧で具体性がない）:**
 - 「意図を明確にしてください」

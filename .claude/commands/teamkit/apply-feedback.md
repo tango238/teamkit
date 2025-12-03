@@ -47,20 +47,22 @@ Extract TODO items that are scheduled for processing:
 - Parse the `# TODO` section in feedback.md
 - Identify the status marker for each TODO item:
   - `[o]`: Extract as scheduled for processing
+  - `[p]`: Extract as scheduled for processing (priority)
   - `[ ]`, `[x]`, `[~]`: Skip (not processed this time)
-- If there are no scheduled `[o]` items, report "No items to process" and exit.
+- If there are no scheduled `[o]` or `[p]` items, report "No items to process" and exit.
 
 **TODO Status Markers:**
 - `- [ ]`: Unprocessed (not yet addressed)
 - `- [o]`: Scheduled (to be applied this time)
+- `- [p]`: Scheduled with priority (to be applied this time)
 - `- [x]`: Completed (already applied)
 - `- [~]`: Skipped (decided not to apply)
 
 ### 4. Load Summary Details
 
-For each TODO item marked with `[o]`, load the detailed information:
+For each TODO item marked with `[o]` or `[p]`, load the detailed information:
 
-- Load detailed information from the `# Summary` section corresponding to each `[o]` marked TODO item
+- Load detailed information from the `# Summary` section corresponding to each `[o]` or `[p]` marked TODO item
 - Extract the following information:
   - **Comment**: Feedback comment from the user
   - **Issue**: What is the problem
@@ -108,7 +110,7 @@ For each file:
 
 #### 6-2. Consider basic rules based on Summary
 
-For each `[o]` TODO item, determine the specific modifications:
+For each `[o]` or `[p]` TODO item, determine the specific modifications:
 
 - Consider basic rules based on Summary's "Recommended Action" and "Notes"
 - Select the most appropriate rule if multiple rules exist
@@ -190,8 +192,9 @@ Example of approval document (`approval/ui.md`):
 
 Mark processed items as completed:
 
-- For each applied TODO item, update status in feedback.md from `[o]` to `[x]`:
+- For each applied TODO item, update status in feedback.md from `[o]` or `[p]` to `[x]`:
   - `- [o] item name` → `- [x] item name`
+  - `- [p] item name` → `- [x] item name`
 - Save feedback.md
 - Do not change existing other items (`[ ]`, `[~]`, already `[x]` items)
 
@@ -330,11 +333,11 @@ After:
 
 ## Important Constraints
 
-- **Only process items marked `[o]`**: Ignore `[ ]`, `[x]`, `[~]`
+- **Only process items marked `[o]` or `[p]`**: Ignore `[ ]`, `[x]`, `[~]`
 - **Preserve original file structure**: Maintain comments, blank lines, indentation, etc. as much as possible
 - **Always mark as `[x]` after application**: To prevent double application
 - **If Summary information is insufficient**: Ask user for additional information or skip that item
-- **If multiple `[o]` items exist**: Display all diffs together and apply in batch (or confirm individually)
+- **If multiple `[o]` or `[p]` items exist**: Display all diffs together and apply in batch (or confirm individually)
 
 ---
 
@@ -343,8 +346,8 @@ After:
 **If feedback.md doesn't exist:**
 - Report `feedback.md not found.` and exit
 
-**If no `[o]` marked items:**
-- Report `No scheduled items. Please mark items as [o] in feedback.md.` and exit
+**If no `[o]` or `[p]` marked items:**
+- Report `No scheduled items. Please mark items as [o] or [p] in feedback.md.` and exit
 
 **If YAML is broken:**
 - Report `YAML format in {{fileName}} is invalid. Please fix it first.` and exit
