@@ -1,4 +1,5 @@
 ---
+description: Create mockups
 role: Automated workflow executor
 task: Execute a sequence of generation commands without interruption
 context:

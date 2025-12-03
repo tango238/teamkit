@@ -1,3 +1,14 @@
+---
+description: Apply feedback to specifications
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Glob
+  - SlashCommand
+argument-hint: <specDir>
+---
 
 # Setup
 
@@ -66,7 +77,7 @@ For each TODO item marked with `[o]` or `[p]`, load the detailed information:
 - Extract the following information:
   - **Comment**: Feedback comment from the user
   - **Issue**: What is the problem
-  - **Recommended Action**: How to fix it
+  - **Next Action**: How to fix it
   - **Notes**: Other important considerations
 
 ### 5. Get Latest Version Number and Increment

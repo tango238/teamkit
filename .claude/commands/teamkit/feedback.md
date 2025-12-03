@@ -1,3 +1,13 @@
+---
+description: Generate feedback document
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Glob
+argument-hint: <specDir> <comment> [-p|--preview]
+---
 
 # Setup
 
@@ -82,11 +92,58 @@ Based on the verification results, write out the issues and next actions:
 3. **TODO marker based on mode**:
    - If `previewMode` is `true`: Use `[p]` for TODO items (preview flag)
    - If `previewMode` is `false`: Use `[ ]` for TODO items (normal unchecked state)
-4. Save the file:
+4. **Verify TODO duplication and consolidate** (see "TODO Consolidation Rules" section below)
+5. Save the file:
    - If the file exists, append new content to the `Comment`, `TODO`, and `Summary` sections
    - If the file does not exist, create a new file
 
 **IMPORTANT**: All content must be written in **Japanese**.
+
+### 7. TODO Consolidation Rules
+
+Before finalizing the TODO list, verify that there are no duplicate or overlapping items:
+
+#### Principle: One Feedback = One TODO
+- **1つのフィードバックコメントに対して、原則として1つのTODO項目を作成する**
+- 複数のレイヤー（feature, story, usecase, ui, screenflow）に影響がある場合でも、それらは1つのTODO項目のNext actionセクション内で記述する
+- TODO項目を「レイヤーごと」や「ファイルごと」に分割しない
+
+#### Duplication Check
+TODO項目を作成する前に、以下の重複パターンをチェックする：
+
+1. **同一修正内容の重複**: 異なるTODO項目が同じファイルの同じ箇所を修正しようとしている
+2. **包含関係の重複**: あるTODO項目の修正内容が、別のTODO項目の修正内容に完全に含まれている
+3. **レイヤー分割の重複**: 1つの論理的な変更を、レイヤーごとに別々のTODO項目として分割している
+
+#### Consolidation Process
+重複が検出された場合：
+1. 重複するTODO項目を1つに統合する
+2. 統合後のTODO項目名は、変更の本質を表す簡潔な名前にする
+3. Next actionセクションに、全ての影響レイヤーへの変更内容を記載する
+
+#### Bad Example (重複あり - NG)
+```markdown
+# TODO
+- [ ] 1. パスワードリセット画面から本人確認機能を削除
+- [ ] 2. 本人確認関連のストーリーを削除      ← TODO 1と重複
+- [ ] 3. ユースケースから本人確認ステップを削除  ← TODO 1と重複
+- [ ] 4. 画面遷移図から本人確認フローを削除    ← TODO 1と重複
+```
+
+#### Good Example (統合済み - OK)
+```markdown
+# TODO
+- [ ] 1. パスワードリセットから本人確認機能を削除
+
+# Summary
+## 1. パスワードリセットから本人確認機能を削除
+- Next action:
+  - feature: シナリオから本人確認ステップを削除
+  - story: 本人確認ストーリーを削除
+  - usecase: 本人確認関連ステップを削除
+  - ui: 本人確認入力フィールドを削除
+  - screenflow: 本人確認フローを削除
+```
 
 ---
 

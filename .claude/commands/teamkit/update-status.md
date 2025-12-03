@@ -1,3 +1,13 @@
+---
+description: Update status
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Glob
+argument-hint: <specDir> <commandName> <versionNumber>
+---
 
 # Setup
 
@@ -76,7 +86,7 @@ Display the result in the following format:
 
 ### Input
 ```bash
-/teamkit:update-status 1_FacilityManagement generate-story 2
+/teamkit:update-status FacilityManagement generate-story 2
 ```
 
 ### Output Example

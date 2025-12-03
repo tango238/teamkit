@@ -1,3 +1,13 @@
+---
+description: Get step information
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Glob
+argument-hint: <specDir> <stepName>
+---
 
 # Setup
 
@@ -65,7 +75,7 @@ Display the result in the following format:
 ### Input
 
 ```bash
-/tk-get-step-info 1_FacilityManagement feature
+/teamkit:get-step-info FacilityManagement feature
 ```
 
 ### Output Example

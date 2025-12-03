@@ -1,3 +1,13 @@
+---
+description: Update feature
+allowed-tools:
+  - Bash
+  - Read
+  - Edit
+  - Write
+  - Glob
+argument-hint: <specDir>
+---
 
 # Setup
 
