@@ -156,12 +156,10 @@
                             </button>
                         </div>
 
-                        <p class="step-description" style="margin-top: 1rem;">
-                            README.mdの例
-                        </p>
-                        <div class="code-block">
-                            <pre>
-# 施設管理
+                        <details class="collapsible-code">
+                            <summary>README.md の例を見る</summary>
+                            <div class="code-block">
+                                <pre># 施設管理
 
 ## 背景
 
@@ -188,17 +186,17 @@
 ## 要求
 
 ### 施設管理者
-施設情報・部屋タイプ・部屋情報の登録・更新を行う
-                            </pre>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
-                        </div>
+施設情報・部屋タイプ・部屋情報の登録・更新を行う</pre>
+                                <button class="copy-btn" aria-label="コピー">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </details>
 
                     </div>
                 </div>
@@ -218,13 +216,66 @@
                                 </svg>
                             </button>
                         </div>
+                        <details class="collapsible-code">
+                            <summary>生成される feature.yml の例を見る</summary>
+                            <div class="code-block">
+                                <pre>actor:
+  - name: 施設管理者
+    description: 施設の運営と管理を担当する責任者。施設情報、部屋タイプ、各部屋の状態を管理し、予約システムの基盤データを維持する。
+
+feature:
+  - name: 施設情報の登録・編集
+    description: 施設管理者が新規施設を登録し、既存施設の情報を更新できる。施設名、住所、チェックイン/アウト時刻などの基本情報を一元管理する。
+    scenarios:
+      - name: 新規施設登録フロー
+        precondition: 施設管理者がログイン済み
+        steps:
+          - 施設登録画面を開く
+          - 施設名、住所、連絡先を入力する
+          - チェックイン/チェックアウト時刻を設定する
+          - 施設の特徴や設備情報を入力する
+          - 入力内容を確認し、登録を完了する
+        postcondition: 新規施設が登録され、部屋タイプの設定が可能になる
+  - name: 部屋タイプの管理
+    description: 施設ごとに部屋タイプを定義し、収容人数や喫煙可否などの特性を設定する。多様な宿泊ニーズに対応するための基盤となる。
+    scenarios:
+      - name: 部屋タイプ作成フロー
+        precondition: 施設が登録済み
+        steps:
+          - 対象施設を選択する
+          - 部屋タイプ名を入力する
+          - 収容人数（最小/最大）を設定する
+          - 喫煙可否を設定する
+          - アメニティや設備を選択する
+        postcondition: 部屋タイプが登録され、個別の部屋を紐づけ可能になる
+  - name: 部屋の状態管理
+    description: 各部屋の現在の状態を管理し、予約可能性や清掃対象の判定を正確に行う。部屋番号と部屋タイプの紐づけも行う。
+    scenarios:
+      - name: 部屋ステータス更新フロー
+        precondition: 部屋が登録済みで、清掃スタッフが清掃を完了した
+        steps:
+          - 部屋一覧画面から対象の部屋を検索する
+          - 現在のステータスを確認する
+          - ステータスを「清掃完了」に更新する
+          - 予約可能状態に変更する
+        postcondition: 部屋が予約可能な状態として表示される</pre>
+                                <button class="copy-btn" aria-label="コピー">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </details>
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
                     <div class="step-number">03</div>
                     <div class="step-content">
                         <h3 class="step-title">モックアップの生成</h3>
-                        <p class="step-description">フィーチャーからストーリー、UI、モックアップまで自動生成</p>
+                        <p class="step-description">フィーチャーからユーザーストーリー、ユースケース、UI、画面遷移、モックアップまでを一気に自動生成</p>
                         <div class="code-block">
                             <code>/teamkit:create-mock YourFeature</code>
                             <button class="copy-btn" aria-label="コピー">
@@ -236,6 +287,12 @@
                                 </svg>
                             </button>
                         </div>
+                        <details class="collapsible-preview">
+                            <summary>生成されるモックアップの例を見る</summary>
+                            <div class="preview-image-container">
+                                <img src="mockup_index.png" alt="生成されたモックアップの例" class="preview-image">
+                            </div>
+                        </details>
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
@@ -244,7 +301,7 @@
                         <h3 class="step-title">フィードバック</h3>
                         <p class="step-description">要件やモックアップに対するフィードバックを登録</p>
                         <div class="code-block">
-                            <code>/teamkit:feedback YourFeature -p "住所を詳細に分割"</code>
+                            <code>/teamkit:feedback YourFeature -p "施設の住所は「郵便番号」「都道府県」「市区町村」「番地」「建物名・部屋番号」に分けてください"</code>
                             <button class="copy-btn" aria-label="コピー">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                                     <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
@@ -254,14 +311,20 @@
                                 </svg>
                             </button>
                         </div>
-                        <small class="step-description">-p もしくは --previewオプションを付けると、フィードバックがモックアップに即時反映される</small>
+                        <small class="step-description">-p もしくは --previewオプションを付けると、フィードバックがモックアップに即時反映されます</small>
+                        <details class="collapsible-preview">
+                            <summary>フィードバック前のモックアップを見る</summary>
+                            <div class="preview-image-container">
+                                <img src="facility_before.png" alt="フィードバック前のモックアップ" class="preview-image">
+                            </div>
+                        </details>
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
                     <div class="step-number">05</div>
                     <div class="step-content">
                         <h3 class="step-title">フィードバックの反映</h3>
-                        <p class="step-description">フィードバックを反映してモックアップを再生成</p>
+                        <p class="step-description">フィードバックを付随する各種仕様書に反映して、モックアップを再生成</p>
                         <div class="code-block">
                             <code>/teamkit:apply-feedback YourFeature</code>
                             <button class="copy-btn" aria-label="コピー">
@@ -273,6 +336,12 @@
                                 </svg>
                             </button>
                         </div>
+                        <details class="collapsible-preview">
+                            <summary>フィードバック反映後のモックアップを見る</summary>
+                            <div class="preview-image-container">
+                                <img src="facility_after.png" alt="フィードバック反映後のモックアップ" class="preview-image">
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>

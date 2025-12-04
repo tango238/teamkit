@@ -36,7 +36,16 @@ document.querySelectorAll('.copy-btn').forEach(button => {
     button.addEventListener('click', async (e) => {
         e.stopPropagation();
         const codeBlock = button.closest('.code-block');
-        const code = codeBlock.querySelector('code').textContent;
+        if (!codeBlock) {
+            console.error('copy-btn: .code-block not found');
+            return;
+        }
+        const codeElement = codeBlock.querySelector('code') || codeBlock.querySelector('pre');
+        if (!codeElement) {
+            console.error('copy-btn: code/pre element not found in', codeBlock);
+            return;
+        }
+        const code = codeElement.textContent.trim();
 
         try {
             await navigator.clipboard.writeText(code);
