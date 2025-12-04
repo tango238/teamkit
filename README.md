@@ -35,7 +35,9 @@ Team Kit is a collection of commands that works with AI editors like Claude to a
 ```bash
 # Install to current directory
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- .
+```
 
+```
 # Force overwrite (no confirmation)
 curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- --yes .
 
@@ -61,6 +63,36 @@ your-project/
 └── specs/
     └── YourFeature/
         └── README.md  # Describe requirements
+```
+
+README.md example:
+
+```
+# Facility Management
+
+## Background
+
+Management of basic information for facilities, room types, and rooms is essential for facility operations. This information forms the basis for reservation management and pricing, so it is necessary to keep it accurate and up-to-date.
+
+## Objectives
+
+- Centralize the management of basic facility information to enable efficient operation of multiple facilities
+- Manage the characteristics of each room type to meet diverse accommodation needs
+- Appropriately manage the status of each room to accurately determine availability and cleaning requirements
+
+## Main Actors
+
+- Facility Manager
+- Cleaning Staff
+
+## Business Overview
+
+Facility management involves the registration, update, deletion, and retrieval of facilities, room types, and rooms. Facility information includes name, address, check-in/check-out times, etc., while room types include capacity and smoking policy. Each room is linked to a room number and room type, and availability is controlled by its status.
+
+## Requirements
+
+### Facility Manager
+Register and update facility information, room types, and room information
 ```
 
 ### 2. Create Feature

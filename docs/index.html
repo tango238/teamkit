@@ -155,6 +155,51 @@
                                 </svg>
                             </button>
                         </div>
+
+                        <p class="step-description" style="margin-top: 1rem;">
+                            README.mdの例
+                        </p>
+                        <div class="code-block">
+                            <pre>
+# 施設管理
+
+## 背景
+
+施設の運営には、施設・部屋タイプ・部屋の基本情報の管理が不可欠である。
+これらの情報は予約管理や料金設定の基盤となるため、正確かつ最新の状態を保つ必要がある。
+
+## 目的
+
+- 施設の基本情報を一元管理し、複数施設を効率的に運営できるようにする
+- 部屋タイプごとの特性を管理し、多様な宿泊ニーズに対応する
+- 各部屋の状態を適切に管理し、予約可能性や清掃対象の判定を正確に行う
+
+## 主要アクター
+
+- 施設管理者
+- 清掃スタッフ
+
+## 業務概要
+
+施設管理では、施設・部屋タイプ・部屋の登録、更新、削除、参照を行う。
+施設情報には名称、住所、チェックイン/チェックアウト時刻などが含まれ、部屋タイプには収容人数、喫煙可否が設定される。
+各部屋は部屋番号と部屋タイプに紐づけられ、状態ステータスによって予約可能性が制御される。
+
+## 要求
+
+### 施設管理者
+施設情報・部屋タイプ・部屋情報の登録・更新を行う
+                            </pre>
+                            <button class="copy-btn" aria-label="コピー">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                </svg>
+                            </button>
+                        </div>
+
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
@@ -197,8 +242,7 @@
                     <div class="step-number">04</div>
                     <div class="step-content">
                         <h3 class="step-title">フィードバック</h3>
-                        <p class="step-description">要件やモックアップに対するフィードバックを登録。-p もしくは --preview
-                            オプションを付けると、モックアップに即時反映して確認できます。</p>
+                        <p class="step-description">要件やモックアップに対するフィードバックを登録</p>
                         <div class="code-block">
                             <code>/teamkit:feedback YourFeature -p "住所を詳細に分割"</code>
                             <button class="copy-btn" aria-label="コピー">
@@ -210,6 +254,7 @@
                                 </svg>
                             </button>
                         </div>
+                        <small class="step-description">-p もしくは --previewオプションを付けると、フィードバックがモックアップに即時反映される</small>
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
