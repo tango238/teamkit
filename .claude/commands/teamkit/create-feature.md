@@ -61,6 +61,10 @@ Extract features from the content of README.md considering the following:
 - Specific functions the system should provide
 - Granularity of features: Split into units that provide a cohesive value
 - Relationships and dependencies between features
+- **External systems that interact with the system** (メール配信、決済、認証など)
+- **Core aggregates (domain entities) that the system manages** (受注、顧客、商品など)
+- **Domain events that occur in the system** (〜が作成された、〜が完了した、など)
+- **Policies that react to events** (イベント発生時の自動処理ルール)
 
 **Examples of Good Feature Definitions**:
 - ✅ Specific: "Create, Edit, and Delete Orders"
@@ -76,9 +80,24 @@ actor:
   - name: Actor Name (Concise name representing the role)
     description: Detailed description of responsibilities
 
+external_system:
+  - name: External System Name
+    description: What this external system does and how it integrates
+
+aggregate:
+  - Aggregate Name 1
+  - Aggregate Name 2
+
 feature:
   - name: Feature Name (Concise and specific)
     description: Detailed description (What, Why, Who)
+    events:
+      - Event Name 1 (past tense: 〜が作成された, 〜が完了した)
+      - Event Name 2
+    policy:
+      - name: Policy Name
+        trigger: Event that triggers this policy
+        action: What happens when triggered
     scenarios:
       - name: Scenario Name (e.g., Success flow, Error flow)
         precondition: Precondition
@@ -96,6 +115,14 @@ feature:
 -   `description`: Explain the purpose of the feature, target users, and the value it realizes (approx. 2-3 sentences).
 -   `scenarios`: Include basic scenarios (success paths) derived from the README.
 -   Arrange features in a logical order (e.g., Data Registration → Editing → Deletion → Display).
+
+**Event Storming Elements**:
+-   `external_system`: List external services the system integrates with (e.g., payment gateway, email service, authentication provider). Include only systems explicitly mentioned or clearly implied in the README.
+-   `aggregate`: List core domain entities as simple names. These represent the main "things" the system manages (e.g., 受注, 顧客, 商品, 在庫).
+-   `events`: List domain events in past tense (〜された form). Events represent significant state changes in the system.
+-   `policy`: Define automatic reactions to events. Each policy has:
+    - `trigger`: The event that initiates the policy
+    - `action`: What the system does in response
 
 **Scenario Design Guidelines**:
 シナリオは単純な操作ではなく、アクターが目的を達成するための**一連のフロー**として設計してください。
@@ -216,9 +243,30 @@ actor:
   - name: 倉庫管理者
     description: 受注処理と在庫管理を担当する責任者。顧客からの注文を効率的に処理し、正確な出荷を実現することが主な目的。
 
+external_system:
+  - name: メール配信サービス
+    description: 顧客への注文確認・出荷通知などのメールを自動送信する外部サービス
+
+aggregate:
+  - 受注
+  - 顧客
+  - 商品
+  - 在庫
+
 feature:
   - name: 受注の作成・編集・キャンセル
     description: 倉庫管理者が顧客からの注文を登録・変更・取消できる。手動入力と一括インポートの両方に対応し、日々の受注業務を効率化する。
+    events:
+      - 受注が作成された
+      - 受注が編集された
+      - 受注がキャンセルされた
+    policy:
+      - name: 在庫引当ポリシー
+        trigger: 受注が作成された
+        action: 注文商品の在庫を自動的に引き当てる
+      - name: 在庫戻しポリシー
+        trigger: 受注がキャンセルされた
+        action: 引当済み在庫を解放して在庫数を戻す
     scenarios:
       - name: 電話受注から出荷指示までのフロー
         precondition: 倉庫管理者がログイン済み、在庫データが最新の状態
@@ -239,20 +287,19 @@ feature:
           - 在庫の再引当てを実行する
           - 変更後の金額と納期を顧客に連絡する
         postcondition: 受注内容が更新され、在庫引当てが再計算される
-  - name: 受注の検索・絞り込み
-    description: 日付、顧客名、ステータスなどの条件で受注を検索・フィルタリングし、必要な受注情報に素早くアクセスできる。
-    scenarios:
-      - name: 当日出荷分の確認と優先順位付けフロー
-        precondition: 当日出荷予定の受注が存在する
-        steps:
-          - 受注一覧画面を開く
-          - 出荷予定日を「本日」、ステータスを「未出荷」でフィルタリングする
-          - 納期優先度でソートして緊急案件を特定する
-          - 各受注の在庫引当て状況を確認する
-          - 出荷準備の優先順位リストを作成する
-        postcondition: 当日出荷すべき受注が優先順位付きで一覧表示される
+
   - name: 顧客への自動通知
-    description: 受注確定時、出荷時、配送完了時などのタイミングで顧客にメールまたはSMSを自動送信し、顧客の安心感を高める。
+    description: 受注確定時、出荷時、配送完了時などのタイミングで顧客にメールを自動送信し、顧客の安心感を高める。
+    events:
+      - 通知メールが送信された
+      - 通知送信が失敗した
+    policy:
+      - name: 受注確定通知ポリシー
+        trigger: 受注が作成された
+        action: 顧客に注文確認メールを送信する
+      - name: 出荷完了通知ポリシー
+        trigger: 出荷が完了した
+        action: 追跡番号付きの発送完了メールを顧客に送信する
     scenarios:
       - name: 受注から配送完了までの通知フロー
         precondition: 顧客がメール通知を希望している
