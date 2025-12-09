@@ -106,6 +106,16 @@
                     <ul class="feature-list">
                         <li>要件定義の自動生成</li>
                         <li>モックアップの自動生成</li>
+                        <li>ユーザーストーリーや画面設計書など付随資料を自動生成</li>
+
+                    </ul>
+                </div>
+                <div class="feature-card glass-card animate-on-scroll">
+                    <div class="feature-icon">👥</div>
+                    <h3 class="feature-title">ユーザー視点での評価</h3>
+                    <ul class="feature-list">
+                        <li>ユーザーからのフィードバックを収集して反映</li>
+                        <li>要件やモックアップへの変更を同時に反映し、整合性を自動確保</li>
                     </ul>
                 </div>
                 <div class="feature-card glass-card animate-on-scroll">
@@ -116,24 +126,17 @@
                         <li>検証項目を自動で反映</li>
                     </ul>
                 </div>
-                <div class="feature-card glass-card animate-on-scroll">
-                    <div class="feature-icon">👥</div>
-                    <h3 class="feature-title">ユーザー視点での評価</h3>
-                    <ul class="feature-list">
-                        <li>ユーザーからのフィードバックを収集して反映</li>
-                        <li>要件とモックアップの整合性を維持</li>
-                    </ul>
-                </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Workflow Section -->
+    <!-- Workflow Section: モックアップの生成 -->
     <section id="workflow" class="workflow">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">シンプルなワークフロー</h2>
-                <p class="section-description">5ステップで要件からフィードバック反映まで</p>
+                <h2 class="section-title">モックアップの生成</h2>
+                <p class="section-description">3ステップで要件からモックアップまで</p>
             </div>
             <div class="workflow-steps">
                 <div class="workflow-step animate-on-scroll">
@@ -295,8 +298,20 @@ feature:
                         </details>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section: フィードバックの反映 -->
+    <section id="feedback" class="workflow">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">フィードバックの反映</h2>
+                <p class="section-description">2ステップでフィードバックを仕様とモックアップに反映</p>
+            </div>
+            <div class="workflow-steps">
                 <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">04</div>
+                    <div class="step-number">01</div>
                     <div class="step-content">
                         <h3 class="step-title">フィードバック</h3>
                         <p class="step-description">要件やモックアップに対するフィードバックを登録</p>
@@ -321,7 +336,7 @@ feature:
                     </div>
                 </div>
                 <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">05</div>
+                    <div class="step-number">02</div>
                     <div class="step-content">
                         <h3 class="step-title">フィードバックの反映</h3>
                         <p class="step-description">フィードバックを付随する各種仕様書に反映して、モックアップを再生成</p>
@@ -342,6 +357,89 @@ feature:
                                 <img src="facility_after.png" alt="フィードバック反映後のモックアップ" class="preview-image">
                             </div>
                         </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Workflow Section: 要件の整合性検証 -->
+    <section id="check" class="workflow">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">要件の整合性検証</h2>
+                <p class="section-description">2ステップで要件の整合性をチェックして反映</p>
+            </div>
+            <div class="workflow-steps">
+                <div class="workflow-step animate-on-scroll">
+                    <div class="step-number">01</div>
+                    <div class="step-content">
+                        <h3 class="step-title">整合性チェック</h3>
+                        <p class="step-description">要件の整合性を検証し、チェック項目（check.md）を生成</p>
+                        <div class="code-block">
+                            <code>/teamkit:check YourFeature</code>
+                            <button class="copy-btn" aria-label="コピー">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                </svg>
+                            </button>
+                        </div>
+                        <small class="step-description">生成されたcheck.mdのTODO項目に「o」をつけて、反映したい項目を選択します</small>
+                        <details class="collapsible-code">
+                            <summary>生成される check.md の例を見る</summary>
+                            <div class="code-block">
+                                <pre># TODO
+- [ ] 1. エラー系シナリオの追加
+- [ ] 2. 参照（詳細表示）シナリオの追加
+- [ ] 3. 他のアクターによる参照権限の明確化
+
+# Summary
+## 1. エラー系シナリオの追加
+- Target: 全てのfeature
+- Issue: 正常系（Happy Path）のみ記述されており、入力エラーや業務ルール違反時の挙動が定義されていない。
+- Next action: 必須項目未入力、重複登録、削除時の依存データ存在エラーなどのシナリオを追加する。
+- Notes: 特に削除時のチェックは重要。
+
+## 2. 参照（詳細表示）シナリオの追加
+- Target: 全てのfeature
+- Issue: 検索後に直接「更新」や「削除」に進むフローとなっているが、通常は詳細確認画面を挟むことが多い。
+- Next action: 「施設情報の詳細表示」などのシナリオを追加し、編集権限がないユーザーでも閲覧できるフローを検討する。
+
+## 3. 他のアクターによる参照権限の明確化
+- Target: actor, precondition
+- Issue: 施設管理者の操作は明記されているが、フロントスタッフや予約管理担当者が施設情報を参照できるか不明確。
+- Next action: 参照専用のシナリオを追加し、適切なprecondition（権限）を設定する。</pre>
+                                <button class="copy-btn" aria-label="コピー">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                            stroke-width="1.5" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                <div class="workflow-step animate-on-scroll">
+                    <div class="step-number">02</div>
+                    <div class="step-content">
+                        <h3 class="step-title">要件への反映</h3>
+                        <p class="step-description">選択したチェック項目を要件に反映</p>
+                        <div class="code-block">
+                            <code>/teamkit:update-feature YourFeature</code>
+                            <button class="copy-btn" aria-label="コピー">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
+                                        stroke-width="1.5" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
