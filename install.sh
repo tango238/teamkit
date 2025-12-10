@@ -129,6 +129,7 @@ COMMAND_FILES=(
     "generate-ui.md"
     "generate-usecase.md"
     "get-step-info.md"
+    "show-event.md"
     "update-feature.md"
     "update-status.md"
 )
