@@ -114,6 +114,7 @@ Each screen in the YAML list `view` must follow this structure:
 ```yaml
 view:
   - name: "Screen Name (Japanese)"
+    file: "screen_name.html"
     actor: "Actor Name"
     purpose: "Purpose (Japanese)"
 
