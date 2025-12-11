@@ -30,9 +30,6 @@ allowed-tools:
 
 # Execution
 
-## Prerequisites
-Verify `{{baseDir}}/{{specDir}}/status.json` and `{{baseDir}}/{{specDir}}/feature.yml` exist. If not, display error and exit.
-
 ## ⚠️ CRITICAL: Execution Model
 
 **Problem**: When using SlashCommand to call sub-commands (like `/teamkit:get-step-info`), the execution context is lost after the sub-command returns, causing the workflow to stop.
@@ -45,13 +42,22 @@ Verify `{{baseDir}}/{{specDir}}/status.json` and `{{baseDir}}/{{specDir}}/featur
 1. Call each SlashCommand in sequence
 2. After each SlashCommand completes (you will see its output), IMMEDIATELY call the next one
 3. Do NOT stop to display results or ask questions
-4. Continue until all 5 commands are complete
+4. Continue until all commands are complete (up to 6 if feature.yml needs creation)
 
 ---
 
 ## Step-by-Step Execution
 
-You will execute exactly 5 SlashCommand calls. After each one completes, proceed to the next.
+You will execute up to 6 SlashCommand calls. After each one completes, proceed to the next.
+
+### Step 0: Create Feature (if needed)
+Check if `{{baseDir}}/{{specDir}}/feature.yml` exists.
+- If it **does NOT exist**, run:
+```
+/teamkit:create-feature {{specDir}}
+```
+When this command finishes (feature.yml is saved), IMMEDIATELY proceed to Step 1.
+- If it **already exists**, skip this step and proceed directly to Step 1.
 
 ### Step 1: Generate Story
 ```

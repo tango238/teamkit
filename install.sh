@@ -132,6 +132,9 @@ COMMAND_FILES=(
     "show-event.md"
     "update-feature.md"
     "update-status.md"
+    "create-app.md"
+    "design-app.md"
+    "plan-app.md"
 )
 
 # 既存ファイルの上書き確認関数
