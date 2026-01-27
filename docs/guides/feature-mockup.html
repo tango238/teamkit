@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>機能単位のモックアップ生成 - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link"
+                            >ドキュメント</a
+                        >
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a
+                            href="https://github.com/tango238/teamkit"
+                            class="btn btn-secondary"
+                            target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link"
+                            >はじめに</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a
+                            href="feature-mockup.html"
+                            class="sidebar-link active"
+                            >機能単位のモック生成</a
+                        >
+                        <a href="app-mockup.html" class="sidebar-link"
+                            >アプリ全体のモック生成</a
+                        >
+                        <a href="feedback-and-check.html" class="sidebar-link"
+                            >フィードバックとチェック</a
+                        >
+                        <a href="event-storming.html" class="sidebar-link"
+                            >イベントストーミング</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link"
+                            >コマンド一覧</a
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text"
+                            >機能単位のモックアップ生成</span
+                        >
+                    </h1>
+                    <p class="doc-lead">
+                        機能（Feature）単位でREADME.mdから仕様書とHTMLモックアップを一括生成するワークフローです。
+                    </p>
+
+                    <h2>ワークフロー概要</h2>
+                    <pre class="flow-diagram">README.md
+  │
+  ▼
+create-feature ─→ feature.yml + status.json
+  │
+  ├─→ check ─→ check.md（整合性チェック）
+  │     │
+  │     ▼
+  │   update-feature ─→ feature.yml 更新（[o] 付きTODOを適用）
+  │
+  ▼
+create-mock（以下を自動的に順次実行）
+  ├─ generate-story      → story.yml
+  ├─ generate-usecase    → usecase.yml
+  ├─ generate-ui         → ui.yml
+  ├─ generate-screenflow → screenflow.md
+  └─ generate-mock       → mock/*.html
+  │
+  ▼
+モックアップを確認
+  │
+  ├─→ feedback ─→ feedback.md（フィードバックを記録）
+  │     │
+  │     ▼
+  │   apply-feedback ─→ 全仕様ファイルに反映 → モック再生成
+  │
+  ▼
+完了</pre>
+
+                    <h2>ステップ1: 要件定義（README.md）</h2>
+                    <p>
+                        <code>specs/&lt;feature-name&gt;/README.md</code>
+                        に要件を記述します。以下の項目を含めると、質の高い仕様書が生成されます。
+                    </p>
+                    <ul>
+                        <li><strong>背景</strong>: なぜこの機能が必要か</li>
+                        <li>
+                            <strong>目的</strong>:
+                            達成したいこと（箇条書き推奨）
+                        </li>
+                        <li>
+                            <strong>主要アクター</strong>: 誰がこの機能を使うか
+                        </li>
+                        <li><strong>業務概要</strong>: 業務の全体像</li>
+                        <li><strong>要件</strong>: アクター別の具体的な要件</li>
+                    </ul>
+
+                    <h2>ステップ2: feature.yml の生成</h2>
+                    <pre><code>/teamkit:create-feature YourFeature</code></pre>
+                    <p>
+                        README.mdから以下の要素を抽出し、<code
+                            >feature.yml</code
+                        >
+                        を生成します。
+                    </p>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>要素</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>actor</code></td>
+                                <td>アクター（利用者・役割）</td>
+                            </tr>
+                            <tr>
+                                <td><code>external_system</code></td>
+                                <td>外部システム連携</td>
+                            </tr>
+                            <tr>
+                                <td><code>aggregate</code></td>
+                                <td>集約（エンティティの状態管理単位）</td>
+                            </tr>
+                            <tr>
+                                <td><code>feature</code></td>
+                                <td>
+                                    機能定義（イベント・ポリシー・シナリオを含む）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        同時に
+                        <code>status.json</code>
+                        が作成され、各ステップのバージョンが管理されます。
+                    </p>
+
+                    <h2>ステップ3: モックアップの一括生成</h2>
+                    <pre><code>/teamkit:create-mock YourFeature</code></pre>
+                    <p>
+                        <code>create-mock</code>
+                        は以下の5つのコマンドを自動的に順次実行します。
+                    </p>
+
+                    <h3>3-1. generate-story → story.yml</h3>
+                    <p>feature.ymlからユーザーストーリーを生成します。</p>
+                    <div class="info-box">
+                        <p>
+                            <strong>ストーリーの形式:</strong>
+                            [アクター]として、[目的]のために[機能]を利用したい
+                        </p>
+                    </div>
+                    <p>
+                        各ストーリーには元のfeature.ymlへのトラッキング情報が付与されます。
+                    </p>
+
+                    <h3>3-2. generate-usecase → usecase.yml</h3>
+                    <p>
+                        ストーリーからロバストネス分析に基づくユースケースを生成します。
+                    </p>
+                    <div class="info-box">
+                        <p>
+                            <strong>Actor</strong> →
+                            <strong>Boundary</strong>（画面） →
+                            <strong>Control</strong>（ロジック） →
+                            <strong>Entity</strong>（データ）
+                        </p>
+                    </div>
+
+                    <h3>3-3. generate-ui → ui.yml</h3>
+                    <p>
+                        ユースケースからUI定義を生成します。画面ごとに以下を定義します。
+                    </p>
+                    <ul>
+                        <li>入力フィールド（テキスト、セレクト、日付など）</li>
+                        <li>表示フィールド（読み取り専用情報）</li>
+                        <li>タブ、フィルター、アクション</li>
+                        <li>バリデーションルール</li>
+                        <li>関連モデル、連携情報</li>
+                    </ul>
+
+                    <h3>3-4. generate-screenflow → screenflow.md</h3>
+                    <p>
+                        ユースケースとUI定義から画面遷移図を生成します。ユーザーロール別のフロー、メインフローと代替フロー、画面間の条件分岐が含まれます。
+                    </p>
+
+                    <h3>3-5. generate-mock → mock/*.html</h3>
+                    <p>
+                        UI定義から実際のHTMLモックアップファイルを生成します。
+                    </p>
+                    <ul>
+                        <li>
+                            <code>mock/index.html</code> -
+                            機能のトップページ（画面一覧）
+                        </li>
+                        <li>
+                            <code>mock/screens.yml</code> -
+                            画面生成状況の管理ファイル
+                        </li>
+                        <li>
+                            <code>mock/&lt;screen_name&gt;.html</code> -
+                            各画面のモックアップ
+                        </li>
+                    </ul>
+
+                    <h2>生成物の確認</h2>
+                    <p>
+                        <code>specs/YourFeature/mock/index.html</code>
+                        をブラウザで開くと、生成されたすべての画面を一覧できます。各画面では、画面レイアウト、フィールド配置、入力フォーム、ボタンの遷移先、一覧画面のフィルターなどが確認できます。
+                    </p>
+
+                    <h2>フィードバックと改善</h2>
+                    <p>
+                        モックアップを確認した後、改善点があれば
+                        <a
+                            href="feedback-and-check.html"
+                            style="color: var(--color-primary)"
+                            >フィードバック機能</a
+                        >
+                        を使って仕様を修正できます。
+                    </p>
+                    <pre><code># プレビュー付きフィードバック
+/teamkit:feedback YourFeature -p "住所フィールドを分割してください"
+
+# フィードバックの適用
+/teamkit:apply-feedback YourFeature</code></pre>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feedback-and-check.html"
+                                    >フィードバックと整合性チェック</a
+                                >
+                            </li>
+                            <li>
+                                <a href="event-storming.html"
+                                    >イベントストーミング</a
+                                >
+                            </li>
+                            <li>
+                                <a href="app-mockup.html"
+                                    >アプリ全体のモックアップ生成</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

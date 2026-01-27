@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>アプリ全体のモックアップ生成 - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link">ドキュメント</a>
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-secondary" target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link">はじめに</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="feature-mockup.html" class="sidebar-link">機能単位のモック生成</a>
+                        <a href="app-mockup.html" class="sidebar-link active">アプリ全体のモック生成</a>
+                        <a href="feedback-and-check.html" class="sidebar-link">フィードバックとチェック</a>
+                        <a href="event-storming.html" class="sidebar-link">イベントストーミング</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link">コマンド一覧</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text">アプリ全体のモックアップ生成</span>
+                    </h1>
+                    <p class="doc-lead">
+                        複数の機能を統合し、ナビゲーション・レイアウト付きのアプリ全体のHTMLモックアップを生成するワークフローです。
+                    </p>
+
+                    <h2>前提条件</h2>
+                    <p>各機能のモックアップが先に生成されている必要があります。</p>
+                    <pre><code># 各機能のモックアップを先に生成
+/teamkit:create-mock FacilityManagement
+/teamkit:create-mock ReservationManagement</code></pre>
+
+                    <h2>ワークフロー概要</h2>
+                    <pre class="flow-diagram">README.md（アプリ概要）
+  │
+  ▼
+plan-app ─→ 0_navigation.yml
+  │
+  ▼
+design-app ─→ 1_layout.yml, 1_pages.yml,
+              1_sitemap.yml, common_layout.html, css/custom.css
+  │
+  ▼
+create-app ─→ 各ページの HTML ファイル</pre>
+
+                    <h2>ステップ1: plan-app（ナビゲーション計画）</h2>
+                    <pre><code>/teamkit:plan-app</code></pre>
+                    <p>対話形式でアプリの計画を進めます。</p>
+                    <ol>
+                        <li>アプリの概要を説明する</li>
+                        <li>AIがナビゲーション構造を提案する</li>
+                        <li>内容を確認し、承認する</li>
+                    </ol>
+                    <h4>生成されるファイル</h4>
+                    <ul>
+                        <li><code>specs/app/README.md</code> - アプリの概要</li>
+                        <li>
+                            <code>specs/app/0_navigation.yml</code> -
+                            ナビゲーション定義（ヘッダー、フッター、認証ページ、メニュー項目）
+                        </li>
+                    </ul>
+
+                    <h2>ステップ2: design-app（レイアウト設計）</h2>
+                    <pre><code>/teamkit:design-app</code></pre>
+                    <p>ナビゲーション定義をもとに、アプリ全体のレイアウトを設計します。</p>
+                    <h4>処理内容</h4>
+                    <ol>
+                        <li>入力の検証（<code>0_navigation.yml</code> と <code>README.md</code> の存在確認）</li>
+                        <li>レイアウトタイプの決定（sidebar-main / header-main / centered-card）</li>
+                        <li>
+                            <code>1_pages.yml</code>
+                            の作成（ナビゲーション項目とUI定義の統合）
+                        </li>
+                        <li>
+                            <code>1_sitemap.yml</code>
+                            の生成（ナビ階層、親子関係）
+                        </li>
+                        <li><code>common_layout.html</code> の作成（TailwindCSS + カスタムCSS）</li>
+                        <li><code>css/custom.css</code> の生成</li>
+                        <li><code>version.json</code> の出力</li>
+                    </ol>
+
+                    <h4>生成されるファイル</h4>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>ファイル</th>
+                                <th>内容</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>1_layout.yml</code></td>
+                                <td>レイアウト定義</td>
+                            </tr>
+                            <tr>
+                                <td><code>1_pages.yml</code></td>
+                                <td>ページ一覧（ナビ項目とUI統合）</td>
+                            </tr>
+                            <tr>
+                                <td><code>1_sitemap.yml</code></td>
+                                <td>サイトマップ（nav_level、parent関係）</td>
+                            </tr>
+                            <tr>
+                                <td><code>common_layout.html</code></td>
+                                <td>共通HTMLテンプレート</td>
+                            </tr>
+                            <tr>
+                                <td><code>css/custom.css</code></td>
+                                <td>カスタムスタイルシート</td>
+                            </tr>
+                            <tr>
+                                <td><code>version.json</code></td>
+                                <td>バージョン情報</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>ステップ3: create-app（ページ生成）</h2>
+                    <pre><code>/teamkit:create-app</code></pre>
+                    <p>設計情報をもとに、各ページのHTMLファイルを生成します。</p>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>オプション</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>-o</code>, <code>--output</code></td>
+                                <td>
+                                    出力ディレクトリを指定（デフォルト:
+                                    <code>app</code>）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h4>特徴</h4>
+                    <ul>
+                        <li>全ページで共通のナビゲーションを維持</li>
+                        <li>ページ間のリンクは相対パス（同一ディレクトリ内）</li>
+                        <li>TailwindCSS CDN + カスタムCSSによるスタイリング</li>
+                        <li>
+                            各ページは
+                            <code>common_layout.html</code> のテンプレートに従う
+                        </li>
+                        <li>処理は中断せず、エラーが発生してもログを出力して続行</li>
+                    </ul>
+
+                    <h2>生成物の確認</h2>
+                    <p>
+                        生成されたHTMLファイルをブラウザで開くと、ナビゲーション付きのアプリ全体を確認できます。サイドバーまたはヘッダーによるページ間の移動、各ページのレイアウトとコンテンツ、レスポンシブデザインを確認できます。
+                    </p>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feature-mockup.html">機能単位のモックアップ生成</a>
+                                - 各機能のモック生成（先に実行する必要あり）
+                            </li>
+                            <li>
+                                <a href="feedback-and-check.html">フィードバックと整合性チェック</a>
+                            </li>
+                            <li><a href="../commands.html">コマンド一覧</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

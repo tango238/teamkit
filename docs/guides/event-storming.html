@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>イベントストーミング - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link"
+                            >ドキュメント</a
+                        >
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a
+                            href="https://github.com/tango238/teamkit"
+                            class="btn btn-secondary"
+                            target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link"
+                            >はじめに</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="feature-mockup.html" class="sidebar-link"
+                            >機能単位のモック生成</a
+                        >
+                        <a href="app-mockup.html" class="sidebar-link"
+                            >アプリ全体のモック生成</a
+                        >
+                        <a href="feedback-and-check.html" class="sidebar-link"
+                            >フィードバックとチェック</a
+                        >
+                        <a
+                            href="event-storming.html"
+                            class="sidebar-link active"
+                            >イベントストーミング</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link"
+                            >コマンド一覧</a
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text">イベントストーミング</span>
+                    </h1>
+                    <p class="doc-lead">
+                        <code>show-event</code>
+                        コマンドを使って、feature.ymlからイベントストーミング図（Mermaid形式）を生成できます。
+                    </p>
+
+                    <h2>イベントストーミングとは</h2>
+                    <p>
+                        イベントストーミングは、ビジネスプロセスを時系列のイベントとして可視化する手法です。ドメインの全体像を把握し、関係者間の共通理解を形成するのに役立ちます。
+                    </p>
+
+                    <h2>図の生成</h2>
+                    <pre><code>/teamkit:show-event YourFeature</code></pre>
+                    <p>
+                        <code>specs/YourFeature/eventstorming.md</code>
+                        にMermaid形式の図が生成されます。
+                    </p>
+
+                    <h2>図の要素</h2>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>要素</th>
+                                <th>色</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ピボタルイベント</td>
+                                <td>青（太枠）</td>
+                                <td>重要なマイルストーンとなるイベント</td>
+                            </tr>
+                            <tr>
+                                <td>イベント</td>
+                                <td>オレンジ</td>
+                                <td>ドメインイベント（○○が発生した）</td>
+                            </tr>
+                            <tr>
+                                <td>アクター</td>
+                                <td>黄色</td>
+                                <td>ユーザーや役割</td>
+                            </tr>
+                            <tr>
+                                <td>集約</td>
+                                <td>薄黄色</td>
+                                <td>エンティティの状態管理単位</td>
+                            </tr>
+                            <tr>
+                                <td>ポリシー</td>
+                                <td>紫</td>
+                                <td>イベントに対する自動的な反応ルール</td>
+                            </tr>
+                            <tr>
+                                <td>外部システム</td>
+                                <td>ピンク</td>
+                                <td>外部システムとの連携</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>図の形式</h2>
+                    <p>
+                        生成される図は左から右への時系列タイムラインで、ビジネスプロセスの流れを表現します。要素はタイプ別ではなく、時系列に沿って配置されます。
+                    </p>
+                    <pre><code>graph LR
+    A[アクター: 施設管理者] --> B[施設が登録された]
+    B --> C[部屋タイプが設定された]
+    C --> D[ポリシー: 自動通知]</code></pre>
+
+                    <h2>feature.yml との関係</h2>
+                    <p>
+                        <code>show-event</code> は feature.yml
+                        の以下のセクションから情報を抽出します。
+                    </p>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>feature.yml のセクション</th>
+                                <th>イベントストーミングの要素</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>actor</code></td>
+                                <td>アクター</td>
+                            </tr>
+                            <tr>
+                                <td><code>external_system</code></td>
+                                <td>外部システム</td>
+                            </tr>
+                            <tr>
+                                <td><code>aggregate</code></td>
+                                <td>集約</td>
+                            </tr>
+                            <tr>
+                                <td><code>feature[].event</code></td>
+                                <td>イベント、ピボタルイベント</td>
+                            </tr>
+                            <tr>
+                                <td><code>feature[].policy</code></td>
+                                <td>ポリシー</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>出力ファイル</h2>
+                    <p>
+                        生成される
+                        <code>eventstorming.md</code> には以下が含まれます。
+                    </p>
+                    <ul>
+                        <li>Mermaid形式の図（<code>graph LR</code>）</li>
+                        <li>凡例（各要素の色と意味）</li>
+                        <li>アノテーション（補足説明）</li>
+                    </ul>
+
+                    <h2>Mermaid図の表示方法</h2>
+
+                    <h3>GitHub</h3>
+                    <p>
+                        GitHubではMermaidコードブロックがそのままレンダリングされます。<code
+                            >eventstorming.md</code
+                        >
+                        をリポジトリにプッシュすれば、GitHub上で図を確認できます。
+                    </p>
+
+                    <h3>VS Code</h3>
+                    <p>
+                        <a
+                            href="https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid"
+                            style="color: var(--color-primary)"
+                            >Markdown Preview Mermaid Support</a
+                        >
+                        拡張機能をインストールすると、VS
+                        Codeのプレビューで図を表示できます。
+                    </p>
+
+                    <h3>Mermaid Live Editor</h3>
+                    <p>
+                        <a
+                            href="https://mermaid.live/"
+                            style="color: var(--color-primary)"
+                            >Mermaid Live Editor</a
+                        >
+                        にコードを貼り付けて、ブラウザ上で図を確認・編集できます。
+                    </p>
+
+                    <h2>活用例</h2>
+
+                    <h3>要件定義の初期段階</h3>
+                    <p>
+                        feature.yml を作成した直後に
+                        <code>show-event</code>
+                        を実行し、ビジネスプロセスの全体像を確認します。イベントの流れに不自然な点があれば、feature.yml
+                        を修正します。
+                    </p>
+
+                    <h3>ステークホルダーとの共有</h3>
+                    <p>
+                        生成されたMermaid図をドキュメントやプレゼンテーションに組み込み、ビジネスプロセスの共通理解を形成します。
+                    </p>
+
+                    <h3>設計レビュー</h3>
+                    <p>
+                        イベントストーミング図をもとに、イベントの粒度やポリシーの妥当性をレビューします。
+                    </p>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feature-mockup.html"
+                                    >機能単位のモックアップ生成</a
+                                >
+                            </li>
+                            <li><a href="../commands.html">コマンド一覧</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

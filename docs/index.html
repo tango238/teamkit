@@ -1,519 +1,276 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Team Kit - AI駆動開発における周辺業務の自動化ツール。要件定義から仕様書作成、モックアップ生成までを自動化。"
+        />
+        <meta name="keywords" content="AI, 開発ツール, 自動化, Claude, Cursor, 要件定義, モックアップ" />
+        <meta property="og:title" content="Team Kit - AI駆動開発の自動化ツール" />
+        <meta property="og:description" content="要件定義から仕様書作成、モックアップ生成までを自動化するコマンド集" />
+        <meta property="og:type" content="website" />
+        <title>Team Kit - AI駆動開発のモックアップ自動生成ツール</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Team Kit - AI駆動開発における周辺業務の自動化ツール。要件定義から仕様書作成、モックアップ生成までを自動化。">
-    <meta name="keywords" content="AI, 開発ツール, 自動化, Claude, Cursor, 要件定義, モックアップ">
-    <meta property="og:title" content="Team Kit - AI駆動開発の自動化ツール">
-    <meta property="og:description" content="要件定義から仕様書作成、モックアップ生成までを自動化するコマンド集">
-    <meta property="og:type" content="website">
-    <title>Team Kit - AI駆動開発のモックアップ自動生成ツール</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-</head>
-
-<body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-content">
-                <a href="#" class="logo">
-                    <span class="logo-icon">🛠️</span>
-                    <span class="logo-text">Team Kit</span>
-                </a>
-                <div class="nav-links">
-                    <a href="#features" class="nav-link">機能</a>
-                    <a href="#getting-started" class="nav-link">はじめる</a>
-                    <a href="#workflow" class="nav-link">使い方</a>
-                    <a href="https://github.com/yourusername/teamkit" class="btn btn-secondary"
-                        target="_blank">GitHub</a>
-                </div>
-                <button class="mobile-menu-btn" aria-label="メニュー">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-background"></div>
-        <div class="container">
-            <div class="hero-content">
-                <h1 class="hero-title animate-fade-in">
-                    <span class="gradient-text">Team Kit</span>
-                </h1>
-                <p class="hero-subtitle animate-fade-in-delay-1">
-                    AI駆動開発におけるモックアップ自動生成ツール
-                </p>
-                <p class="hero-description animate-fade-in-delay-2">
-                    Claude Code と連携して、<br>
-                    要件定義から仕様書作成、モックアップ生成までを自動化
-                </p>
-                <div class="hero-buttons animate-fade-in-delay-3">
-                    <a href="#getting-started" class="btn btn-primary btn-lg">
-                        <span>インストール</span>
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="#" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
                     </a>
-                    <a href="https://github.com/tango238/teamkit" class="btn btn-outline btn-lg" target="_blank">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z"
-                                clip-rule="evenodd" />
-                        </svg>
-                        <span>GitHubで見る</span>
-                    </a>
-                </div>
-                <div class="hero-stats animate-fade-in-delay-4">
-                    <div class="stat">
-                        <div class="stat-value">10+</div>
-                        <div class="stat-label">自動化コマンド</div>
+                    <div class="nav-links">
+                        <a href="#features" class="nav-link">主な機能</a>
+                        <a href="#getting-started" class="nav-link">インストール</a>
+                        <a href="#docs" class="nav-link">ドキュメント</a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-secondary" target="_blank"
+                            >GitHub</a
+                        >
                     </div>
-                    <div class="stat">
-                        <div class="stat-value">100%</div>
-                        <div class="stat-label">オープンソース</div>
+                    <button class="mobile-menu-btn" aria-label="メニュー">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-background"></div>
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title animate-fade-in">
+                        <span class="gradient-text">Team Kit</span>
+                    </h1>
+                    <p class="hero-subtitle animate-fade-in-delay-1">AI駆動開発におけるモックアップ自動生成ツール</p>
+                    <p class="hero-description animate-fade-in-delay-2">
+                        Claude Code と連携して、<br />
+                        要件定義から仕様書作成、モックアップ生成までを自動化
+                    </p>
+                    <div class="hero-buttons animate-fade-in-delay-3">
+                        <a href="#getting-started" class="btn btn-primary btn-lg">
+                            <span>インストール</span>
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 20 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    d="M7.5 15L12.5 10L7.5 5"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                />
+                            </svg>
+                        </a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-outline btn-lg" target="_blank">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z"
+                                    clip-rule="evenodd"
+                                />
+                            </svg>
+                            <span>GitHubで見る</span>
+                        </a>
                     </div>
-                    <div class="stat">
-                        <div class="stat-value">AI</div>
-                        <div class="stat-label">駆動開発</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">主な機能</h2>
-                <p class="section-description">AI駆動開発のワークフローを効率化する3つの柱</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card glass-card animate-on-scroll">
-                    <div class="feature-icon">🤖</div>
-                    <h3 class="feature-title">自動化されたワークフロー</h3>
-                    <ul class="feature-list">
-                        <li>要件定義の自動生成</li>
-                        <li>モックアップの自動生成</li>
-                        <li>ユーザーストーリーや画面設計書など付随資料を自動生成</li>
-
-                    </ul>
-                </div>
-                <div class="feature-card glass-card animate-on-scroll">
-                    <div class="feature-icon">👥</div>
-                    <h3 class="feature-title">ユーザー視点での評価</h3>
-                    <ul class="feature-list">
-                        <li>ユーザーからのフィードバックを収集して反映</li>
-                        <li>要件やモックアップへの変更を同時に反映し、整合性を自動確保</li>
-                    </ul>
-                </div>
-                <div class="feature-card glass-card animate-on-scroll">
-                    <div class="feature-icon">📋</div>
-                    <h3 class="feature-title">要件の整合性チェック</h3>
-                    <ul class="feature-list">
-                        <li>要件の整合性を自動検証</li>
-                        <li>検証項目を自動で反映</li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Workflow Section: モックアップの生成 -->
-    <section id="workflow" class="workflow">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">モックアップの生成</h2>
-                <p class="section-description">3ステップで要件からモックアップまで</p>
-            </div>
-            <div class="workflow-steps">
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">01</div>
-                    <div class="step-content">
-                        <h3 class="step-title">プロジェクトの初期化</h3>
-                        <p class="step-description">specsディレクトリを作成し、README.mdに要件を記述
-                            <small>(※フォーマットの指定はありません)</small>
-                        </p>
-
-                        <div class="code-block">
-                            <code>specs/YourFeature/README.md</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
+                    <div class="hero-stats animate-fade-in-delay-4">
+                        <div class="stat">
+                            <div class="stat-value">10+</div>
+                            <div class="stat-label">自動化コマンド</div>
                         </div>
-
-                        <details class="collapsible-code">
-                            <summary>README.md の例を見る</summary>
-                            <div class="code-block">
-                                <pre># 施設管理
-
-## 背景
-
-施設の運営には、施設・部屋タイプ・部屋の基本情報の管理が不可欠である。
-これらの情報は予約管理や料金設定の基盤となるため、正確かつ最新の状態を保つ必要がある。
-
-## 目的
-
-- 施設の基本情報を一元管理し、複数施設を効率的に運営できるようにする
-- 部屋タイプごとの特性を管理し、多様な宿泊ニーズに対応する
-- 各部屋の状態を適切に管理し、予約可能性や清掃対象の判定を正確に行う
-
-## 主要アクター
-
-- 施設管理者
-- 清掃スタッフ
-
-## 業務概要
-
-施設管理では、施設・部屋タイプ・部屋の登録、更新、削除、参照を行う。
-施設情報には名称、住所、チェックイン/チェックアウト時刻などが含まれ、部屋タイプには収容人数、喫煙可否が設定される。
-各部屋は部屋番号と部屋タイプに紐づけられ、状態ステータスによって予約可能性が制御される。
-
-## 要求
-
-### 施設管理者
-施設情報・部屋タイプ・部屋情報の登録・更新を行う</pre>
-                                <button class="copy-btn" aria-label="コピー">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </details>
-
-                    </div>
-                </div>
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">02</div>
-                    <div class="step-content">
-                        <h3 class="step-title">フィーチャーの作成</h3>
-                        <p class="step-description">README.mdから要件を抽出し、フィーチャー定義を生成</p>
-                        <div class="code-block">
-                            <code>/teamkit:create-feature YourFeature</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
+                        <div class="stat">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">オープンソース</div>
                         </div>
-                        <details class="collapsible-code">
-                            <summary>生成される feature.yml の例を見る</summary>
-                            <div class="code-block">
-                                <pre>actor:
-  - name: 施設管理者
-    description: 施設の運営と管理を担当する責任者。施設情報、部屋タイプ、各部屋の状態を管理し、予約システムの基盤データを維持する。
-
-feature:
-  - name: 施設情報の登録・編集
-    description: 施設管理者が新規施設を登録し、既存施設の情報を更新できる。施設名、住所、チェックイン/アウト時刻などの基本情報を一元管理する。
-    scenarios:
-      - name: 新規施設登録フロー
-        precondition: 施設管理者がログイン済み
-        steps:
-          - 施設登録画面を開く
-          - 施設名、住所、連絡先を入力する
-          - チェックイン/チェックアウト時刻を設定する
-          - 施設の特徴や設備情報を入力する
-          - 入力内容を確認し、登録を完了する
-        postcondition: 新規施設が登録され、部屋タイプの設定が可能になる
-  - name: 部屋タイプの管理
-    description: 施設ごとに部屋タイプを定義し、収容人数や喫煙可否などの特性を設定する。多様な宿泊ニーズに対応するための基盤となる。
-    scenarios:
-      - name: 部屋タイプ作成フロー
-        precondition: 施設が登録済み
-        steps:
-          - 対象施設を選択する
-          - 部屋タイプ名を入力する
-          - 収容人数（最小/最大）を設定する
-          - 喫煙可否を設定する
-          - アメニティや設備を選択する
-        postcondition: 部屋タイプが登録され、個別の部屋を紐づけ可能になる
-  - name: 部屋の状態管理
-    description: 各部屋の現在の状態を管理し、予約可能性や清掃対象の判定を正確に行う。部屋番号と部屋タイプの紐づけも行う。
-    scenarios:
-      - name: 部屋ステータス更新フロー
-        precondition: 部屋が登録済みで、清掃スタッフが清掃を完了した
-        steps:
-          - 部屋一覧画面から対象の部屋を検索する
-          - 現在のステータスを確認する
-          - ステータスを「清掃完了」に更新する
-          - 予約可能状態に変更する
-        postcondition: 部屋が予約可能な状態として表示される</pre>
-                                <button class="copy-btn" aria-label="コピー">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </details>
-                    </div>
-                </div>
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">03</div>
-                    <div class="step-content">
-                        <h3 class="step-title">モックアップの生成</h3>
-                        <p class="step-description">フィーチャーからユーザーストーリー、ユースケース、UI、画面遷移、モックアップまでを一気に自動生成</p>
-                        <div class="code-block">
-                            <code>/teamkit:create-mock YourFeature</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
-                        </div>
-                        <details class="collapsible-preview">
-                            <summary>生成されるモックアップの例を見る</summary>
-                            <div class="preview-image-container">
-                                <img src="mockup_index.png" alt="生成されたモックアップの例" class="preview-image">
-                            </div>
-                        </details>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Workflow Section: フィードバックの反映 -->
-    <section id="feedback" class="workflow">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">フィードバックの反映</h2>
-                <p class="section-description">2ステップでフィードバックを仕様とモックアップに反映</p>
-            </div>
-            <div class="workflow-steps">
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">01</div>
-                    <div class="step-content">
-                        <h3 class="step-title">フィードバック</h3>
-                        <p class="step-description">要件やモックアップに対するフィードバックを登録</p>
-                        <div class="code-block">
-                            <code>/teamkit:feedback YourFeature -p "施設の住所は「郵便番号」「都道府県」「市区町村」「番地」「建物名・部屋番号」に分けてください"</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
-                        </div>
-                        <small class="step-description">-p もしくは --previewオプションを付けると、フィードバックがモックアップに即時反映されます</small>
-                        <details class="collapsible-preview">
-                            <summary>フィードバック前のモックアップを見る</summary>
-                            <div class="preview-image-container">
-                                <img src="facility_before.png" alt="フィードバック前のモックアップ" class="preview-image">
-                            </div>
-                        </details>
-                    </div>
-                </div>
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">02</div>
-                    <div class="step-content">
-                        <h3 class="step-title">フィードバックの反映</h3>
-                        <p class="step-description">フィードバックを付随する各種仕様書に反映して、モックアップを再生成</p>
-                        <div class="code-block">
-                            <code>/teamkit:apply-feedback YourFeature</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
-                        </div>
-                        <details class="collapsible-preview">
-                            <summary>フィードバック反映後のモックアップを見る</summary>
-                            <div class="preview-image-container">
-                                <img src="facility_after.png" alt="フィードバック反映後のモックアップ" class="preview-image">
-                            </div>
-                        </details>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Workflow Section: 要件の整合性検証 -->
-    <section id="check" class="workflow">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">要件の整合性検証</h2>
-                <p class="section-description">2ステップで要件の整合性をチェックして反映</p>
-            </div>
-            <div class="workflow-steps">
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">01</div>
-                    <div class="step-content">
-                        <h3 class="step-title">整合性チェック</h3>
-                        <p class="step-description">要件の整合性を検証し、チェック項目（check.md）を生成</p>
-                        <div class="code-block">
-                            <code>/teamkit:check YourFeature</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
-                        </div>
-                        <small class="step-description">生成されたcheck.mdのTODO項目に「o」をつけて、反映したい項目を選択します</small>
-                        <details class="collapsible-code">
-                            <summary>生成される check.md の例を見る</summary>
-                            <div class="code-block">
-                                <pre># TODO
-- [ ] 1. エラー系シナリオの追加
-- [ ] 2. 参照（詳細表示）シナリオの追加
-- [ ] 3. 他のアクターによる参照権限の明確化
-
-# Summary
-## 1. エラー系シナリオの追加
-- Target: 全てのfeature
-- Issue: 正常系（Happy Path）のみ記述されており、入力エラーや業務ルール違反時の挙動が定義されていない。
-- Next action: 必須項目未入力、重複登録、削除時の依存データ存在エラーなどのシナリオを追加する。
-- Notes: 特に削除時のチェックは重要。
-
-## 2. 参照（詳細表示）シナリオの追加
-- Target: 全てのfeature
-- Issue: 検索後に直接「更新」や「削除」に進むフローとなっているが、通常は詳細確認画面を挟むことが多い。
-- Next action: 「施設情報の詳細表示」などのシナリオを追加し、編集権限がないユーザーでも閲覧できるフローを検討する。
-
-## 3. 他のアクターによる参照権限の明確化
-- Target: actor, precondition
-- Issue: 施設管理者の操作は明記されているが、フロントスタッフや予約管理担当者が施設情報を参照できるか不明確。
-- Next action: 参照専用のシナリオを追加し、適切なprecondition（権限）を設定する。</pre>
-                                <button class="copy-btn" aria-label="コピー">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                        <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                        <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                            stroke-width="1.5" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </details>
-                    </div>
-                </div>
-                <div class="workflow-step animate-on-scroll">
-                    <div class="step-number">02</div>
-                    <div class="step-content">
-                        <h3 class="step-title">要件への反映</h3>
-                        <p class="step-description">選択したチェック項目を要件に反映</p>
-                        <div class="code-block">
-                            <code>/teamkit:update-feature YourFeature</code>
-                            <button class="copy-btn" aria-label="コピー">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                    <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                        stroke-width="1.5" />
-                                </svg>
-                            </button>
+                        <div class="stat">
+                            <div class="stat-value">AI</div>
+                            <div class="stat-label">駆動開発</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Getting Started Section -->
-    <section id="getting-started" class="getting-started">
-        <div class="container">
-            <div class="getting-started-content glass-card">
-                <div class="getting-started-text">
-                    <h2 class="section-title">今すぐ始める</h2>
-                    <p class="section-description">インストールは簡単。数分でチームの開発を加速</p>
-                    <div class="install-steps">
-                        <div class="install-step">
-                            <div class="install-step-content">
-                                <div class="code-block">
-                                    <code>curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- .</code>
-                                    <button class="copy-btn" aria-label="コピー">
-                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                            <rect x="5" y="5" width="8" height="8" rx="1" stroke="currentColor"
-                                                stroke-width="1.5" />
-                                            <path d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5" stroke="currentColor"
-                                                stroke-width="1.5" />
-                                        </svg>
-                                    </button>
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">主な機能</h2>
+                    <p class="section-description">AI駆動開発のワークフローを効率化する3つの柱</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card glass-card animate-on-scroll">
+                        <div class="feature-icon">🤖</div>
+                        <h3 class="feature-title">自動化されたワークフロー</h3>
+                        <ul class="feature-list">
+                            <li>要件定義の自動生成</li>
+                            <li>モックアップの自動生成</li>
+                            <li>ユーザーストーリーや画面設計書など付随資料を自動生成</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card glass-card animate-on-scroll">
+                        <div class="feature-icon">👥</div>
+                        <h3 class="feature-title">ユーザー視点での評価</h3>
+                        <ul class="feature-list">
+                            <li>ユーザーからのフィードバックを収集して反映</li>
+                            <li>要件やモックアップへの変更を同時に反映し、整合性を自動確保</li>
+                        </ul>
+                    </div>
+                    <div class="feature-card glass-card animate-on-scroll">
+                        <div class="feature-icon">📋</div>
+                        <h3 class="feature-title">要件の整合性チェック</h3>
+                        <ul class="feature-list">
+                            <li>要件の整合性を自動検証</li>
+                            <li>検証項目を自動で反映</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Getting Started Section -->
+        <section id="getting-started" class="getting-started">
+            <div class="container">
+                <div class="getting-started-content glass-card">
+                    <div class="getting-started-text">
+                        <h2 class="section-title">インストール</h2>
+                        <p class="section-description">インストールは簡単。数分でチームの開発を加速</p>
+                        <div class="install-steps">
+                            <div class="install-step">
+                                <div class="install-step-content">
+                                    <div class="code-block">
+                                        <code
+                                            >curl -fsSL
+                                            https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s
+                                            -- .</code
+                                        >
+                                        <button class="copy-btn" aria-label="コピー">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                                <rect
+                                                    x="5"
+                                                    y="5"
+                                                    width="8"
+                                                    height="8"
+                                                    rx="1"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                />
+                                                <path
+                                                    d="M3 10.5V3.5C3 2.94772 3.44772 2.5 4 2.5H10.5"
+                                                    stroke="currentColor"
+                                                    stroke-width="1.5"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="cta-buttons">
-                        <a href="https://github.com/tango238/teamkit" class="btn btn-outline" target="_blank">
-                            GitHubで見る
-                        </a>
+                        <div class="cta-buttons">
+                            <a href="https://github.com/tango238/teamkit" class="btn btn-outline" target="_blank">
+                                GitHubで見る
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="footer-logo">
-                        <span class="logo-icon">🛠️</span>
-                        <span class="logo-text">Team Kit</span>
+        <!-- Documentation Section -->
+        <section id="docs" class="workflow">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">ドキュメント</h2>
+                    <p class="section-description">ガイドとリファレンスで使い方を詳しく学ぶ</p>
+                </div>
+                <div class="doc-hub-grid">
+                    <a href="getting-started.html" class="hub-card">
+                        <h3>はじめに</h3>
+                        <p>インストール、前提条件、クイックスタート、ディレクトリ構成の説明</p>
+                    </a>
+                    <a href="guides/feature-mockup.html" class="hub-card">
+                        <h3>機能単位のモックアップ生成</h3>
+                        <p>README.md → feature.yml → モックHTML の基本ワークフロー</p>
+                    </a>
+                    <a href="guides/app-mockup.html" class="hub-card">
+                        <h3>アプリ全体のモックアップ生成</h3>
+                        <p>plan-app → design-app → create-app の3ステップ</p>
+                    </a>
+                    <a href="guides/feedback-and-check.html" class="hub-card">
+                        <h3>フィードバックと整合性チェック</h3>
+                        <p>feedback / check コマンドによる品質管理の使い方</p>
+                    </a>
+                    <a href="guides/event-storming.html" class="hub-card">
+                        <h3>イベントストーミング</h3>
+                        <p>show-event によるMermaid形式のイベントストーミング図の生成</p>
+                    </a>
+                    <a href="commands.html" class="hub-card">
+                        <h3>コマンド一覧</h3>
+                        <p>全18コマンドのカテゴリ別リファレンス</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <div class="footer-logo">
+                            <span class="logo-icon">🛠️</span>
+                            <span class="logo-text">Team Kit</span>
+                        </div>
+                        <p class="footer-description">AI駆動開発のモックアップ自動生成ツール</p>
                     </div>
-                    <p class="footer-description">AI駆動開発の自動化ツール</p>
+                    <div class="footer-section">
+                        <h4 class="footer-title">リンク</h4>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="https://github.com/tango238/teamkit">GitHub</a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/tango238/teamkit/issues">Issues</a>
+                            </li>
+                            <li><a href="#docs">ドキュメント</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4 class="footer-title">コミュニティ</h4>
+                        <ul class="footer-links">
+                            <li>
+                                <a href="https://github.com/tango238/teamkit/discussions">ディスカッション</a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/tango238/teamkit/contributing">貢献する</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                <div class="footer-section">
-                    <h4 class="footer-title">リンク</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://github.com/tango238/teamkit">GitHub</a></li>
-                        <li><a href="https://github.com/tango238/teamkit/issues">Issues</a></li>
-                        <li><a href="https://github.com/tango238/teamkit#readme">ドキュメント</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4 class="footer-title">コミュニティ</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://github.com/tango238/teamkit/discussions">ディスカッション</a></li>
-                        <li><a href="https://github.com/tango238/teamkit/contributing">貢献する</a></li>
-                    </ul>
+                <div class="footer-bottom">
+                    <p>© 2025 Team Kit. Licensed under MIT License.</p>
                 </div>
             </div>
-            <div class="footer-bottom">
-                <p>© 2025 Team Kit. Licensed under MIT License.</p>
-            </div>
-        </div>
-    </footer>
+        </footer>
 
-    <script src="script.js"></script>
-</body>
-
+        <script src="script.js"></script>
+    </body>
 </html>

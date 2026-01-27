@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>コマンド一覧 - Team Kit</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="index.html#docs" class="nav-link"
+                            >ドキュメント</a
+                        >
+                        <a href="commands.html" class="nav-link">コマンド</a>
+                        <a
+                            href="https://github.com/tango238/teamkit"
+                            class="btn btn-secondary"
+                            target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="getting-started.html" class="sidebar-link"
+                            >はじめに</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a
+                            href="guides/feature-mockup.html"
+                            class="sidebar-link"
+                            >機能単位のモック生成</a
+                        >
+                        <a href="guides/app-mockup.html" class="sidebar-link"
+                            >アプリ全体のモック生成</a
+                        >
+                        <a
+                            href="guides/feedback-and-check.html"
+                            class="sidebar-link"
+                            >フィードバックとチェック</a
+                        >
+                        <a
+                            href="guides/event-storming.html"
+                            class="sidebar-link"
+                            >イベントストーミング</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="commands.html" class="sidebar-link active"
+                            >コマンド一覧</a
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1><span class="gradient-text">コマンド一覧</span></h1>
+                    <p class="doc-lead">
+                        Team Kit
+                        の全18コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
+                        Claude Code 上で
+                        <code>/teamkit:&lt;command-name&gt;</code>
+                        の形式で実行します。
+                    </p>
+
+                    <!-- Core Pipeline -->
+                    <h2>コア生成パイプライン</h2>
+                    <p>
+                        feature.yml から段階的に仕様書を生成するコマンド群です。
+                    </p>
+
+                    <h3>create-feature</h3>
+                    <p>
+                        README.md から機能要件を抽出し、feature.yml
+                        を生成します。
+                    </p>
+                    <pre><code>/teamkit:create-feature &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code
+                                        >specs/&lt;feature-name&gt;/README.md</code
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>feature.yml</code>,
+                                    <code>status.json</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>抽出要素</th>
+                                <td>
+                                    actor, external_system, aggregate,
+                                    feature（event, policy, scenario）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>generate-story</h3>
+                    <p>feature.yml からユーザーストーリーを生成します。</p>
+                    <pre><code>/teamkit:generate-story &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>feature.yml</code>,
+                                    <code>check.md</code>（存在する場合）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>story.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>形式</th>
+                                <td>
+                                    [アクター]として、[目的]のために[機能]を利用したい
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        <code>check.md</code> の
+                        <code>[x]</code>
+                        完了項目がある場合、その内容が優先的に反映されます。
+                    </p>
+
+                    <h3>generate-usecase</h3>
+                    <p>
+                        ストーリーからロバストネス分析に基づくユースケースを生成します。
+                    </p>
+                    <pre><code>/teamkit:generate-usecase &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>story.yml</code>,
+                                    <code>check.md</code>（存在する場合）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>usecase.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>分析手法</th>
+                                <td>Actor → Boundary → Control → Entity</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>generate-ui</h3>
+                    <p>ユースケースからUI定義を生成します。</p>
+                    <pre><code>/teamkit:generate-ui &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>story.yml</code>,
+                                    <code>usecase.yml</code>,
+                                    <code>check.md</code>（存在する場合）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>ui.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>定義内容</th>
+                                <td>
+                                    画面、入力フィールド、表示フィールド、タブ、フィルター、アクション、バリデーション
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        対応フィールドタイプ: <code>text</code>,
+                        <code>textarea</code>, <code>number</code>,
+                        <code>select</code>, <code>radio_group</code>,
+                        <code>multi_select</code>, <code>checkbox_group</code>,
+                        <code>date_picker</code>, <code>time_picker</code>,
+                        <code>duration_picker</code>,
+                        <code>duration_input</code>, <code>file_upload</code>,
+                        <code>repeater</code>
+                    </p>
+
+                    <h3>generate-screenflow</h3>
+                    <p>ユースケースとUI定義から画面遷移図を生成します。</p>
+                    <pre><code>/teamkit:generate-screenflow &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>usecase.yml</code>,
+                                    <code>ui.yml</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>screenflow.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>形式</th>
+                                <td>ASCII/テキストベースのフロー図</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>generate-mock</h3>
+                    <p>UI定義からHTMLモックアップファイルを生成します。</p>
+                    <pre><code>/teamkit:generate-mock &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td><code>ui.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>mock/index.html</code>,
+                                    <code>mock/screens.yml</code>,
+                                    <code>mock/&lt;screen&gt;.html</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    最小限のスタイリング、入力タイプの忠実な再現、画面間の遷移リンク
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        ボタンの遷移ルール:
+                        登録→一覧、削除→確認ダイアログ、新規→フォーム
+                    </p>
+
+                    <!-- Orchestration -->
+                    <h2>オーケストレーション</h2>
+
+                    <h3>create-mock</h3>
+                    <p>
+                        generate-story から generate-mock
+                        までの5ステップを自動的に順次実行します。
+                    </p>
+                    <pre><code>/teamkit:create-mock &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>実行順序</th>
+                                <td>
+                                    generate-story → generate-usecase →
+                                    generate-ui → generate-screenflow →
+                                    generate-mock
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    途中で停止せず、各ステップ完了後に次のステップへ自動進行
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        feature.yml が存在しない場合は、先に create-feature
+                        を実行します。
+                    </p>
+
+                    <!-- Quality Management -->
+                    <h2>品質管理</h2>
+
+                    <h3>check</h3>
+                    <p>
+                        feature.yml
+                        の整合性を検査し、問題点をリストアップします。
+                    </p>
+                    <pre><code>/teamkit:check &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td><code>feature.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>check.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>検査内容</th>
+                                <td>
+                                    論理的整合性、記述の曖昧さ、重複、改善提案、カバレッジ
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        YAML ファイルは変更しません。問題の報告のみを行います。
+                    </p>
+
+                    <h3>feedback</h3>
+                    <p>フィードバックを分析し、影響範囲とTODOを生成します。</p>
+                    <pre><code>/teamkit:feedback &lt;feature-name&gt; "フィードバック内容"
+/teamkit:feedback &lt;feature-name&gt; -p "フィードバック内容"</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>フィードバックコメント</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>feedback.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>-p</code>, <code>--preview</code> -
+                                    モックアップにプレビュー反映
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>apply-feedback</h3>
+                    <p>
+                        feedback.md の
+                        <code>[o]</code> マーカー付きTODOを仕様書に適用します。
+                    </p>
+                    <pre><code>/teamkit:apply-feedback &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>feedback.md</code>（<code>[o]</code>
+                                    マーカー付きTODO）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    各仕様ファイルの更新、モックHTMLの再生成
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>処理</th>
+                                <td>
+                                    バージョン更新、差分表示、承認ドキュメント作成
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>update-feature</h3>
+                    <p>
+                        check.md の <code>[o]</code> マーカー付きTODOを
+                        feature.yml に適用します。
+                    </p>
+                    <pre><code>/teamkit:update-feature &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>check.md</code>（<code>[o]</code>
+                                    マーカー付きTODO）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>feature.yml</code> の更新</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- App Generation -->
+                    <h2>アプリ全体生成</h2>
+
+                    <h3>plan-app</h3>
+                    <p>対話形式でアプリのナビゲーション構造を計画します。</p>
+                    <pre><code>/teamkit:plan-app</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>対話による機能説明</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>specs/app/README.md</code>,
+                                    <code>specs/app/0_navigation.yml</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    ヘッダー、フッター、認証ページ、メニュー項目を定義
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>design-app</h3>
+                    <p>
+                        ナビゲーション定義からアプリ全体のレイアウトを設計します。
+                    </p>
+                    <pre><code>/teamkit:design-app</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>前提</th>
+                                <td>
+                                    <code>specs/app/0_navigation.yml</code> と
+                                    <code>specs/app/README.md</code> が存在
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>1_layout.yml</code>,
+                                    <code>1_pages.yml</code>,
+                                    <code>1_sitemap.yml</code>,
+                                    <code>common_layout.html</code>,
+                                    <code>css/custom.css</code>,
+                                    <code>version.json</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>レイアウト</th>
+                                <td>
+                                    sidebar-main / header-main / centered-card
+                                    から選択
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>create-app</h3>
+                    <p>設計情報から各ページのHTMLファイルを生成します。</p>
+                    <pre><code>/teamkit:create-app
+/teamkit:create-app -o output-dir</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>前提</th>
+                                <td>design-app の成果物が存在</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>specs/app/&lt;page&gt;.html</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>-o</code>, <code>--output</code> -
+                                    出力ディレクトリ（デフォルト:
+                                    <code>app</code>）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    全ページで共通ナビゲーションを維持、エラー時も続行
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Visualization -->
+                    <h2>可視化</h2>
+
+                    <h3>show-event</h3>
+                    <p>
+                        feature.yml
+                        からイベントストーミング図（Mermaid形式）を生成します。
+                    </p>
+                    <pre><code>/teamkit:show-event &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td><code>feature.yml</code></td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>eventstorming.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>形式</th>
+                                <td>
+                                    Mermaid graph LR（左から右のタイムライン）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>要素</th>
+                                <td>
+                                    ピボタルイベント、イベント、アクター、集約、ポリシー、外部システム
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Utilities -->
+                    <h2>ユーティリティ</h2>
+
+                    <h3>get-step-info</h3>
+                    <p>
+                        現在のステップ情報（バージョン、チェックサム、更新日時）を表示します。
+                    </p>
+                    <pre><code>/teamkit:get-step-info &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>データソース</th>
+                                <td><code>status.json</code></td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    バージョン、チェックサム、最終更新日時（日本語）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>check-status</h3>
+                    <p>バージョンの増分が正しいか検証します。</p>
+                    <pre><code>/teamkit:check-status &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>検証内容</th>
+                                <td>
+                                    バージョンが連続して増加しているか（差分
+                                    &gt; 1 はエラー）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>update-status</h3>
+                    <p>
+                        status.json
+                        のバージョン・チェックサム・更新日時を更新します。
+                    </p>
+                    <pre><code>/teamkit:update-status &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>status.json</code> の更新</td>
+                            </tr>
+                            <tr>
+                                <th>コマンド→ステップ対応</th>
+                                <td>
+                                    create-feature→feature, generate-story→story
+                                    等
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

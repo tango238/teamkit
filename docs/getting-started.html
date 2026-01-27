@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>はじめに - Team Kit</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="index.html#docs" class="nav-link">ドキュメント</a>
+                        <a href="commands.html" class="nav-link">コマンド</a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-secondary" target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="getting-started.html" class="sidebar-link active">はじめに</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="guides/feature-mockup.html" class="sidebar-link">機能単位のモック生成</a>
+                        <a href="guides/app-mockup.html" class="sidebar-link">アプリ全体のモック生成</a>
+                        <a href="guides/feedback-and-check.html" class="sidebar-link">フィードバックとチェック</a>
+                        <a href="guides/event-storming.html" class="sidebar-link">イベントストーミング</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="commands.html" class="sidebar-link">コマンド一覧</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1><span class="gradient-text">はじめに</span></h1>
+                    <p class="doc-lead">Team Kit のインストールから最初のモックアップ生成までの手順です。</p>
+
+                    <h2>前提条件</h2>
+                    <ul>
+                        <li>
+                            <a href="https://docs.anthropic.com/en/docs/claude-code" style="color: var(--color-primary)"
+                                >Claude Code</a
+                            >
+                            がインストール済みであること
+                        </li>
+                        <li>bash シェル環境</li>
+                    </ul>
+
+                    <h2>インストール</h2>
+                    <pre><code># カレントディレクトリにインストール
+curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- .</code></pre>
+                    <pre><code># 既存ファイルを確認なしで上書き
+curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- --yes .
+
+# 特定のディレクトリを指定
+curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | bash -s -- /path/to/project</code></pre>
+
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>オプション</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>--yes</code>, <code>-y</code></td>
+                                <td>既存ファイルを確認なしで上書き</td>
+                            </tr>
+                            <tr>
+                                <td><code>--force</code>, <code>-f</code></td>
+                                <td>同上</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                        インストールスクリプトは
+                        <code>.claude/commands/teamkit/</code>
+                        ディレクトリに全18コマンドファイルをコピーします。
+                    </p>
+
+                    <h2>クイックスタート</h2>
+                    <p>最短3ステップでモックアップを生成できます。</p>
+
+                    <h3>1. 要件をREADME.mdに記述</h3>
+                    <pre><code>your-project/
+└── specs/
+    └── YourFeature/
+        └── README.md</code></pre>
+                    <p>README.mdには、背景・目的・主要アクター・業務概要・要件を記述します。</p>
+                    <pre><code># 施設管理
+
+## 背景
+施設の基本情報、部屋タイプ、部屋の管理は施設運営に不可欠です。
+
+## 目的
+- 複数施設の基本情報を一元管理し、効率的な運営を実現する
+- 各部屋タイプの特性を管理し、多様な宿泊ニーズに対応する
+
+## 主要アクター
+- 施設管理者
+- 清掃スタッフ
+
+## 業務概要
+施設管理では、施設・部屋タイプ・部屋の登録・更新・削除・検索を行います。
+
+## 要件
+### 施設管理者
+施設情報、部屋タイプ、部屋情報の登録・更新</code></pre>
+
+                    <h3>2. モックアップを一括生成</h3>
+                    <pre><code>/teamkit:create-mock YourFeature</code></pre>
+                    <p>feature → story → usecase → UI → screenflow → mock HTML の5ステップを自動的に順次実行します。</p>
+                    <p>
+                        生成後、<code>specs/YourFeature/mock/index.html</code>
+                        をブラウザで開いてモックアップを確認できます。
+                    </p>
+
+                    <h2>ディレクトリ構成</h2>
+                    <p>
+                        すべての成果物は
+                        <code>specs/&lt;feature-name&gt;/</code>
+                        配下に生成されます。
+                    </p>
+                    <pre><code>specs/YourFeature/
+├── README.md          # 要件定義（手動作成）
+├── feature.yml        # 機能要件定義
+├── story.yml          # ユーザーストーリー
+├── usecase.yml        # ユースケース（ロバストネス分析）
+├── ui.yml             # UI定義（画面・フィールド・アクション）
+├── screenflow.md      # 画面遷移図
+├── status.json        # バージョン管理
+├── check.md           # 整合性チェック結果
+├── feedback.md        # フィードバック
+├── eventstorming.md   # イベントストーミング図
+└── mock/
+    ├── index.html     # モックアップ一覧
+    ├── screens.yml    # 画面生成状況
+    └── *.html         # 各画面のモックアップ</code></pre>
+
+                    <p>
+                        アプリ全体のモックアップ生成時は
+                        <code>specs/app/</code>
+                        配下にレイアウト・ナビゲーション関連ファイルが生成されます。
+                    </p>
+                    <pre><code>specs/app/
+├── README.md            # アプリの概要（手動作成）
+├── 0_navigation.yml     # ナビゲーション定義
+├── 1_layout.yml         # レイアウト定義
+├── 1_pages.yml          # ページ一覧
+├── 1_sitemap.yml        # サイトマップ
+├── common_layout.html   # 共通レイアウトテンプレート
+├── css/custom.css       # カスタムCSS
+├── version.json         # バージョン情報
+└── *.html               # 各ページのHTML</code></pre>
+
+                    <div class="related-links">
+                        <h3>次のステップ</h3>
+                        <ul>
+                            <li>
+                                <a href="guides/feature-mockup.html">機能単位のモックアップ生成</a>
+                                - 基本ワークフローの詳細
+                            </li>
+                            <li>
+                                <a href="guides/app-mockup.html">アプリ全体のモックアップ生成</a>
+                                - アプリ全体のモック生成
+                            </li>
+                            <li><a href="commands.html">コマンド一覧</a> - 全コマンドのリファレンス</li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

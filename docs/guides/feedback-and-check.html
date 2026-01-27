@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>フィードバックと整合性チェック - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link"
+                            >ドキュメント</a
+                        >
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a
+                            href="https://github.com/tango238/teamkit"
+                            class="btn btn-secondary"
+                            target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link"
+                            >はじめに</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="feature-mockup.html" class="sidebar-link"
+                            >機能単位のモック生成</a
+                        >
+                        <a href="app-mockup.html" class="sidebar-link"
+                            >アプリ全体のモック生成</a
+                        >
+                        <a
+                            href="feedback-and-check.html"
+                            class="sidebar-link active"
+                            >フィードバックとチェック</a
+                        >
+                        <a href="event-storming.html" class="sidebar-link"
+                            >イベントストーミング</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link"
+                            >コマンド一覧</a
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text"
+                            >フィードバックと整合性チェック</span
+                        >
+                    </h1>
+                    <p class="doc-lead">
+                        生成した仕様書とモックアップの品質を向上させるためのフィードバック・チェック機能の使い方です。
+                    </p>
+
+                    <h2>フィードバック機能</h2>
+
+                    <h3>フィードバックの送信</h3>
+                    <pre><code>/teamkit:feedback YourFeature "住所フィールドを都道府県と市区町村に分割してください"</code></pre>
+                    <p>
+                        AIがフィードバック内容を分析し、影響範囲（feature.yml、story.yml、usecase.yml、ui.yml、screenflow.md）を特定して、<code
+                            >feedback.md</code
+                        >
+                        に詳細とTODOリストを作成します。
+                    </p>
+
+                    <h3>プレビューモード</h3>
+                    <pre><code>/teamkit:feedback YourFeature -p "住所フィールドを分割してください"</code></pre>
+                    <p>
+                        <code>-p</code> または
+                        <code>--preview</code>
+                        オプションを付けると、フィードバック内容がすぐにモックアップに反映され、変更結果を視覚的に確認できます。プレビュー時のTODOは
+                        <code>[p]</code> マーカーで記録されます。
+                    </p>
+
+                    <h3>feedback.md の構成</h3>
+                    <pre><code>## Comment
+ユーザーからのフィードバック内容
+
+## TODO
+- [ ] 1. feature.yml: 住所フィールドを都道府県と市区町村に分割
+- [ ] 2. ui.yml: addressフィールドを2つのフィールドに変更
+
+## Summary
+影響範囲と次のアクションの概要</code></pre>
+
+                    <h3>TODOマーカーの意味</h3>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>マーカー</th>
+                                <th>意味</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>[ ]</code></td>
+                                <td>未着手</td>
+                                <td>まだ適用されていない</td>
+                            </tr>
+                            <tr>
+                                <td><code>[o]</code></td>
+                                <td>適用予定</td>
+                                <td>apply-feedback で適用対象になる</td>
+                            </tr>
+                            <tr>
+                                <td><code>[x]</code></td>
+                                <td>完了</td>
+                                <td>適用済み</td>
+                            </tr>
+                            <tr>
+                                <td><code>[~]</code></td>
+                                <td>スキップ</td>
+                                <td>適用しないことを決定</td>
+                            </tr>
+                            <tr>
+                                <td><code>[p]</code></td>
+                                <td>プレビュー</td>
+                                <td>プレビューモードで記録</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>フィードバックの適用</h3>
+                    <ol>
+                        <li>
+                            <code>feedback.md</code> を確認し、適用したいTODOに
+                            <code>[o]</code> マーカーを付ける
+                        </li>
+                        <li>Summaryの「Next action」を必要に応じて調整する</li>
+                        <li>適用コマンドを実行する</li>
+                    </ol>
+                    <pre><code>/teamkit:apply-feedback YourFeature</code></pre>
+                    <p><code>apply-feedback</code> は以下を実行します。</p>
+                    <ol>
+                        <li><code>[o]</code> マーカーのTODOを読み取る</li>
+                        <li>
+                            次のバージョン番号を決定（現在の最大バージョン + 1）
+                        </li>
+                        <li>対象ファイルごとに変更計画を作成し、差分を表示</li>
+                        <li>承認ドキュメントを作成</li>
+                        <li>各ステップの仕様書を再生成</li>
+                        <li>status.json のバージョンを更新</li>
+                        <li>モックHTMLを再生成</li>
+                    </ol>
+
+                    <h2>整合性チェック機能</h2>
+
+                    <h3>チェックの実行</h3>
+                    <pre><code>/teamkit:check YourFeature</code></pre>
+                    <p>
+                        AIが
+                        <code>feature.yml</code> を分析し、以下の観点で問題点を
+                        <code>check.md</code> にリストアップします。
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>論理的整合性</strong>: 矛盾や不整合がないか
+                        </li>
+                        <li>
+                            <strong>記述の曖昧さ</strong>: 具体性が足りない箇所
+                        </li>
+                        <li>
+                            <strong>重複</strong>:
+                            同じ内容が複数箇所に存在しないか
+                        </li>
+                        <li><strong>改善提案</strong>: より良い設計への提案</li>
+                        <li><strong>カバレッジ</strong>: 要件の漏れがないか</li>
+                    </ul>
+
+                    <h3>check.md の構成</h3>
+                    <pre><code>## TODO
+- [ ] 1. シナリオ「部屋ステータス変更」にエラーケースを追加
+- [ ] 2. 清掃スタッフ向けの通知機能を検討
+
+## Summary
+1. シナリオ「部屋ステータス変更」にエラーケースを追加
+   - Change location: feature.yml > feature[2].scenario[1]
+   - Recommended action: 具体的な変更内容の説明</code></pre>
+
+                    <h3>チェック結果の適用</h3>
+                    <ol>
+                        <li>
+                            <code>check.md</code> を確認し、適用したいTODOに
+                            <code>[o]</code> マーカーを付ける
+                        </li>
+                        <li>
+                            Summaryの「Recommended
+                            action」を必要に応じて調整する
+                        </li>
+                        <li>適用コマンドを実行する</li>
+                    </ol>
+                    <pre><code>/teamkit:update-feature YourFeature</code></pre>
+
+                    <h2>推奨ワークフロー</h2>
+                    <pre><code># 1. モックアップを生成
+/teamkit:create-mock YourFeature
+
+# 2. モックアップを確認し、フィードバック（プレビュー付き）
+/teamkit:feedback YourFeature -p "改善点のコメント"
+
+# 3. プレビューで確認後、feedback.md の TODO に [o] を付ける
+
+# 4. フィードバックを適用
+/teamkit:apply-feedback YourFeature
+
+# 5. 整合性チェック
+/teamkit:check YourFeature
+
+# 6. check.md の TODO に [o] を付ける
+
+# 7. チェック結果を適用
+/teamkit:update-feature YourFeature</code></pre>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feature-mockup.html"
+                                    >機能単位のモックアップ生成</a
+                                >
+                            </li>
+                            <li><a href="../commands.html">コマンド一覧</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
