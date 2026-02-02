@@ -135,7 +135,6 @@ COMMAND_FILES=(
     "create-app.md"
     "design-app.md"
     "plan-app.md"
-    "auto-apply.md"
 )
 
 # 既存ファイルの上書き確認関数
@@ -213,7 +212,7 @@ read -r -d '' TEAMKIT_SECTION << 'SECTION_EOF' || true
 
 ### 3. フィードバック適用
 **トリガー**: 「フィードバックを適用」「修正を反映」「変更を適用して」「フィードバックを反映」
-**アクション**: `/teamkit:auto-apply <specDir>` を実行
+**アクション**: `/teamkit:apply-feedback <specDir>` を実行
 **specDirの特定方法**:
 - プロンプトに機能名が含まれていればそれを使用
 - 不明な場合は `specs/` 配下のディレクトリを確認してユーザーに確認
@@ -263,4 +262,4 @@ echo "  - 「フィードバックを適用」 → フィードバック一括�
 echo ""
 echo -e "${BLUE}利用可能なコマンド:${NC}"
 echo "  /teamkit:create-feature, /teamkit:create-mock, /teamkit:feedback,"
-echo "  /teamkit:apply-feedback, /teamkit:auto-apply, etc."
+echo "  /teamkit:apply-feedback, /teamkit:design-app, etc."
