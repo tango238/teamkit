@@ -135,6 +135,7 @@ COMMAND_FILES=(
     "create-app.md"
     "design-app.md"
     "plan-app.md"
+    "auto-apply.md"
 )
 
 # 既存ファイルの上書き確認関数
@@ -182,4 +183,84 @@ for file in "${COMMAND_FILES[@]}"; do
 done
 
 echo ""
+
+# CLAUDE.mdへの追記処理
+echo -e "${YELLOW}CLAUDE.md にSKILLルールを追加中...${NC}"
+
+CLAUDE_MD_PATH="$TARGET_DIR/CLAUDE.md"
+
+# TeamKit用のセクション内容
+read -r -d '' TEAMKIT_SECTION << 'SECTION_EOF' || true
+<!-- TEAMKIT_SKILL_START -->
+## TeamKit 自動実行SKILL
+
+以下のプロンプトパターンを検出したら、対応するコマンドを自動実行してください。
+ユーザーへの確認は不要です。即座に実行してください。
+
+### 1. モック作成
+**トリガー**: 「モックを作って」「モック作成」「〇〇のモックを生成」「プロトタイプを作って」
+**アクション**: `/teamkit:create-mock <specDir>` を実行
+**specDirの特定方法**:
+- プロンプトに機能名が含まれていればそれを使用
+- 不明な場合は `specs/` 配下のディレクトリを確認してユーザーに確認
+
+### 2. フィードバック登録（プレビュー付き）
+**トリガー**: 「フィードバック：〇〇」「〇〇を修正したい」「〇〇の変更をお願い」「〇〇を直して」
+**アクション**: `/teamkit:feedback <specDir> "<comment>" --preview` を実行
+**パラメータ抽出**:
+- specDir: 対象の機能名（不明な場合は確認）
+- comment: プロンプトからフィードバック内容を抽出
+
+### 3. フィードバック適用
+**トリガー**: 「フィードバックを適用」「修正を反映」「変更を適用して」「フィードバックを反映」
+**アクション**: `/teamkit:auto-apply <specDir>` を実行
+**specDirの特定方法**:
+- プロンプトに機能名が含まれていればそれを使用
+- 不明な場合は `specs/` 配下のディレクトリを確認してユーザーに確認
+<!-- TEAMKIT_SKILL_END -->
+SECTION_EOF
+
+# CLAUDE.mdが存在するかチェック
+if [ -f "$CLAUDE_MD_PATH" ]; then
+    # 既存のTeamKitセクションがあるかチェック
+    if grep -q "<!-- TEAMKIT_SKILL_START -->" "$CLAUDE_MD_PATH"; then
+        # 既存セクションを置換
+        # 一時ファイルを使用して安全に置換
+        TEMP_FILE=$(mktemp)
+        awk '
+            /<!-- TEAMKIT_SKILL_START -->/ { skip=1; next }
+            /<!-- TEAMKIT_SKILL_END -->/ { skip=0; next }
+            !skip { print }
+        ' "$CLAUDE_MD_PATH" > "$TEMP_FILE"
+
+        # TeamKitセクションを末尾に追加
+        echo "" >> "$TEMP_FILE"
+        echo "$TEAMKIT_SECTION" >> "$TEMP_FILE"
+
+        mv "$TEMP_FILE" "$CLAUDE_MD_PATH"
+        echo -e "  ${GREEN}✓ 既存のTeamKitセクションを更新しました${NC}"
+    else
+        # 新規セクションを追記
+        echo "" >> "$CLAUDE_MD_PATH"
+        echo "$TEAMKIT_SECTION" >> "$CLAUDE_MD_PATH"
+        echo -e "  ${GREEN}✓ TeamKitセクションを追加しました${NC}"
+    fi
+else
+    # CLAUDE.mdを新規作成
+    echo "# Project Rules" > "$CLAUDE_MD_PATH"
+    echo "" >> "$CLAUDE_MD_PATH"
+    echo "$TEAMKIT_SECTION" >> "$CLAUDE_MD_PATH"
+    echo -e "  ${GREEN}✓ CLAUDE.md を作成しました${NC}"
+fi
+
+echo ""
 echo -e "${GREEN}完了しました！${NC}"
+echo ""
+echo -e "${BLUE}利用可能なSKILL（自然言語で自動実行）:${NC}"
+echo "  - 「モックを作って」 → モック自動生成"
+echo "  - 「フィードバック：〇〇」 → フィードバック登録（プレビュー付き）"
+echo "  - 「フィードバックを適用」 → フィードバック一括適用"
+echo ""
+echo -e "${BLUE}利用可能なコマンド:${NC}"
+echo "  /teamkit:create-feature, /teamkit:create-mock, /teamkit:feedback,"
+echo "  /teamkit:apply-feedback, /teamkit:auto-apply, etc."
