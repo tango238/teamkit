@@ -14,6 +14,17 @@ REPO_NAME="teamkit"
 BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
 
+# スクリプトのディレクトリを取得（ローカル実行判定用）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOCAL_SOURCE_DIR="$SCRIPT_DIR/.claude/commands/teamkit"
+
+# ローカルモード判定（ローカルにソースファイルが存在するか）
+if [ -d "$LOCAL_SOURCE_DIR" ]; then
+    LOCAL_MODE=true
+else
+    LOCAL_MODE=false
+fi
+
 # 引数チェック
 FORCE_OVERWRITE=false
 TARGET_DIR=""
@@ -94,24 +105,58 @@ TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
 
 echo -e "${BLUE}Team Kit コマンドのインストールを開始します${NC}"
-echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
+if [ "$LOCAL_MODE" = true ]; then
+    echo -e "${BLUE}モード: ローカル（${LOCAL_SOURCE_DIR}）${NC}"
+else
+    echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
+fi
 echo -e "${BLUE}ターゲット: $TARGET_DIR/.claude/commands/teamkit/${NC}"
 echo ""
+
+# ファイルコピー関数（ローカルモード用）
+copy_local_file() {
+    local file_path="$1"
+    local target_path="$2"
+    local source_path="$LOCAL_SOURCE_DIR/$file_path"
+
+    echo -n "  ${file_path} ... "
+
+    if [ -f "$source_path" ]; then
+        cp "$source_path" "$target_path"
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ (ファイルが見つかりません: $source_path)${NC}"
+        return 1
+    fi
+}
 
 # ダウンロード関数（リモートモード用）
 download_file() {
     local file_path="$1"
     local target_path="$2"
     local url="${BASE_URL}/.claude/commands/teamkit/${file_path}"
-    
+
     echo -n "  ${file_path} ... "
-    
+
     if curl -fsSL "$url" -o "$target_path" 2>/dev/null; then
         echo -e "${GREEN}✓${NC}"
         return 0
     else
         echo -e "${RED}✗${NC}"
         return 1
+    fi
+}
+
+# ファイル取得関数（モードに応じて切り替え）
+get_file() {
+    local file_path="$1"
+    local target_path="$2"
+
+    if [ "$LOCAL_MODE" = true ]; then
+        copy_local_file "$file_path" "$target_path"
+    else
+        download_file "$file_path" "$target_path"
     fi
 }
 
@@ -129,6 +174,7 @@ COMMAND_FILES=(
     "generate-ui.md"
     "generate-usecase.md"
     "get-step-info.md"
+    "init.md"
     "show-event.md"
     "update-feature.md"
     "update-status.md"
@@ -171,13 +217,13 @@ for file in "${COMMAND_FILES[@]}"; do
     if [ -f "$target_file" ]; then
         echo -e "${YELLOW}警告: $file は既に存在します${NC}"
         if should_overwrite "$target_file"; then
-            download_file "$file" "$target_file"
+            get_file "$file" "$target_file"
             echo -e "    ${GREEN}✓ 上書きしました${NC}"
         else
             echo -e "    ${BLUE}スキップしました${NC}"
         fi
     else
-        download_file "$file" "$target_file"
+        get_file "$file" "$target_file"
     fi
 done
 
@@ -202,7 +248,7 @@ read -r -d '' TEAMKIT_SECTION << 'SECTION_EOF' || true
 - 初めて実行する場合で `specDir` が不明な場合のみ、`specs/` 配下のディレクトリを確認してユーザーに確認する
 
 ### 1. モック作成
-**トリガー**: 「モックを作って」「モック作成」「〇〇のモックを生成」「プロトタイプを作って」
+**トリガー**: 「モックを作って」「モックを作成」「モック作成」「〇〇のモックを生成」「プロトタイプを作って」「画面を作って」「画面を作成」「画面作成」「〇〇の画面を生成」
 **アクション**: `/teamkit:create-mock <specDir>` を実行
 
 ### 2. フィードバック登録（プレビュー付き）
