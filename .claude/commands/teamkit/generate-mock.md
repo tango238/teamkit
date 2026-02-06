@@ -7,7 +7,7 @@ argument-hint: <specDir>
 # Setup
 
 1.  **Set `commandName`**: `generate-mock`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-mock <specDir>`" and **STOP** execution immediately.
 
@@ -27,15 +27,15 @@ echo "使用法: /generate-mock [specDir]"
 exit 1
 </if>
 
-if [ ! -f "specs/{{specDir}}/status.json" ] || [ ! -f "specs/{{specDir}}/workflow.yml" ]; then
+if [ ! -f ".teamkit/{{specDir}}/status.json" ] || [ ! -f ".teamkit/{{specDir}}/workflow.yml" ]; then
   echo "エラー: status.json または workflow.yml が存在しません。/generate-workflow を実行してください。"
   exit 1
 fi
 
-echo "モックHTMLを生成しています: specs/{{specDir}}/mock/"
+echo "モックHTMLを生成しています: .teamkit/{{specDir}}/mock/"
 
 # Generate Mock HTML
-$ llm_prompt context="specs/{{specDir}}/ui.yml" context="specs/{{specDir}}/screenflow.md"
+$ llm_prompt context=".teamkit/{{specDir}}/ui.yml" context=".teamkit/{{specDir}}/screenflow.md"
 
 ---
 

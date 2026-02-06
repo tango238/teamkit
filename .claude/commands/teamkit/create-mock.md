@@ -24,7 +24,7 @@ allowed-tools:
 # Setup
 
 1. **Set `commandName`**: `create-mock`
-2. **Set `baseDir`**: `specs`
+2. **Set `baseDir`**: `.teamkit`
 3. **Get `specDir`**: Read the first argument passed to the slash command.
    - If no argument is provided, display: "Error: `specDir` argument is required. Usage: `/create-mock <specDir>`" and **STOP**.
 

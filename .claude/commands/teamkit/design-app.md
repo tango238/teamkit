@@ -32,7 +32,7 @@ allowed-tools:
 # 初期変数
 
 1. **`commandName`**: `design-app`
-2. **`baseDir`**: `specs`
+2. **`baseDir`**: `.teamkit`
 3. **`outputDir`**: 引数に `-o` または `--output` オプションがあればその値、なければ `app`
 
 
@@ -42,7 +42,7 @@ allowed-tools:
 
 - **href属性**: 同一ディレクトリ内のファイル名のみを指定する
   - 例: `facility_list.html`（○）
-  - 例: `../specs/facility/mock/facility_list.html`（×）
+  - 例: `../.teamkit/facility/mock/facility_list.html`（×）
 - **CSS参照**: `css/custom.css` のみを使用する
 - **禁止**: 処理対象ディレクトリ配下の `mock/` フォルダへのリンクは使用しない
 

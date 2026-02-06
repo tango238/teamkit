@@ -12,7 +12,7 @@ argument-hint: <specDir> <comment> [-p|--preview]
 # Setup
 
 1.  **Set `commandName`**: `feedback`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: both `specDir` argument and `comment` argument are required. Usage: `/feedback <specDir> <comment> [-p|--preview]`" and **STOP** execution immediately.
 4.  **Get `comment`**: Read the second argument passed to the slash command.
@@ -164,15 +164,15 @@ TODO項目を作成する前に、以下の重複パターンをチェックす�
 **Process**:
 1. Verify arguments are provided
 2. Check for `-p` or `--preview` option
-3. Check `specs/YourFeature/status.json` exists
+3. Check `.teamkit/YourFeature/status.json` exists
 4. Analyze the feedback: "施設の削除機能が必要です"
 5. (Preview mode only) Generate preview mock HTML files first:
    - Read `mock` version from `status.json`
    - Apply feedback to affected screens
-   - Overwrite existing mock files in `specs/YourFeature/mock/`
+   - Overwrite existing mock files in `.teamkit/YourFeature/mock/`
    - Update `status.json` with preview version
 6. Verify impact across all specification files
-7. Generate or update `specs/YourFeature/feedback.md`
+7. Generate or update `.teamkit/YourFeature/feedback.md`
    - If preview mode: TODO items are marked with `[p]`
    - If normal mode: TODO items are marked with `[ ]`
 
