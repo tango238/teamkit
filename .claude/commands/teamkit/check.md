@@ -7,7 +7,7 @@ argument-hint: <specDir>
 
 # Setup
 
-1.  **Set `baseDir`**: `specs`
+1.  **Get `baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 2.  **Get `specDir`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-check-feature <specDir>`" and **STOP** execution immediately.
 

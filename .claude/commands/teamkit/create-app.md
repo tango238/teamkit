@@ -33,7 +33,7 @@ allowed-tools:
 # Setup
 
 1.  **Set `commandName`**: `create-app`
-2.  **Set `baseDir`**: `specs`
+2.  **Get `baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 3.  **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.
     -   If found, set `outputDir` to the value of the option.
     -   If not found, set `outputDir` to `app`.

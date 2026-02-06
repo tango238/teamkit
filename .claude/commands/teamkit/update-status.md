@@ -11,7 +11,7 @@ argument-hint: <specDir> <commandName> <versionNumber>
 
 # Setup
 
-1. **Set `baseDir`**: `specs`
+1. **Get `baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 2. **Get `specDir`**: Read the first argument from the slash command.
    - If no argument is provided, display error message "Error: `specDir` argument is required. Usage: `/update-status <specDir> <commandName> <versionNumber>`" and **terminate execution**.
 3. **Get `commandName`**: Read the second argument from the slash command.

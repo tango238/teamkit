@@ -50,6 +50,20 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 
 The installation script copies all command files under the `.claude/commands/teamkit` directory to the specified project directory with the same structure.
 
+## Configuration
+
+You can customize the base directory for specifications by creating a `teamkit.yml` file in the project root:
+
+```yaml
+baseDir: specs
+```
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `baseDir` | Directory where specification files are stored | `specs` |
+
+If `teamkit.yml` does not exist, the default value `specs` is used.
+
 ## Basic Usage
 
 Team Kit provides a step-by-step specification creation workflow. Each step is available as a slash command `/teamkit:*`.

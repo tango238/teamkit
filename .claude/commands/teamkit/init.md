@@ -21,7 +21,7 @@ argument-hint: <appName> [-o|--output <outputDir>]
 # Setup
 
 1. **Set `commandName`**: `init`
-2. **Set `baseDir`**: `specs`
+2. **Get `baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 3. **Get `appName`**: Read the first argument passed to the slash command.
     - If no argument is provided, display the error message: "Error: `appName` argument is required. Usage: `/teamkit:init <appName> [-o|--output <outputDir>]`" and **STOP** execution immediately.
 4. **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.

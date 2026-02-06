@@ -11,7 +11,7 @@ argument-hint: <specDir> <stepName>
 
 # Setup
 
-1. **Set `baseDir`**: `specs`
+1. **Get `baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 2. **Get `specDir`**: Read the first argument from the slash command.
    - If no argument is provided → Display error message "エラー: `specDir` 引数が必要です。使用法: `/tk-get-step-info <specDir> <stepName>`" and **STOP** execution.
 3. **Get `stepName`**: Read the second argument from the slash command.

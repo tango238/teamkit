@@ -296,6 +296,20 @@ else
     echo -e "  ${GREEN}✓ CLAUDE.md を作成しました${NC}"
 fi
 
+# teamkit.yml の生成処理
+echo -e "${YELLOW}teamkit.yml を確認中...${NC}"
+
+TEAMKIT_YML_PATH="$TARGET_DIR/teamkit.yml"
+
+if [ -f "$TEAMKIT_YML_PATH" ]; then
+    echo -e "  ${BLUE}teamkit.yml は既に存在します。スキップしました${NC}"
+else
+    cat > "$TEAMKIT_YML_PATH" << 'YML_EOF'
+baseDir: specs
+YML_EOF
+    echo -e "  ${GREEN}✓ teamkit.yml を作成しました${NC}"
+fi
+
 echo ""
 echo -e "${GREEN}完了しました！${NC}"
 echo ""

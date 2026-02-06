@@ -32,7 +32,7 @@ allowed-tools:
 # 初期変数
 
 1. **`commandName`**: `design-app`
-2. **`baseDir`**: `specs`
+2. **`baseDir`**: Read `teamkit.yml` in the project root directory. If the file exists and has a `baseDir` field, use that value. If the file does not exist or has no `baseDir` field, use `specs` as default.
 3. **`outputDir`**: 引数に `-o` または `--output` オプションがあればその値、なければ `app`
 
 
