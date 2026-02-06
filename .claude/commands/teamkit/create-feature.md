@@ -7,7 +7,7 @@ argument-hint: <specDir>
 # Setup
 
 1.  **Set `commandName`**: `create-feature`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/create-feature <specDir>`" and **STOP** execution immediately.
 

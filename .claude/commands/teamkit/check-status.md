@@ -6,7 +6,7 @@ argument-hint: <specDir> <commandName> <versionNumber>
 
 # Setup
 
-1. **Set `baseDir`**: `specs`
+1. **Set `baseDir`**: `.teamkit`
 2. **Get `specDir`**: Read the first argument from the slash command.
    - If no argument is provided, display error message "エラー: `specDir` 引数が指定されていません。使用法: `/teamkit:check-status <specDir> <commandName> <versionNumber>`" and **STOP** execution.
 3. **Get `commandName`**: Read the second argument from the slash command.

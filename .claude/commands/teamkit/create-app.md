@@ -33,7 +33,7 @@ allowed-tools:
 # Setup
 
 1.  **Set `commandName`**: `create-app`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.
     -   If found, set `outputDir` to the value of the option.
     -   If not found, set `outputDir` to `app`.
