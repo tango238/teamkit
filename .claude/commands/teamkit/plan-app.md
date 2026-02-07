@@ -20,7 +20,7 @@ allowed-tools:
 # Setup
 
 1.  **Set `commandName`**: `plan-app`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `description`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: The `description` argument is required. Usage: `/teamkit:plan-app <description> [-o|--output <outputDir>]`" and **STOP** execution immediately.
 4.  **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.

@@ -7,7 +7,7 @@ argument-hint: <specDir>
 
 # Setup
 
-1.  **Set `baseDir`**: `specs`
+1.  **Set `baseDir`**: `.teamkit`
 2.  **Get `specDir`**: Read the first argument passed to the slash command.
     -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/tk-check-feature <specDir>`" and **STOP** execution immediately.
 
