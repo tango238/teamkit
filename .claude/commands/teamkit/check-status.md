@@ -41,7 +41,6 @@ If a gap is detected (difference > 1), display an error and stop execution.
     |---------------------|--------------------|
     | create-feature      | feature            |
     | update-feature      | feature            |
-    | generate-story      | story              |
     | generate-usecase    | usecase            |
     | generate-ui         | ui                 |
     | generate-screenflow | screenflow         |
@@ -74,7 +73,7 @@ If a gap is detected (difference > 1), display an error and stop execution.
 ### Example 1: Normal Increment
 **Input**:
 Current Version: 1
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 2`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 2`
 
 **Output**:
 ```
@@ -84,7 +83,7 @@ Command: `/teamkit:check-status 1_FacilityManagement generate-story 2`
 ### Example 2: Gap Detected (Error)
 **Input**:
 Current Version: 1
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 3`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 3`
 
 **Output**:
 ```
@@ -94,7 +93,7 @@ Command: `/teamkit:check-status 1_FacilityManagement generate-story 3`
 ### Example 3: First Run (Current=0)
 **Input**:
 Current Version: 0 (Not in status.json)
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 1`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 1`
 
 **Output**:
 ```

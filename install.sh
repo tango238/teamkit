@@ -170,7 +170,6 @@ COMMAND_FILES=(
     "feedback.md"
     "generate-mock.md"
     "generate-screenflow.md"
-    "generate-story.md"
     "generate-ui.md"
     "generate-usecase.md"
     "get-step-info.md"

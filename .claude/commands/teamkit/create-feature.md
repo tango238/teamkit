@@ -173,13 +173,6 @@ feature:
             }
         },
         {
-            "story": {
-                "version": 0,
-                "checksum": "",
-                "last_modified": ""
-            }
-        },
-        {
             "usecase": {
                 "version": 0,
                 "checksum": "",

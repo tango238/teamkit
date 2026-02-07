@@ -130,39 +130,9 @@
                         </tbody>
                     </table>
 
-                    <h3>generate-story</h3>
-                    <p>feature.yml からユーザーストーリーを生成します。</p>
-                    <pre><code>/teamkit:generate-story &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td>
-                                    <code>feature.yml</code>,
-                                    <code>check.md</code>（存在する場合）
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>story.yml</code></td>
-                            </tr>
-                            <tr>
-                                <th>形式</th>
-                                <td>
-                                    [アクター]として、[目的]のために[機能]を利用したい
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        <code>check.md</code> の
-                        <code>[x]</code>
-                        完了項目がある場合、その内容が優先的に反映されます。
-                    </p>
-
                     <h3>generate-usecase</h3>
                     <p>
-                        ストーリーからロバストネス分析に基づくユースケースを生成します。
+                        feature.ymlからロバストネス分析に基づくユースケースを生成します。
                     </p>
                     <pre><code>/teamkit:generate-usecase &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
@@ -170,7 +140,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>story.yml</code>,
+                                    <code>feature.yml</code>,
                                     <code>check.md</code>（存在する場合）
                                 </td>
                             </tr>
@@ -193,7 +163,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>story.yml</code>,
+                                    <code>feature.yml</code>,
                                     <code>usecase.yml</code>,
                                     <code>check.md</code>（存在する場合）
                                 </td>
@@ -279,8 +249,8 @@
 
                     <h3>create-mock</h3>
                     <p>
-                        generate-story から generate-mock
-                        までの5ステップを自動的に順次実行します。
+                        generate-usecase から generate-mock
+                        までの4ステップを自動的に順次実行します。
                     </p>
                     <pre><code>/teamkit:create-mock &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
@@ -288,7 +258,7 @@
                             <tr>
                                 <th>実行順序</th>
                                 <td>
-                                    generate-story → generate-usecase →
+                                    generate-usecase →
                                     generate-ui → generate-screenflow →
                                     generate-mock
                                 </td>
@@ -596,7 +566,7 @@
                             <tr>
                                 <th>コマンド→ステップ対応</th>
                                 <td>
-                                    create-feature→feature, generate-story→story
+                                    create-feature→feature, generate-usecase→usecase
                                     等
                                 </td>
                             </tr>

@@ -1,5 +1,5 @@
 ---
-description: Generate UI definition from use cases and stories
+description: Generate UI definition from use cases and features
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
@@ -54,7 +54,7 @@ fi
    - Otherwise → Continue execution
 
 ### 4. Read input files
-1. Read `{{baseDir}}/{{specDir}}/story.yml`
+1. Read `{{baseDir}}/{{specDir}}/feature.yml`
 2. Read `{{baseDir}}/{{specDir}}/usecase.yml`
 3. Read `{{baseDir}}/{{specDir}}/check.md` (check for `[x]` items)
 
@@ -86,7 +86,7 @@ You are an expert UI/UX designer and System Architect.
 Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` based on the following inputs:
 
 - `{{baseDir}}/{{specDir}}/check.md`: Checklist containing status and specific instructions.
-- `{{baseDir}}/{{specDir}}/story.yml`: User stories defining value and acceptance criteria.
+- `{{baseDir}}/{{specDir}}/feature.yml`: Feature definitions including actors, scenarios, and acceptance criteria.
 - `{{baseDir}}/{{specDir}}/usecase.yml`: Use cases defining interactions and steps.
 
 # Task
@@ -215,7 +215,7 @@ common_components:
 ```
 
 ## 6. Validations
-Extract business rules and validations from stories and use cases.
+Extract business rules and validations from features and use cases.
 ```yaml
 validations:
   - field: "Field Name"

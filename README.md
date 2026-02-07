@@ -8,7 +8,6 @@ Team Kit is a collection of commands that works with AI editors like Claude to a
 
 ### 🤖 Automated Workflows
 - Automated generation of requirements definitions
-- Creation of user stories
 - Extraction of use cases
 - Generation of UI definitions
 - Creation of screen flow diagrams
@@ -189,7 +188,6 @@ your-project/
 │   └── commands/
 │       └── teamkit/            # Team Kit commands
 │           ├── create-feature.md
-│           ├── generate-story.md
 │           ├── generate-usecase.md
 │           ├── generate-ui.md
 │           ├── generate-screenflow.md
@@ -207,7 +205,6 @@ your-project/
     └── <feature-name>/
         ├── README.md          # Requirements definition
         ├── feature.yml        # Functional requirements definition
-        ├── story.yml          # User stories
         ├── usecase.yml        # Use cases
         ├── ui.yml             # UI definition
         ├── screenflow.md      # Screen flow diagram

@@ -1,5 +1,5 @@
 ---
-description: Generate use cases from stories and check list
+description: Generate use cases from features and check list
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
@@ -27,8 +27,8 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract use cases from `{{baseDir}}/{{specDir}}/story.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
-Ensure all stories in `story.yml` are covered (Tracking is mandatory).
+Extract use cases from `{{baseDir}}/{{specDir}}/feature.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
+Ensure all features and scenarios in `feature.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
@@ -44,7 +44,7 @@ Ensure all stories in `story.yml` are covered (Tracking is mandatory).
 ### 2. Check Status (Direct Read - No SlashCommand)
 
 1. Read `{{baseDir}}/{{specDir}}/status.json`
-2. Extract `version` from the `story` step in the `steps` array
+2. Extract `version` from the `feature` step in the `steps` array
 3. Set this as `{{targetVersion}}`
 4. Extract `version` from the `usecase` step - this is `{{currentVersion}}`
 5. **Validation**:
@@ -54,7 +54,7 @@ Ensure all stories in `story.yml` are covered (Tracking is mandatory).
 
 ### 3. Read Input Files
 Read the following files and understand their content:
--   `{{baseDir}}/{{specDir}}/story.yml`: List of user stories
+-   `{{baseDir}}/{{specDir}}/feature.yml`: Feature definitions (actors, features, scenarios)
 -   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
 
 ### 4. Use Case Creation Policy (Robustness Analysis)
@@ -83,11 +83,11 @@ Generate the content for `usecase.yml` following the format below.
 usecases:
   - usecase:
     name: [Use Case Name]
-    stories:
-      - [Related User Story 1]
-      - [Related User Story 2]
+    features:
+      - [Related Feature/Scenario 1]
+      - [Related Feature/Scenario 2]
     trackings:
-     - "story.yml:[Line] - [Summary]"
+     - "feature.yml:[Line] - [Summary]"
      - "check.md:[Line] - [Summary]"
     actor: 
       name: "[Actor Name]" 
@@ -116,7 +116,7 @@ usecases:
 ```
 
 **Rules**:
--   **`trackings` is MANDATORY**. You must explicitly state which line in `story.yml` (and `check.md` if applicable) is being covered.
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `feature.yml` (and `check.md` if applicable) is being covered.
 -   Use `-->` for arrows in steps.
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.
@@ -125,9 +125,9 @@ usecases:
 ### 6. Verification (Self-Correction)
 
 **After generating the initial list of use cases, perform a check:**
-1.  Review `story.yml` and ensure **EVERY** story is referenced in the `trackings` of at least one use case.
-2.  If any story is missing, create an additional use case to cover it.
-3.  Ensure no "orphan" stories are left behind.
+1.  Review `feature.yml` and ensure **EVERY** feature and scenario is referenced in the `trackings` of at least one use case.
+2.  If any feature or scenario is missing, create an additional use case to cover it.
+3.  Ensure no "orphan" features or scenarios are left behind.
 
 ### 7. File Saving
 - **Determine Output Filename**:
@@ -156,12 +156,23 @@ usecases:
 
 ## Execution Example
 
-### Input Example (story.yml)
+### Input Example (feature.yml)
 ```yaml
-stories:
-  - feature: 契約管理
-    actor: ホスト
-    story: サービスを利用開始するために、契約を申し込みたい
+actor:
+  - name: ホスト
+    description: スペース掲載者
+
+feature:
+  - name: 契約管理
+    description: サービスを利用開始するための契約申し込み機能
+    scenarios:
+      - name: サービス契約申し込みフロー
+        precondition: ホストがサービス利用を希望している
+        steps:
+          - サービス契約画面から基本情報を入力する
+          - 入力内容を確認し送信する
+          - アカウントが作成される
+        postcondition: 契約が完了し、管理画面へのログインアカウントが発行される
 ```
 
 ### Output Example (usecase.yml)
@@ -169,10 +180,10 @@ stories:
 usecases:
   - usecase:
     name: サービス契約の申し込みと管理アカウント作成
-    stories:
-      - ホストとして、Spotlyサービスを利用開始するために、サービス契約を申し込み管理アカウントを作成したい
+    features:
+      - 契約管理 - サービス契約申し込みフロー
     trackings:
-     - "story.yml:5 - サービス契約を申し込み管理アカウントを作成"
+     - "feature.yml:5 - サービス契約を申し込み管理アカウントを作成"
     actor: 
       name: "ホスト\n(スペース掲載者)" 
       as: Host1
