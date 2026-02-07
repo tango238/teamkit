@@ -20,10 +20,10 @@ argument-hint: <appName> [-o|--output <outputDir>]
 
 # Setup
 
-1. **Set `commandName`**: `init`
+1. **Set `commandName`**: `app-init`
 2. **Set `baseDir`**: `specs`
 3. **Get `appName`**: Read the first argument passed to the slash command.
-    - If no argument is provided, display the error message: "Error: `appName` argument is required. Usage: `/teamkit:init <appName> [-o|--output <outputDir>]`" and **STOP** execution immediately.
+    - If no argument is provided, display the error message: "Error: `appName` argument is required. Usage: `/teamkit:app-init <appName> [-o|--output <outputDir>]`" and **STOP** execution immediately.
 4. **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.
     - If found, set `outputDir` to the value of the option.
     - If not found, set `outputDir` to `{{baseDir}}`.
