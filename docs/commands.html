@@ -94,15 +94,15 @@
                     <!-- Core Pipeline -->
                     <h2>コア生成パイプライン</h2>
                     <p>
-                        feature.yml から段階的に仕様書を生成するコマンド群です。
+                        workflow.yml から段階的に仕様書を生成するコマンド群です。
                     </p>
 
-                    <h3>create-feature</h3>
+                    <h3>generate-workflow</h3>
                     <p>
-                        README.md から機能要件を抽出し、feature.yml
+                        README.md から機能要件を抽出し、workflow.yml
                         を生成します。
                     </p>
-                    <pre><code>/teamkit:create-feature &lt;feature-name&gt;</code></pre>
+                    <pre><code>/teamkit:generate-workflow &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
@@ -116,7 +116,7 @@
                             <tr>
                                 <th>出力</th>
                                 <td>
-                                    <code>feature.yml</code>,
+                                    <code>workflow.yml</code>,
                                     <code>status.json</code>
                                 </td>
                             </tr>
@@ -132,7 +132,7 @@
 
                     <h3>generate-usecase</h3>
                     <p>
-                        feature.ymlからロバストネス分析に基づくユースケースを生成します。
+                        workflow.ymlからロバストネス分析に基づくユースケースを生成します。
                     </p>
                     <pre><code>/teamkit:generate-usecase &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
@@ -140,7 +140,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>feature.yml</code>,
+                                    <code>workflow.yml</code>,
                                     <code>check.md</code>（存在する場合）
                                 </td>
                             </tr>
@@ -163,7 +163,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>feature.yml</code>,
+                                    <code>workflow.yml</code>,
                                     <code>usecase.yml</code>,
                                     <code>check.md</code>（存在する場合）
                                 </td>
@@ -272,7 +272,7 @@
                         </tbody>
                     </table>
                     <p>
-                        feature.yml が存在しない場合は、先に create-feature
+                        workflow.yml が存在しない場合は、先に generate-workflow
                         を実行します。
                     </p>
 
@@ -281,7 +281,7 @@
 
                     <h3>check</h3>
                     <p>
-                        feature.yml
+                        workflow.yml
                         の整合性を検査し、問題点をリストアップします。
                     </p>
                     <pre><code>/teamkit:check &lt;feature-name&gt;</code></pre>
@@ -289,7 +289,7 @@
                         <tbody>
                             <tr>
                                 <th>入力</th>
-                                <td><code>feature.yml</code></td>
+                                <td><code>workflow.yml</code></td>
                             </tr>
                             <tr>
                                 <th>出力</th>
@@ -361,12 +361,12 @@
                         </tbody>
                     </table>
 
-                    <h3>update-feature</h3>
+                    <h3>update-workflow</h3>
                     <p>
                         check.md の <code>[o]</code> マーカー付きTODOを
-                        feature.yml に適用します。
+                        workflow.yml に適用します。
                     </p>
-                    <pre><code>/teamkit:update-feature &lt;feature-name&gt;</code></pre>
+                    <pre><code>/teamkit:update-workflow &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
@@ -378,7 +378,7 @@
                             </tr>
                             <tr>
                                 <th>出力</th>
-                                <td><code>feature.yml</code> の更新</td>
+                                <td><code>workflow.yml</code> の更新</td>
                             </tr>
                         </tbody>
                     </table>
@@ -484,7 +484,7 @@
 
                     <h3>show-event</h3>
                     <p>
-                        feature.yml
+                        workflow.yml
                         からイベントストーミング図（Mermaid形式）を生成します。
                     </p>
                     <pre><code>/teamkit:show-event &lt;feature-name&gt;</code></pre>
@@ -492,7 +492,7 @@
                         <tbody>
                             <tr>
                                 <th>入力</th>
-                                <td><code>feature.yml</code></td>
+                                <td><code>workflow.yml</code></td>
                             </tr>
                             <tr>
                                 <th>出力</th>
@@ -566,7 +566,7 @@
                             <tr>
                                 <th>コマンド→ステップ対応</th>
                                 <td>
-                                    create-feature→feature, generate-usecase→usecase
+                                    generate-workflow→feature, generate-usecase→usecase
                                     等
                                 </td>
                             </tr>

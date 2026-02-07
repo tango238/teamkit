@@ -264,11 +264,11 @@ argument-hint: <appName> [-o|--output <outputDir>]
 
 ### 次のステップ
 
-各機能の要件定義書からfeature.ymlを生成するには、以下のコマンドを実行してください:
+各機能の要件定義書からworkflow.ymlを生成するには、以下のコマンドを実行してください:
 
 ```bash
-/teamkit:create-feature {{機能1-slug}}
-/teamkit:create-feature {{機能2-slug}}
+/teamkit:generate-workflow {{機能1-slug}}
+/teamkit:generate-workflow {{機能2-slug}}
 ...
 ```
 

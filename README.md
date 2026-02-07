@@ -94,16 +94,16 @@ Facility management involves the registration, update, deletion, and retrieval o
 Register and update facility information, room types, and room information
 ```
 
-### 2. Create Feature
+### 2. Generate Workflow
 
-Extract requirements from `README.md` and generate feature definitions:
+Extract requirements from `README.md` and generate workflow definitions:
 
 ```
-/teamkit:create-feature YourFeature
+/teamkit:generate-workflow YourFeature
 ```
 
 **Generated Files:**
-- `specs/YourFeature/feature.yml` - Feature definition
+- `specs/YourFeature/workflow.yml` - Workflow definition
 - `specs/YourFeature/status.json` - Status management file
 
 ### 3. Generate HTML Mockup
@@ -129,13 +129,13 @@ Check specification consistency:
 /teamkit:check YourFeature
 ```
 
-The AI checks `feature.yml` and lists issues in `check.md`.
+The AI checks `workflow.yml` and lists issues in `check.md`.
 
 Review the content and mark TODOs with `[o]` if you want to apply them.
 
 You can adjust the application content by changing the Recommended action in the Summary.
 
-To apply the checked items marked with `o`, run `/teamkit:update-feature YourFeature`.
+To apply the checked items marked with `o`, run `/teamkit:update-workflow YourFeature`.
 
 
 ### Feedback Function
@@ -160,12 +160,12 @@ Apply feedback:
 /teamkit:apply-feedback YourFeature
 ```
 
-### Update Feature
+### Update Workflow
 
-Regenerate the feature when check.md is updated:
+Regenerate the workflow when check.md is updated:
 
 ```
-/teamkit:update-feature YourFeature
+/teamkit:update-workflow YourFeature
 ```
 
 ### Check Status
@@ -187,7 +187,7 @@ your-project/
 ├── .claude/
 │   └── commands/
 │       └── teamkit/            # Team Kit commands
-│           ├── create-feature.md
+│           ├── generate-workflow.md
 │           ├── generate-usecase.md
 │           ├── generate-ui.md
 │           ├── generate-screenflow.md
@@ -196,7 +196,7 @@ your-project/
 │           ├── check.md
 │           ├── feedback.md
 │           ├── apply-feedback.md
-│           ├── update-feature.md
+│           ├── update-workflow.md
 │           ├── get-step-info.md
 │           ├── update-status.md
 │           ├── generate-log.md
@@ -204,7 +204,7 @@ your-project/
 └── specs/
     └── <feature-name>/
         ├── README.md          # Requirements definition
-        ├── feature.yml        # Functional requirements definition
+        ├── workflow.yml        # Functional requirements definition
         ├── usecase.yml        # Use cases
         ├── ui.yml             # UI definition
         ├── screenflow.md      # Screen flow diagram
@@ -220,8 +220,8 @@ Example of a typical development flow:
 
 ```bash
 # 1. Describe requirements in README.md
-# 2. Start with feature definition
-/teamkit:create-feature OrderManagement
+# 2. Start with workflow definition
+/teamkit:generate-workflow OrderManagement
 
 # 3. Automatically execute all steps
 /teamkit:create-mock OrderManagement

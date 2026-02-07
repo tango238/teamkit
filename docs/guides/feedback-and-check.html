@@ -92,7 +92,7 @@
                     <h3>フィードバックの送信</h3>
                     <pre><code>/teamkit:feedback YourFeature "住所フィールドを都道府県と市区町村に分割してください"</code></pre>
                     <p>
-                        AIがフィードバック内容を分析し、影響範囲（feature.yml、usecase.yml、ui.yml、screenflow.md）を特定して、<code
+                        AIがフィードバック内容を分析し、影響範囲（workflow.yml、usecase.yml、ui.yml、screenflow.md）を特定して、<code
                             >feedback.md</code
                         >
                         に詳細とTODOリストを作成します。
@@ -112,7 +112,7 @@
 ユーザーからのフィードバック内容
 
 ## TODO
-- [ ] 1. feature.yml: 住所フィールドを都道府県と市区町村に分割
+- [ ] 1. workflow.yml: 住所フィールドを都道府県と市区町村に分割
 - [ ] 2. ui.yml: addressフィールドを2つのフィールドに変更
 
 ## Summary
@@ -185,7 +185,7 @@
                     <pre><code>/teamkit:check YourFeature</code></pre>
                     <p>
                         AIが
-                        <code>feature.yml</code> を分析し、以下の観点で問題点を
+                        <code>workflow.yml</code> を分析し、以下の観点で問題点を
                         <code>check.md</code> にリストアップします。
                     </p>
                     <ul>
@@ -210,7 +210,7 @@
 
 ## Summary
 1. シナリオ「部屋ステータス変更」にエラーケースを追加
-   - Change location: feature.yml > feature[2].scenario[1]
+   - Change location: workflow.yml > feature[2].scenario[1]
    - Recommended action: 具体的な変更内容の説明</code></pre>
 
                     <h3>チェック結果の適用</h3>
@@ -225,7 +225,7 @@
                         </li>
                         <li>適用コマンドを実行する</li>
                     </ol>
-                    <pre><code>/teamkit:update-feature YourFeature</code></pre>
+                    <pre><code>/teamkit:update-workflow YourFeature</code></pre>
 
                     <h2>推奨ワークフロー</h2>
                     <pre><code># 1. モックアップを生成
@@ -245,7 +245,7 @@
 # 6. check.md の TODO に [o] を付ける
 
 # 7. チェック結果を適用
-/teamkit:update-feature YourFeature</code></pre>
+/teamkit:update-workflow YourFeature</code></pre>
 
                     <div class="related-links">
                         <h3>関連ガイド</h3>

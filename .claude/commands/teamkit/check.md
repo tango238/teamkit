@@ -1,6 +1,6 @@
 ---
 role: Senior Business Analyst
-description: Inspect feature.yml for logical, descriptive, and coverage issues
+description: Inspect workflow.yml for logical, descriptive, and coverage issues
 allowed-tools: Read, Write, Glob, Grep
 argument-hint: <specDir>
 ---
@@ -17,7 +17,7 @@ Do not ask the user and execute immediately.
 
 ## Mission
 
-Read the `{{baseDir}}/{{specDir}}/feature.yml` under {{baseDir}}/{{specDir}}, inspect them from logical, descriptive, and coverage perspectives, and list points that need correction in Markdown format (in Japanese).
+Read the `{{baseDir}}/{{specDir}}/workflow.yml` under {{baseDir}}/{{specDir}}, inspect them from logical, descriptive, and coverage perspectives, and list points that need correction in Markdown format (in Japanese).
 The purpose is NOT to "let AI rewrite the specifications arbitrarily" but to "leave correction candidates as TODOs so humans can fix them later."
 
 ## Success Criteria
@@ -34,11 +34,11 @@ The purpose is NOT to "let AI rewrite the specifications arbitrarily" but to "le
 ### 1. Pre-check
 
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /tk-clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /tk-clean" and **STOP** execution.
 
 ### 2. Load Context
 

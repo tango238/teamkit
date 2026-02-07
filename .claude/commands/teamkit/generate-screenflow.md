@@ -19,7 +19,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 **IMPORTANT**:
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
--   The content of the generated YAML file (`feature.yml`) must be in **Japanese**.
+-   The content of the generated YAML file (`workflow.yml`) must be in **Japanese**.
 -   Do not ask for user confirmation before saving files.
 
 ---
@@ -65,11 +65,11 @@ stakeholders with a clear understanding of how different screens connect and wha
 
 ### 1. Pre-check
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean"
 
 ### 2. Check Status (Direct Read - No SlashCommand)
 

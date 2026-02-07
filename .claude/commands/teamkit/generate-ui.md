@@ -36,11 +36,11 @@ fi
 
 ### 2. Pre-check
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean"
 
 ### 3. Check Status (Direct Read - No SlashCommand)
 
@@ -54,7 +54,7 @@ fi
    - Otherwise → Continue execution
 
 ### 4. Read input files
-1. Read `{{baseDir}}/{{specDir}}/feature.yml`
+1. Read `{{baseDir}}/{{specDir}}/workflow.yml`
 2. Read `{{baseDir}}/{{specDir}}/usecase.yml`
 3. Read `{{baseDir}}/{{specDir}}/check.md` (check for `[x]` items)
 
@@ -86,7 +86,7 @@ You are an expert UI/UX designer and System Architect.
 Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` based on the following inputs:
 
 - `{{baseDir}}/{{specDir}}/check.md`: Checklist containing status and specific instructions.
-- `{{baseDir}}/{{specDir}}/feature.yml`: Feature definitions including actors, scenarios, and acceptance criteria.
+- `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions including actors, scenarios, and acceptance criteria.
 - `{{baseDir}}/{{specDir}}/usecase.yml`: Use cases defining interactions and steps.
 
 # Task

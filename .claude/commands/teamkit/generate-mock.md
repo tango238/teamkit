@@ -27,8 +27,8 @@ echo "使用法: /generate-mock [specDir]"
 exit 1
 </if>
 
-if [ ! -f "specs/{{specDir}}/status.json" ] || [ ! -f "specs/{{specDir}}/feature.yml" ]; then
-  echo "エラー: status.json または feature.yml が存在しません。/create-feature を実行してください。"
+if [ ! -f "specs/{{specDir}}/status.json" ] || [ ! -f "specs/{{specDir}}/workflow.yml" ]; then
+  echo "エラー: status.json または workflow.yml が存在しません。/generate-workflow を実行してください。"
   exit 1
 fi
 

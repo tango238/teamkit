@@ -91,12 +91,12 @@
                     <pre class="flow-diagram">README.md
   │
   ▼
-create-feature ─→ feature.yml + status.json
+generate-workflow ─→ workflow.yml + status.json
   │
   ├─→ check ─→ check.md（整合性チェック）
   │     │
   │     ▼
-  │   update-feature ─→ feature.yml 更新（[o] 付きTODOを適用）
+  │   update-workflow ─→ workflow.yml 更新（[o] 付きTODOを適用）
   │
   ▼
 create-mock（以下を自動的に順次実行）
@@ -134,11 +134,11 @@ create-mock（以下を自動的に順次実行）
                         <li><strong>要件</strong>: アクター別の具体的な要件</li>
                     </ul>
 
-                    <h2>ステップ2: feature.yml の生成</h2>
-                    <pre><code>/teamkit:create-feature YourFeature</code></pre>
+                    <h2>ステップ2: workflow.yml の生成</h2>
+                    <pre><code>/teamkit:generate-workflow YourFeature</code></pre>
                     <p>
                         README.mdから以下の要素を抽出し、<code
-                            >feature.yml</code
+                            >workflow.yml</code
                         >
                         を生成します。
                     </p>
@@ -185,7 +185,7 @@ create-mock（以下を自動的に順次実行）
 
                     <h3>3-1. generate-usecase → usecase.yml</h3>
                     <p>
-                        feature.ymlからロバストネス分析に基づくユースケースを生成します。
+                        workflow.ymlからロバストネス分析に基づくユースケースを生成します。
                     </p>
                     <div class="info-box">
                         <p>

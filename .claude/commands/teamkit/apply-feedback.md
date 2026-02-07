@@ -38,11 +38,11 @@ Execute immediately without asking the user for confirmation.
 Verify that required files exist before proceeding:
 
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Load Feedback File
 
@@ -86,7 +86,7 @@ Determine the next version number for tracking changes:
 
 1. Read `{{baseDir}}/{{specDir}}/status.json` directly (do NOT use slash commands)
 2. Extract the version numbers from:
-   - `steps[0].feature.version`
+   - `steps[0].workflow.version`
    - `steps[1].usecase.version`
    - `steps[2].ui.version`
    - `steps[3].screenflow.version`
@@ -110,7 +110,7 @@ Process files in the following order:
 | 1     | screenflow.md  | screenflow | screenflow.md        |
 | 2     | ui.yml         | ui         | ui.md                |
 | 3     | usecase.yml    | usecase    | usecase.md           |
-| 4     | feature.yml    | feature    | feature.md           |
+| 4     | workflow.yml    | workflow   | workflow.md          |
 
 For each file:
 - Load `{{baseDir}}/{{specDir}}/{{fileName}}`
@@ -215,7 +215,7 @@ Record the new version number in status.json for ALL steps:
 - This ensures all specification files maintain synchronized version numbers
 - **Do NOT use `/teamkit:update-status` slash commands here** - directly edit the `status.json` file instead to avoid interruption
 - Edit `{{baseDir}}/{{specDir}}/status.json` directly:
-  - Update `steps[0].feature.version` to `{{newVersionNumber}}`
+  - Update `steps[0].workflow.version` to `{{newVersionNumber}}`
   - Update `steps[1].usecase.version` to `{{newVersionNumber}}`
   - Update `steps[2].ui.version` to `{{newVersionNumber}}`
   - Update `steps[3].screenflow.version` to `{{newVersionNumber}}`
@@ -259,7 +259,7 @@ Display the processing results:
 2. Find TODO items marked with `[o]`
 3. Load corresponding details from Summary section
 4. Read `status.json` directly and calculate new version number (max version + 1)
-5. For each file (screenflow.md, ui.yml, usecase.yml, feature.yml):
+5. For each file (screenflow.md, ui.yml, usecase.yml, workflow.yml):
    - Load file
    - Plan modifications based on TODO items
    - Show diff preview
@@ -303,7 +303,7 @@ Diff:
 
 ✓ feedback.md のステータスを更新しました
 ✓ status.json を直接更新しました (version: 5)
-  - feature: 5
+  - workflow: 5
   - usecase: 5
   - ui: 5
   - screenflow: 5
@@ -312,7 +312,7 @@ Diff:
 
 処理完了:
 - 適用項目数: 2件
-- 更新ファイル: screenflow.md, ui.yml, usecase.yml, feature.yml
+- 更新ファイル: screenflow.md, ui.yml, usecase.yml, workflow.yml
 - バージョン: 5 (全ステップ共通)
 ```
 

@@ -1,5 +1,5 @@
 ---
-description: Update feature
+description: Update workflow
 allowed-tools:
   - Bash
   - Read
@@ -11,13 +11,13 @@ argument-hint: <specDir>
 
 # Setup
 
-1.  **Set `commandName`**: `update-feature`
+1.  **Set `commandName`**: `update-workflow`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/update-feature <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/update-workflow <specDir>`" and **STOP** execution immediately.
 
 # Instruction 
-Read TODOs from `{{baseDir}}/{{specDir}}/check.md`, and applies items marked as "scheduled for processing" to update `{{baseDir}}/{{specDir}}/feature.yml` (YAML file).
+Read TODOs from `{{baseDir}}/{{specDir}}/check.md`, and applies items marked as "scheduled for processing" to update `{{baseDir}}/{{specDir}}/workflow.yml` (YAML file).
 Do not ask the user and execute immediately.
 
 **All output from this command must be in Japanese.**
@@ -35,8 +35,8 @@ Apply modification items (TODOs) from check.md that are marked as "scheduled for
 1. `{{baseDir}}/{{specDir}}/check.md` is correctly loaded
 2. TODO item status (unprocessed/scheduled/completed/skipped) is correctly interpreted
 3. Concrete action methods are considered for items marked as scheduled `[o]`
-4. Change diff is clearly displayed before applying to `{{baseDir}}/{{specDir}}/feature.yml`
-5. After user confirmation, diff is applied to `{{baseDir}}/{{specDir}}/feature.yml`
+4. Change diff is clearly displayed before applying to `{{baseDir}}/{{specDir}}/workflow.yml`
+5. After user confirmation, diff is applied to `{{baseDir}}/{{specDir}}/workflow.yml`
 6. Applied items are marked as completed `[x]` in check.md
 
 ---
@@ -58,19 +58,19 @@ This command only processes items marked with `[o]`.
 
 ### 1. Pre-check
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean"
 
 ### 2. Load Check File
 
 * If `{{baseDir}}/{{specDir}}/check.md` is specified, load that file.
-* If `{{baseDir}}/{{specDir}}/check.md` is omitted, load `check.md` from the same directory as `{{baseDir}}/{{specDir}}/feature.yml`.
+* If `{{baseDir}}/{{specDir}}/check.md` is omitted, load `check.md` from the same directory as `{{baseDir}}/{{specDir}}/workflow.yml`.
 * If the file doesn't exist or cannot be read, report error and exit.
-* Check if `{{baseDir}}/{{specDir}}/feature.yml` exists.
-* If `feature.yml` does not exist, report error and exit.
+* Check if `{{baseDir}}/{{specDir}}/workflow.yml` exists.
+* If `workflow.yml` does not exist, report error and exit.
 
 ### 3. Parse TODO Items
 
@@ -91,7 +91,7 @@ This command only processes items marked with `[o]`.
 
 ### 5. Load Target YAML
 
-* Load `{{baseDir}}/{{specDir}}/feature.yml`.
+* Load `{{baseDir}}/{{specDir}}/workflow.yml`.
 * Parse as YAML and understand the current structure.
 * If it cannot be loaded or YAML is broken, report error and exit.
 
@@ -114,7 +114,7 @@ This command only processes items marked with `[o]`.
 
 ### 8. Apply
 
-* Only apply changes to `{{baseDir}}/{{specDir}}/feature.yml` without user approval.
+* Only apply changes to `{{baseDir}}/{{specDir}}/workflow.yml` without user approval.
 * Overwrite and save the original YAML file.
 
 ### 9. Update Check.md Status
@@ -130,24 +130,24 @@ This command only processes items marked with `[o]`.
 
 ### 11. 最新のバージョン番号を取得し、 +1 したバージョンを設定する
 - 1. `{{baseDir}}/{{specDir}}/status.json` を取得する
-- 2. steps.feature から `version` 情報を取得
+- 2. steps.workflow から `version` 情報を取得
 - 3. 2の値に +1 をした値を **versionNumber** に設定する
 
 ### 12. Update Status (インライン実行)
 **重要**: スラッシュコマンドを呼び出さず、以下の処理を直接実行してください。
 
-1. `{{baseDir}}/{{specDir}}/feature.yml` の **MD5チェックサム** と **最終更新日時** を取得する
+1. `{{baseDir}}/{{specDir}}/workflow.yml` の **MD5チェックサム** と **最終更新日時** を取得する
 2. `{{baseDir}}/{{specDir}}/status.json` を更新する:
-   - `steps[0].feature.version` を **versionNumber** に更新
-   - `steps[0].feature.checksum` を取得したMD5チェックサムに更新
-   - `steps[0].feature.last_modified` を取得した最終更新日時に更新
+   - `steps[0].workflow.version` を **versionNumber** に更新
+   - `steps[0].workflow.checksum` を取得したMD5チェックサムに更新
+   - `steps[0].workflow.last_modified` を取得した最終更新日時に更新
    - `updated_at` を現在のタイムスタンプ (ISO 8601) に更新
-   - `last_execution` を `update-feature` に更新
+   - `last_execution` を `update-workflow` に更新
 3. `status.json` を保存する
 4. 以下の形式で結果を表示する:
    ```
    ステータス: 成功
-   コマンド: update-feature
+   コマンド: update-workflow
    バージョン: {{versionNumber}}
    日時: <現在のタイムスタンプ (ISO 8601)>
    メッセージ: ステータスを更新しました。
@@ -168,12 +168,12 @@ This command only processes items marked with `[o]`.
 ### Diff Display Example
 
 ```diff
-# Diff for feature.yml
+# Diff for workflow.yml
 
 ## Change 1: Clarify preconditions for reservation feature
 
---- feature.yml (before)
-+++ feature.yml (after)
+--- workflow.yml (before)
++++ workflow.yml (after)
 
  reserve:
    name: Reservation feature

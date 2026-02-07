@@ -27,24 +27,24 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract use cases from `{{baseDir}}/{{specDir}}/feature.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
-Ensure all features and scenarios in `feature.yml` are covered (Tracking is mandatory).
+Extract use cases from `{{baseDir}}/{{specDir}}/workflow.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
+Ensure all features and scenarios in `workflow.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
 ### 1. Pre-check
 
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Check Status (Direct Read - No SlashCommand)
 
 1. Read `{{baseDir}}/{{specDir}}/status.json`
-2. Extract `version` from the `feature` step in the `steps` array
+2. Extract `version` from the `workflow` step in the `steps` array
 3. Set this as `{{targetVersion}}`
 4. Extract `version` from the `usecase` step - this is `{{currentVersion}}`
 5. **Validation**:
@@ -54,7 +54,7 @@ Ensure all features and scenarios in `feature.yml` are covered (Tracking is mand
 
 ### 3. Read Input Files
 Read the following files and understand their content:
--   `{{baseDir}}/{{specDir}}/feature.yml`: Feature definitions (actors, features, scenarios)
+-   `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions (actors, features, scenarios)
 -   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
 
 ### 4. Use Case Creation Policy (Robustness Analysis)
@@ -87,7 +87,7 @@ usecases:
       - [Related Feature/Scenario 1]
       - [Related Feature/Scenario 2]
     trackings:
-     - "feature.yml:[Line] - [Summary]"
+     - "workflow.yml:[Line] - [Summary]"
      - "check.md:[Line] - [Summary]"
     actor: 
       name: "[Actor Name]" 
@@ -116,7 +116,7 @@ usecases:
 ```
 
 **Rules**:
--   **`trackings` is MANDATORY**. You must explicitly state which line in `feature.yml` (and `check.md` if applicable) is being covered.
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `workflow.yml` (and `check.md` if applicable) is being covered.
 -   Use `-->` for arrows in steps.
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.
@@ -125,7 +125,7 @@ usecases:
 ### 6. Verification (Self-Correction)
 
 **After generating the initial list of use cases, perform a check:**
-1.  Review `feature.yml` and ensure **EVERY** feature and scenario is referenced in the `trackings` of at least one use case.
+1.  Review `workflow.yml` and ensure **EVERY** feature and scenario is referenced in the `trackings` of at least one use case.
 2.  If any feature or scenario is missing, create an additional use case to cover it.
 3.  Ensure no "orphan" features or scenarios are left behind.
 
@@ -156,7 +156,7 @@ usecases:
 
 ## Execution Example
 
-### Input Example (feature.yml)
+### Input Example (workflow.yml)
 ```yaml
 actor:
   - name: ホスト
@@ -183,7 +183,7 @@ usecases:
     features:
       - 契約管理 - サービス契約申し込みフロー
     trackings:
-     - "feature.yml:5 - サービス契約を申し込み管理アカウントを作成"
+     - "workflow.yml:5 - サービス契約を申し込み管理アカウントを作成"
     actor: 
       name: "ホスト\n(スペース掲載者)" 
       as: Host1
