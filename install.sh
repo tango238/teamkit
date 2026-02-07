@@ -164,7 +164,6 @@ get_file() {
 COMMAND_FILES=(
     "apply-feedback.md"
     "check-status.md"
-    "check.md"
     "generate-workflow.md"
     "create-mock.md"
     "feedback.md"
@@ -175,7 +174,6 @@ COMMAND_FILES=(
     "get-step-info.md"
     "init.md"
     "show-event.md"
-    "update-workflow.md"
     "update-status.md"
     "create-app.md"
     "design-app.md"

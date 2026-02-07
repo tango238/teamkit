@@ -121,23 +121,6 @@ Generate interactive HTML mockups from UI definitions:
 
 ## Useful Commands
 
-### Check Function
-
-Check specification consistency:
-
-```
-/teamkit:check YourFeature
-```
-
-The AI checks `workflow.yml` and lists issues in `check.md`.
-
-Review the content and mark TODOs with `[o]` if you want to apply them.
-
-You can adjust the application content by changing the Recommended action in the Summary.
-
-To apply the checked items marked with `o`, run `/teamkit:update-workflow YourFeature`.
-
-
 ### Feedback Function
 
 Submit feedback on specifications:
@@ -158,14 +141,6 @@ Apply feedback:
 
 ```
 /teamkit:apply-feedback YourFeature
-```
-
-### Update Workflow
-
-Regenerate the workflow when check.md is updated:
-
-```
-/teamkit:update-workflow YourFeature
 ```
 
 ### Check Status
@@ -193,10 +168,8 @@ your-project/
 │           ├── generate-screenflow.md
 │           ├── generate-mock.md
 │           ├── create-mock.md
-│           ├── check.md
 │           ├── feedback.md
 │           ├── apply-feedback.md
-│           ├── update-workflow.md
 │           ├── get-step-info.md
 │           ├── update-status.md
 │           ├── generate-log.md
@@ -234,9 +207,6 @@ Example of a typical development flow:
 
 # 6. Apply feedback
 /teamkit:apply-feedback OrderManagement
-
-# 7. Consistency check
-/teamkit:check OrderManagement
 ```
 
 ## Output Language

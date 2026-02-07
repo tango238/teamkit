@@ -56,7 +56,6 @@ fi
 ### 4. Read input files
 1. Read `{{baseDir}}/{{specDir}}/workflow.yml`
 2. Read `{{baseDir}}/{{specDir}}/usecase.yml`
-3. Read `{{baseDir}}/{{specDir}}/check.md` (check for `[x]` items)
 
 ### 5. Generate UI definition
 - **Determine Output Filename**:
@@ -85,16 +84,11 @@ You are an expert UI/UX designer and System Architect.
 
 Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` based on the following inputs:
 
-- `{{baseDir}}/{{specDir}}/check.md`: Checklist containing status and specific instructions.
 - `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions including actors, scenarios, and acceptance criteria.
 - `{{baseDir}}/{{specDir}}/usecase.yml`: Use cases defining interactions and steps.
 
 # Task
 Generate `{{baseDir}}/{{specDir}}/ui.yml` in YAML format.
-
-**CRITICAL**: You must read `check.md` carefully. 
-
-Pay special attention to items marked as completed `[x]`, as they contain finalized decisions and instructions from the author that override or clarify other documents.
 
 # Output Requirement
 - **Format**: YAML only. No markdown prose, no code blocks wrappers (unless necessary for the file itself), no explanations.

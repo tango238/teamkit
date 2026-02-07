@@ -40,7 +40,6 @@ If a gap is detected (difference > 1), display an error and stop execution.
     | Command Name        | Corresponding Step |
     |---------------------|--------------------|
     | generate-workflow      | workflow           |
-    | update-workflow        | workflow           |
     | generate-usecase    | usecase            |
     | generate-ui         | ui                 |
     | generate-screenflow | screenflow         |

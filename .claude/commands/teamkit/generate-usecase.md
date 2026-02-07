@@ -1,5 +1,5 @@
 ---
-description: Generate use cases from features and check list
+description: Generate use cases from features
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
@@ -27,7 +27,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract use cases from `{{baseDir}}/{{specDir}}/workflow.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
+Extract use cases from `{{baseDir}}/{{specDir}}/workflow.yml` and document them in YAML format based on **Robustness Analysis**.
 Ensure all features and scenarios in `workflow.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
@@ -53,9 +53,8 @@ Ensure all features and scenarios in `workflow.yml` are covered (Tracking is man
    - Otherwise → Continue execution
 
 ### 3. Read Input Files
-Read the following files and understand their content:
+Read the following file and understand its content:
 -   `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions (actors, features, scenarios)
--   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
 
 ### 4. Use Case Creation Policy (Robustness Analysis)
 
@@ -88,7 +87,6 @@ usecases:
       - [Related Feature/Scenario 2]
     trackings:
      - "workflow.yml:[Line] - [Summary]"
-     - "check.md:[Line] - [Summary]"
     actor: 
       name: "[Actor Name]" 
       as: [ActorAlias]
@@ -116,7 +114,7 @@ usecases:
 ```
 
 **Rules**:
--   **`trackings` is MANDATORY**. You must explicitly state which line in `workflow.yml` (and `check.md` if applicable) is being covered.
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `workflow.yml` is being covered.
 -   Use `-->` for arrows in steps.
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.

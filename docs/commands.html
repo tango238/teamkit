@@ -61,7 +61,7 @@
                         <a
                             href="guides/feedback-and-check.html"
                             class="sidebar-link"
-                            >フィードバックとチェック</a
+                            >フィードバック</a
                         >
                         <a
                             href="guides/event-storming.html"
@@ -140,8 +140,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>workflow.yml</code>,
-                                    <code>check.md</code>（存在する場合）
+                                    <code>workflow.yml</code>
                                 </td>
                             </tr>
                             <tr>
@@ -164,8 +163,7 @@
                                 <th>入力</th>
                                 <td>
                                     <code>workflow.yml</code>,
-                                    <code>usecase.yml</code>,
-                                    <code>check.md</code>（存在する場合）
+                                    <code>usecase.yml</code>
                                 </td>
                             </tr>
                             <tr>
@@ -279,34 +277,6 @@
                     <!-- Quality Management -->
                     <h2>品質管理</h2>
 
-                    <h3>check</h3>
-                    <p>
-                        workflow.yml
-                        の整合性を検査し、問題点をリストアップします。
-                    </p>
-                    <pre><code>/teamkit:check &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td><code>workflow.yml</code></td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>check.md</code></td>
-                            </tr>
-                            <tr>
-                                <th>検査内容</th>
-                                <td>
-                                    論理的整合性、記述の曖昧さ、重複、改善提案、カバレッジ
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        YAML ファイルは変更しません。問題の報告のみを行います。
-                    </p>
-
                     <h3>feedback</h3>
                     <p>フィードバックを分析し、影響範囲とTODOを生成します。</p>
                     <pre><code>/teamkit:feedback &lt;feature-name&gt; "フィードバック内容"
@@ -361,27 +331,6 @@
                         </tbody>
                     </table>
 
-                    <h3>update-workflow</h3>
-                    <p>
-                        check.md の <code>[o]</code> マーカー付きTODOを
-                        workflow.yml に適用します。
-                    </p>
-                    <pre><code>/teamkit:update-workflow &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td>
-                                    <code>check.md</code>（<code>[o]</code>
-                                    マーカー付きTODO）
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>workflow.yml</code> の更新</td>
-                            </tr>
-                        </tbody>
-                    </table>
 
                     <!-- App Generation -->
                     <h2>アプリ全体生成</h2>
