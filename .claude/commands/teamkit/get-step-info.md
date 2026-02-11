@@ -39,11 +39,11 @@ Execute the following process immediately without asking for user confirmation.
 Verify that the following files exist:
 
 - **Target Files**:
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "エラー: `status.json` または `feature.yml` が存在しません。/tk-clean を実行してください" and **STOP** execution.
+  - If any of these files do not exist → Display the message "エラー: `status.json` または `workflow.yml` が存在しません。/tk-clean を実行してください" and **STOP** execution.
 
 ### 2. Load status.json
 
@@ -75,14 +75,14 @@ Display the result in the following format:
 ### Input
 
 ```bash
-/teamkit:get-step-info FacilityManagement feature
+/teamkit:get-step-info FacilityManagement workflow
 ```
 
 ### Output Example
 
 ```
 ステータス: 成功
-ステップ: feature
+ステップ: workflow
 バージョン: 1
 チェックサム: abc123def456
 最終更新日時: 2025-11-24T10:30:00+09:00

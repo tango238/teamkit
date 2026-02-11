@@ -81,8 +81,7 @@ Verify the impact on each specification file in the following order (each step s
 1. Verify impact on `screenflow.md`
 2. Considering the impact from step 1, verify impact on `ui.yml`
 3. Considering the impact from step 2, verify impact on `usecase.yml`
-4. Considering the impact from step 3, verify impact on `story.yml`
-5. Considering the impact from step 4, verify impact on `feature.yml`
+4. Considering the impact from step 3, verify impact on `workflow.yml`
 
 ### 6. Generate Feedback Document
 Based on the verification results, write out the issues and next actions:
@@ -105,7 +104,7 @@ Before finalizing the TODO list, verify that there are no duplicate or overlappi
 
 #### Principle: One Feedback = One TODO
 - **1つのフィードバックコメントに対して、原則として1つのTODO項目を作成する**
-- 複数のレイヤー（feature, story, usecase, ui, screenflow）に影響がある場合でも、それらは1つのTODO項目のNext actionセクション内で記述する
+- 複数のレイヤー（workflow, usecase, ui, screenflow）に影響がある場合でも、それらは1つのTODO項目のNext actionセクション内で記述する
 - TODO項目を「レイヤーごと」や「ファイルごと」に分割しない
 
 #### Duplication Check
@@ -138,8 +137,7 @@ TODO項目を作成する前に、以下の重複パターンをチェックす�
 # Summary
 ## 1. パスワードリセットから本人確認機能を削除
 - Next action:
-  - feature: シナリオから本人確認ステップを削除
-  - story: 本人確認ストーリーを削除
+  - workflow: シナリオから本人確認ステップを削除
   - usecase: 本人確認関連ステップを削除
   - ui: 本人確認入力フィールドを削除
   - screenflow: 本人確認フローを削除
@@ -207,9 +205,8 @@ The generated `feedback.md` should follow this structure:
 ## 1. {{short name of correction item 1 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Next action: 
-  - feature: {{how to fix it and consideration}}
-  - story: {{how to fix it and consideration}}
+- Next action:
+  - workflow: {{how to fix it and consideration}}
   - usecase: {{how to fix it and consideration}}
   - ui: {{how to fix it and consideration}}
   - screenflow: {{how to fix it and consideration}}
@@ -218,9 +215,8 @@ The generated `feedback.md` should follow this structure:
 ## 2. {{short name of correction item 2 from feedback 1}}
 - Comment: {{Feedback comment 1}}
 - Issue: {{specifically what the problem is}}
-- Next action: 
-  - feature: {{how to fix it and consideration}}
-  - story: {{how to fix it and consideration}}
+- Next action:
+  - workflow: {{how to fix it and consideration}}
   - usecase: {{how to fix it and consideration}}
   - ui: {{how to fix it and consideration}}
   - screenflow: {{how to fix it and consideration}}

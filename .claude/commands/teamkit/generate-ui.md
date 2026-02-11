@@ -1,5 +1,5 @@
 ---
-description: Generate UI definition from use cases and stories
+description: Generate UI definition from use cases
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
@@ -36,11 +36,11 @@ fi
 
 ### 2. Pre-check
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Existing File Handling**:
-  - If some of the files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean"
+  - If some of the files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean"
 
 ### 3. Check Status (Direct Read - No SlashCommand)
 
@@ -54,9 +54,7 @@ fi
    - Otherwise → Continue execution
 
 ### 4. Read input files
-1. Read `{{baseDir}}/{{specDir}}/story.yml`
-2. Read `{{baseDir}}/{{specDir}}/usecase.yml`
-3. Read `{{baseDir}}/{{specDir}}/check.md` (check for `[x]` items)
+1. Read `{{baseDir}}/{{specDir}}/usecase.yml`
 
 ### 5. Generate UI definition
 - **Determine Output Filename**:
@@ -85,16 +83,10 @@ You are an expert UI/UX designer and System Architect.
 
 Your task is to generate a UI design document `{{baseDir}}/{{specDir}}/ui.yml` based on the following inputs:
 
-- `{{baseDir}}/{{specDir}}/check.md`: Checklist containing status and specific instructions.
-- `{{baseDir}}/{{specDir}}/story.yml`: User stories defining value and acceptance criteria.
 - `{{baseDir}}/{{specDir}}/usecase.yml`: Use cases defining interactions and steps.
 
 # Task
 Generate `{{baseDir}}/{{specDir}}/ui.yml` in YAML format.
-
-**CRITICAL**: You must read `check.md` carefully. 
-
-Pay special attention to items marked as completed `[x]`, as they contain finalized decisions and instructions from the author that override or clarify other documents.
 
 # Output Requirement
 - **Format**: YAML only. No markdown prose, no code blocks wrappers (unless necessary for the file itself), no explanations.

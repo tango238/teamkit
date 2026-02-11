@@ -4,7 +4,7 @@ role: Automated workflow executor
 task: Execute a sequence of generation commands without interruption
 context:
   - This is a Claude Code slash command
-  - Generates story, usecase, UI, screenflow, and mock from spec files
+  - Generates usecase, UI, screenflow, and mock from spec files
   - All sub-commands are predefined teamkit commands
 constraints:
   - Never pause between commands
@@ -42,48 +42,42 @@ allowed-tools:
 1. Call each SlashCommand in sequence
 2. After each SlashCommand completes (you will see its output), IMMEDIATELY call the next one
 3. Do NOT stop to display results or ask questions
-4. Continue until all commands are complete (up to 6 if feature.yml needs creation)
+4. Continue until all commands are complete (up to 5 if workflow.yml needs creation)
 
 ---
 
 ## Step-by-Step Execution
 
-You will execute up to 6 SlashCommand calls. After each one completes, proceed to the next.
+You will execute up to 5 SlashCommand calls. After each one completes, proceed to the next.
 
-### Step 0: Create Feature (if needed)
-Check if `{{baseDir}}/{{specDir}}/feature.yml` exists.
+### Step 0: Generate Workflow (if needed)
+Check if `{{baseDir}}/{{specDir}}/workflow.yml` exists.
 - If it **does NOT exist**, run:
 ```
-/teamkit:create-feature {{specDir}}
+/teamkit:generate-workflow {{specDir}}
 ```
-When this command finishes (feature.yml is saved), IMMEDIATELY proceed to Step 1.
+When this command finishes (workflow.yml is saved), IMMEDIATELY proceed to Step 1.
 - If it **already exists**, skip this step and proceed directly to Step 1.
 
-### Step 1: Generate Story
-```
-/teamkit:generate-story {{specDir}}
-```
-When this command finishes (story.yml is saved), IMMEDIATELY proceed to Step 2.
-
-### Step 2: Generate Usecase
+### Step 1: Generate Usecase
 ```
 /teamkit:generate-usecase {{specDir}}
 ```
-When this command finishes (usecase.yml is saved), IMMEDIATELY proceed to Step 3.
+When this command finishes (usecase.yml is saved), IMMEDIATELY proceed to Step 2.
 
-### Step 3: Generate UI
+### Step 2: Generate UI
 ```
 /teamkit:generate-ui {{specDir}}
 ```
-When this command finishes (ui.yml is saved), IMMEDIATELY proceed to Step 4.
+When this command finishes (ui.yml is saved), IMMEDIATELY proceed to Step 3.
 
-### Step 4: Generate Screenflow
+### Step 3: Generate Screenflow
 ```
 /teamkit:generate-screenflow {{specDir}}
 ```
-When this command finishes (screenflow.md is saved), IMMEDIATELY proceed to Step 5.
+When this command finishes (screenflow.md is saved), IMMEDIATELY proceed to Step 4.
 
-### Step 5: Generate Mock
+### Step 4: Generate Mock
 ```
 /teamkit:generate-mock {{specDir}}
 ```
@@ -104,30 +98,29 @@ Each generate-* command will internally call helper commands like:
 3. **CONTINUE EXECUTING** the remaining steps of the parent command
 4. Do NOT stop or wait for user input
 
-**Example**: If you're running `generate-story` and it calls `get-step-info`:
+**Example**: If you're running `generate-usecase` and it calls `get-step-info`:
 ```
 get-step-info returns: "バージョン: 2"
 ↓
-You are now back in generate-story
+You are now back in generate-usecase
 ↓
 Continue with check-status call
 ↓
-Continue generating story.yml
+Continue generating usecase.yml
 ↓
 Continue with update-status call
 ↓
-generate-story is COMPLETE
+generate-usecase is COMPLETE
 ↓
-IMMEDIATELY call generate-usecase (Step 2)
+IMMEDIATELY call generate-ui (Step 2)
 ```
 
 ---
 
 ## Completion
 
-After ALL 5 steps finish:
+After ALL 4 steps finish:
 1. Verify files exist using Glob:
-   - `{{baseDir}}/{{specDir}}/story.yml`
    - `{{baseDir}}/{{specDir}}/usecase.yml`
    - `{{baseDir}}/{{specDir}}/ui.yml`
    - `{{baseDir}}/{{specDir}}/screenflow.md`
@@ -143,4 +136,4 @@ After ALL 5 steps finish:
 サブコマンドが結果を返したら、それは「次のステップに進め」という合図です。
 ユーザーの入力を待たずに、即座に次の処理を実行してください。
 
-5つのステップすべてが完了し、最終レポートを出力するまで、処理を継続してください。
+4つのステップすべてが完了し、最終レポートを出力するまで、処理を継続してください。

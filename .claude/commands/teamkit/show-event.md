@@ -1,5 +1,5 @@
 ---
-description: Generate Event Storming diagram (Mermaid) from feature.yml
+description: Generate Event Storming diagram (Mermaid) from workflow.yml
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir>
 ---
@@ -26,7 +26,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Event Storming Diagram Generation Command
 
 ## Purpose
-Read `feature.yml` and generate a Mermaid diagram (graph LR) that visualizes Event Storming as a **horizontal timeline flow** from start to end:
+Read `workflow.yml` and generate a Mermaid diagram (graph LR) that visualizes Event Storming as a **horizontal timeline flow** from start to end:
 - Shows the business process flow from left to right
 - Events (イベント) are placed on the flow timeline
 - Actors (アクター) are placed above/below the events they trigger
@@ -39,14 +39,14 @@ The diagram is optimized for pasting into Miro's Mermaid app and follows the Eve
 
 ## Execution Steps
 
-### 1. Pre-check: feature.yml
-- **Target File**: `{{baseDir}}/{{specDir}}/feature.yml`
+### 1. Pre-check: workflow.yml
+- **Target File**: `{{baseDir}}/{{specDir}}/workflow.yml`
 - **Action**:
   - If the file exists → Proceed to Step 2.
-  - If the file does not exist → Display the message "エラー: `feature.yml` が存在しません。先に `/teamkit:create-feature` を実行してください。" and **STOP** execution immediately.
+  - If the file does not exist → Display the message "エラー: `workflow.yml` が存在しません。先に `/teamkit:generate-workflow` を実行してください。" and **STOP** execution immediately.
 
 ### 2. Read Input
-- Read `{{baseDir}}/{{specDir}}/feature.yml`.
+- Read `{{baseDir}}/{{specDir}}/workflow.yml`.
 - Parse the YAML structure to extract:
   - `actor` - List of actors with name and description
   - `external_system` - List of external systems with name and description
@@ -149,7 +149,7 @@ graph LR
 
 ### 4. Analyze Business Flow
 
-Analyze the feature.yml to determine the **chronological business process**:
+Analyze the workflow.yml to determine the **chronological business process**:
 
 1. **Identify Start Point**: What event initiates the entire process?
 2. **Trace Feature Sequence**: Order features by their logical sequence in the business process
@@ -183,7 +183,7 @@ Analyze the feature.yml to determine the **chronological business process**:
 - **終了**: [終了イベント]
 
 ## 概要
-このドキュメントは `feature.yml` から自動生成された Event Storming 図です。
+このドキュメントは `workflow.yml` から自動生成された Event Storming 図です。
 業務フローを時系列で左から右に表現しています。
 
 ## Event Storming 図
@@ -224,7 +224,7 @@ graph LR
 
 ## Example
 
-### Input (feature.yml)
+### Input (workflow.yml)
 ```yaml
 actor:
   - name: 倉庫管理者
@@ -273,7 +273,7 @@ feature:
 - **終了**: 受注確定通知送信完了
 
 ## 概要
-このドキュメントは `feature.yml` から自動生成された Event Storming 図です。
+このドキュメントは `workflow.yml` から自動生成された Event Storming 図です。
 業務フローを時系列で左から右に表現しています。
 
 

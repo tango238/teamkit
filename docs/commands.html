@@ -85,7 +85,7 @@
                     <h1><span class="gradient-text">コマンド一覧</span></h1>
                     <p class="doc-lead">
                         Team Kit
-                        の全18コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
+                        の全16コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
                         Claude Code 上で
                         <code>/teamkit:&lt;command-name&gt;</code>
                         の形式で実行します。
@@ -94,15 +94,15 @@
                     <!-- Core Pipeline -->
                     <h2>コア生成パイプライン</h2>
                     <p>
-                        feature.yml から段階的に仕様書を生成するコマンド群です。
+                        workflow.yml から段階的に仕様書を生成するコマンド群です。
                     </p>
 
-                    <h3>create-feature</h3>
+                    <h3>generate-workflow</h3>
                     <p>
-                        README.md から機能要件を抽出し、feature.yml
+                        README.md から機能要件を抽出し、workflow.yml
                         を生成します。
                     </p>
-                    <pre><code>/teamkit:create-feature &lt;feature-name&gt;</code></pre>
+                    <pre><code>/teamkit:generate-workflow &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
@@ -116,7 +116,7 @@
                             <tr>
                                 <th>出力</th>
                                 <td>
-                                    <code>feature.yml</code>,
+                                    <code>workflow.yml</code>,
                                     <code>status.json</code>
                                 </td>
                             </tr>
@@ -130,39 +130,9 @@
                         </tbody>
                     </table>
 
-                    <h3>generate-story</h3>
-                    <p>feature.yml からユーザーストーリーを生成します。</p>
-                    <pre><code>/teamkit:generate-story &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td>
-                                    <code>feature.yml</code>,
-                                    <code>check.md</code>（存在する場合）
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>story.yml</code></td>
-                            </tr>
-                            <tr>
-                                <th>形式</th>
-                                <td>
-                                    [アクター]として、[目的]のために[機能]を利用したい
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        <code>check.md</code> の
-                        <code>[x]</code>
-                        完了項目がある場合、その内容が優先的に反映されます。
-                    </p>
-
                     <h3>generate-usecase</h3>
                     <p>
-                        ストーリーからロバストネス分析に基づくユースケースを生成します。
+                        ワークフローからロバストネス分析に基づくユースケースを生成します。
                     </p>
                     <pre><code>/teamkit:generate-usecase &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
@@ -170,8 +140,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>story.yml</code>,
-                                    <code>check.md</code>（存在する場合）
+                                    <code>workflow.yml</code>
                                 </td>
                             </tr>
                             <tr>
@@ -193,9 +162,7 @@
                             <tr>
                                 <th>入力</th>
                                 <td>
-                                    <code>story.yml</code>,
-                                    <code>usecase.yml</code>,
-                                    <code>check.md</code>（存在する場合）
+                                    <code>usecase.yml</code>
                                 </td>
                             </tr>
                             <tr>
@@ -279,8 +246,8 @@
 
                     <h3>create-mock</h3>
                     <p>
-                        generate-story から generate-mock
-                        までの5ステップを自動的に順次実行します。
+                        generate-usecase から generate-mock
+                        までの4ステップを自動的に順次実行します。
                     </p>
                     <pre><code>/teamkit:create-mock &lt;feature-name&gt;</code></pre>
                     <table class="doc-table">
@@ -288,7 +255,7 @@
                             <tr>
                                 <th>実行順序</th>
                                 <td>
-                                    generate-story → generate-usecase →
+                                    generate-usecase →
                                     generate-ui → generate-screenflow →
                                     generate-mock
                                 </td>
@@ -302,40 +269,12 @@
                         </tbody>
                     </table>
                     <p>
-                        feature.yml が存在しない場合は、先に create-feature
+                        workflow.yml が存在しない場合は、先に generate-workflow
                         を実行します。
                     </p>
 
                     <!-- Quality Management -->
                     <h2>品質管理</h2>
-
-                    <h3>check</h3>
-                    <p>
-                        feature.yml
-                        の整合性を検査し、問題点をリストアップします。
-                    </p>
-                    <pre><code>/teamkit:check &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td><code>feature.yml</code></td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>check.md</code></td>
-                            </tr>
-                            <tr>
-                                <th>検査内容</th>
-                                <td>
-                                    論理的整合性、記述の曖昧さ、重複、改善提案、カバレッジ
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        YAML ファイルは変更しません。問題の報告のみを行います。
-                    </p>
 
                     <h3>feedback</h3>
                     <p>フィードバックを分析し、影響範囲とTODOを生成します。</p>
@@ -387,28 +326,6 @@
                                 <td>
                                     バージョン更新、差分表示、承認ドキュメント作成
                                 </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <h3>update-feature</h3>
-                    <p>
-                        check.md の <code>[o]</code> マーカー付きTODOを
-                        feature.yml に適用します。
-                    </p>
-                    <pre><code>/teamkit:update-feature &lt;feature-name&gt;</code></pre>
-                    <table class="doc-table">
-                        <tbody>
-                            <tr>
-                                <th>入力</th>
-                                <td>
-                                    <code>check.md</code>（<code>[o]</code>
-                                    マーカー付きTODO）
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>出力</th>
-                                <td><code>feature.yml</code> の更新</td>
                             </tr>
                         </tbody>
                     </table>
@@ -514,7 +431,7 @@
 
                     <h3>show-event</h3>
                     <p>
-                        feature.yml
+                        workflow.yml
                         からイベントストーミング図（Mermaid形式）を生成します。
                     </p>
                     <pre><code>/teamkit:show-event &lt;feature-name&gt;</code></pre>
@@ -522,7 +439,7 @@
                         <tbody>
                             <tr>
                                 <th>入力</th>
-                                <td><code>feature.yml</code></td>
+                                <td><code>workflow.yml</code></td>
                             </tr>
                             <tr>
                                 <th>出力</th>
@@ -596,7 +513,7 @@
                             <tr>
                                 <th>コマンド→ステップ対応</th>
                                 <td>
-                                    create-feature→feature, generate-story→story
+                                    generate-workflow→workflow, generate-usecase→usecase
                                     等
                                 </td>
                             </tr>
