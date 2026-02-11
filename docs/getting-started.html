@@ -103,7 +103,7 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
                     <p>
                         インストールスクリプトは
                         <code>.claude/commands/teamkit/</code>
-                        ディレクトリに全18コマンドファイルをコピーします。
+                        ディレクトリに全16コマンドファイルをコピーします。
                     </p>
 
                     <h2>クイックスタート</h2>
@@ -137,7 +137,7 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 
                     <h3>2. モックアップを一括生成</h3>
                     <pre><code>/teamkit:create-mock YourFeature</code></pre>
-                    <p>feature → story → usecase → UI → screenflow → mock HTML の5ステップを自動的に順次実行します。</p>
+                    <p>workflow → usecase → UI → screenflow → mock HTML の4ステップを自動的に順次実行します。</p>
                     <p>
                         生成後、<code>specs/YourFeature/mock/index.html</code>
                         をブラウザで開いてモックアップを確認できます。
@@ -151,13 +151,11 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
                     </p>
                     <pre><code>specs/YourFeature/
 ├── README.md          # 要件定義（手動作成）
-├── feature.yml        # 機能要件定義
-├── story.yml          # ユーザーストーリー
+├── workflow.yml       # ワークフロー定義
 ├── usecase.yml        # ユースケース（ロバストネス分析）
 ├── ui.yml             # UI定義（画面・フィールド・アクション）
 ├── screenflow.md      # 画面遷移図
 ├── status.json        # バージョン管理
-├── check.md           # 整合性チェック結果
 ├── feedback.md        # フィードバック
 ├── eventstorming.md   # イベントストーミング図
 └── mock/

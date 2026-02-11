@@ -1,5 +1,5 @@
 ---
-description: Generate use cases from stories and check list
+description: Generate use cases from workflow and check list
 allowed-tools: Bash, Read, Write, Edit, Grep, Glob
 argument-hint: <specDir> [--tmp]
 ---
@@ -27,24 +27,24 @@ Execute the following instructions using `baseDir` and `specDir`.
 # Use Case Generation Command
 
 ## Purpose
-Extract use cases from `{{baseDir}}/{{specDir}}/story.yml` and `{{baseDir}}/{{specDir}}/check.md`, and document them in YAML format based on **Robustness Analysis**.
-Ensure all stories in `story.yml` are covered (Tracking is mandatory).
+Extract use cases from `{{baseDir}}/{{specDir}}/workflow.yml` and document them in YAML format based on **Robustness Analysis**.
+Ensure all features in `workflow.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
 ### 1. Pre-check
 
-- **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+- **Target Files**:
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Check Status (Direct Read - No SlashCommand)
 
 1. Read `{{baseDir}}/{{specDir}}/status.json`
-2. Extract `version` from the `story` step in the `steps` array
+2. Extract `version` from the `workflow` step in the `steps` array
 3. Set this as `{{targetVersion}}`
 4. Extract `version` from the `usecase` step - this is `{{currentVersion}}`
 5. **Validation**:
@@ -54,8 +54,7 @@ Ensure all stories in `story.yml` are covered (Tracking is mandatory).
 
 ### 3. Read Input Files
 Read the following files and understand their content:
--   `{{baseDir}}/{{specDir}}/story.yml`: List of user stories
--   `{{baseDir}}/{{specDir}}/check.md`: Feature validation items
+-   `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions and scenarios
 
 ### 4. Use Case Creation Policy (Robustness Analysis)
 
@@ -87,8 +86,7 @@ usecases:
       - [Related User Story 1]
       - [Related User Story 2]
     trackings:
-     - "story.yml:[Line] - [Summary]"
-     - "check.md:[Line] - [Summary]"
+     - "workflow.yml:[Line] - [Summary]"
     actor: 
       name: "[Actor Name]" 
       as: [ActorAlias]
@@ -116,7 +114,7 @@ usecases:
 ```
 
 **Rules**:
--   **`trackings` is MANDATORY**. You must explicitly state which line in `story.yml` (and `check.md` if applicable) is being covered.
+-   **`trackings` is MANDATORY**. You must explicitly state which line in `workflow.yml` is being covered.
 -   Use `-->` for arrows in steps.
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.
@@ -125,9 +123,9 @@ usecases:
 ### 6. Verification (Self-Correction)
 
 **After generating the initial list of use cases, perform a check:**
-1.  Review `story.yml` and ensure **EVERY** story is referenced in the `trackings` of at least one use case.
-2.  If any story is missing, create an additional use case to cover it.
-3.  Ensure no "orphan" stories are left behind.
+1.  Review `workflow.yml` and ensure **EVERY** feature scenario is referenced in the `trackings` of at least one use case.
+2.  If any feature scenario is missing, create an additional use case to cover it.
+3.  Ensure no "orphan" features are left behind.
 
 ### 7. File Saving
 - **Determine Output Filename**:
@@ -156,12 +154,19 @@ usecases:
 
 ## Execution Example
 
-### Input Example (story.yml)
+### Input Example (workflow.yml)
 ```yaml
-stories:
-  - feature: 契約管理
-    actor: ホスト
-    story: サービスを利用開始するために、契約を申し込みたい
+feature:
+  - name: 契約管理
+    description: ホストがサービスを利用開始するための契約機能
+    scenarios:
+      - name: サービス契約の申し込みフロー
+        precondition: ホストがサービス利用を希望している
+        steps:
+          - サービス契約画面を開く
+          - 基本情報を入力する
+          - 契約内容を確認し確定する
+        postcondition: 契約が完了し管理アカウントが発行される
 ```
 
 ### Output Example (usecase.yml)
@@ -172,7 +177,7 @@ usecases:
     stories:
       - ホストとして、Spotlyサービスを利用開始するために、サービス契約を申し込み管理アカウントを作成したい
     trackings:
-     - "story.yml:5 - サービス契約を申し込み管理アカウントを作成"
+     - "workflow.yml:3 - 契約管理: サービス契約の申し込みフロー"
     actor: 
       name: "ホスト\n(スペース掲載者)" 
       as: Host1

@@ -38,11 +38,11 @@ Execute immediately without asking the user for confirmation.
 Verify that required files exist before proceeding:
 
 - **Target Files**: 
-  - `{{baseDir}}/{{specDir}}/feature.yml`
+  - `{{baseDir}}/{{specDir}}/workflow.yml`
   - `{{baseDir}}/{{specDir}}/status.json`
 
 - **Validation**:
-  - If any of these files do not exist → Display the message "Error: `status.json` or `feature.yml` does not exist. Please run /clean" and **STOP** execution.
+  - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean" and **STOP** execution.
 
 ### 2. Load Feedback File
 
@@ -85,13 +85,12 @@ For each TODO item marked with `[o]` or `[p]`, load the detailed information:
 Determine the next version number for tracking changes:
 
 1. Read `{{baseDir}}/{{specDir}}/status.json` directly (do NOT use slash commands)
-2. Extract the version numbers from:
-   - `steps[0].feature.version`
-   - `steps[1].story.version`
-   - `steps[2].usecase.version`
-   - `steps[3].ui.version`
-   - `steps[4].screenflow.version`
-   - `mock.version`
+2. Extract the version numbers by searching each object in the `steps` array by key name:
+   - Find the object with key `workflow` and extract its `version`
+   - Find the object with key `usecase` and extract its `version`
+   - Find the object with key `ui` and extract its `version`
+   - Find the object with key `screenflow` and extract its `version`
+   - Extract `mock.version` from the root level
 3. Find the maximum version among all values
 4. Add 1 to get **newVersionNumber**
 5. Display: `バージョン番号: {{newVersionNumber}}`
@@ -106,13 +105,12 @@ Process each specification file in the defined order. **Execute this process for
 
 Process files in the following order:
 
-| Order | File Name      | Step Name  | Approval File Name   | 
+| Order | File Name      | Step Name  | Approval File Name   |
 |-------|----------------|------------|----------------------|
 | 1     | screenflow.md  | screenflow | screenflow.md        |
 | 2     | ui.yml         | ui         | ui.md                |
 | 3     | usecase.yml    | usecase    | usecase.md           |
-| 4     | story.yml      | story      | story.md             |
-| 5     | feature.yml    | feature    | feature.md           |
+| 4     | workflow.yml   | workflow   | workflow.md          |
 
 For each file:
 - Load `{{baseDir}}/{{specDir}}/{{fileName}}`
@@ -216,12 +214,11 @@ Record the new version number in status.json for ALL steps:
 - **IMPORTANT: Update version for ALL steps, regardless of whether changes were applied to that file or not**
 - This ensures all specification files maintain synchronized version numbers
 - **Do NOT use `/teamkit:update-status` slash commands here** - directly edit the `status.json` file instead to avoid interruption
-- Edit `{{baseDir}}/{{specDir}}/status.json` directly:
-  - Update `steps[0].feature.version` to `{{newVersionNumber}}`
-  - Update `steps[1].story.version` to `{{newVersionNumber}}`
-  - Update `steps[2].usecase.version` to `{{newVersionNumber}}`
-  - Update `steps[3].ui.version` to `{{newVersionNumber}}`
-  - Update `steps[4].screenflow.version` to `{{newVersionNumber}}`
+- Edit `{{baseDir}}/{{specDir}}/status.json` directly by searching each object in the `steps` array by key name (do NOT rely on fixed array indices):
+  - Find the object with key `workflow` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `usecase` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `ui` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `screenflow` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Update `mock.version` to `{{newVersionNumber}}`
   - Update `updated_at` to current timestamp
   - Update `last_execution` to `apply-feedback`
@@ -262,7 +259,7 @@ Display the processing results:
 2. Find TODO items marked with `[o]`
 3. Load corresponding details from Summary section
 4. Read `status.json` directly and calculate new version number (max version + 1)
-5. For each file (screenflow.md, ui.yml, usecase.yml, story.yml, feature.yml):
+5. For each file (screenflow.md, ui.yml, usecase.yml, workflow.yml):
    - Load file
    - Plan modifications based on TODO items
    - Show diff preview
@@ -306,8 +303,7 @@ Diff:
 
 ✓ feedback.md のステータスを更新しました
 ✓ status.json を直接更新しました (version: 5)
-  - feature: 5
-  - story: 5
+  - workflow: 5
   - usecase: 5
   - ui: 5
   - screenflow: 5
@@ -316,7 +312,7 @@ Diff:
 
 処理完了:
 - 適用項目数: 2件
-- 更新ファイル: screenflow.md, ui.yml, usecase.yml, story.yml, feature.yml
+- 更新ファイル: screenflow.md, ui.yml, usecase.yml, workflow.yml
 - バージョン: 5 (全ステップ共通)
 ```
 

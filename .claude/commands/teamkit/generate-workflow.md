@@ -1,15 +1,15 @@
 ---
-description: Create feature.yml from README.md
+description: Create workflow.yml from README.md
 allowed-tools: Bash, Read, Write, Grep, Glob, LS
 argument-hint: <specDir>
 ---
 
 # Setup
 
-1.  **Set `commandName`**: `create-feature`
+1.  **Set `commandName`**: `generate-workflow`
 2.  **Set `baseDir`**: `specs`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/create-feature <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/generate-workflow <specDir>`" and **STOP** execution immediately.
 
 # Execution
 
@@ -17,7 +17,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 **IMPORTANT**:
 -   All output to the user (status messages, completion notifications) must be in **Japanese**.
--   The content of the generated YAML file (`feature.yml`) must be in **Japanese**.
+-   The content of the generated YAML file (`workflow.yml`) must be in **Japanese**.
 -   Do not ask for user confirmation before saving files.
 -   **Do NOT use SlashCommand tool to call other teamkit commands.** Execute all logic directly within this command.
 
@@ -42,7 +42,7 @@ Execute the following process immediately without asking for user confirmation.
 - **Action**:
   - If `status.json` exists:
     - Read `status.json`
-    - Get `steps[0].feature.version` as `currentVersion` (if not found, treat as `0`)
+    - Get `steps[0].workflow.version` as `currentVersion` (if not found, treat as `0`)
     - Calculate `diff = 1 - currentVersion`
     - If `diff > 1`: Display "エラー: バージョンが飛んでいます。現在のバージョン: {{currentVersion}}, 指定されたバージョン: 1" and **STOP**
     - If `diff <= 1`: Display "バージョンチェック: OK (現在: {{currentVersion}} -> 次: 1)" and proceed to Step 3
@@ -72,7 +72,7 @@ Extract features from the content of README.md considering the following:
 - ❌ Ambiguous: "Order Management"
 - ❌ Technical Implementation: "Database CRUD Operations"
 
-### 5. Generate YAML File (feature.yml)
+### 5. Generate YAML File (workflow.yml)
 
 **Output Format**:
 ```yaml
@@ -143,7 +143,7 @@ feature:
 -   ❌ 「バリデーションエラーを表示する」（技術的な処理、アクター視点ではない）
 
 ### 6. Save File
-- Save the generated content as `{{baseDir}}/{{specDir}}/feature.yml`.
+- Save the generated content as `{{baseDir}}/{{specDir}}/workflow.yml`.
 - Execute the save automatically without asking for user confirmation.
 
 ### 7. Create or Update Status File
@@ -159,21 +159,14 @@ feature:
     "created_at": "{{currentTime}}",
     "updated_at": "{{currentTime}}",
     "language": "Japanese",
-    "last_execution": "create-feature",
+    "last_execution": "generate-workflow",
     "readme": {
         "checksum": "{{README checksum}}",
         "last_modified": "{{README mtime}}"
     },
     "steps": [
         {
-            "feature": {
-                "version": 0,
-                "checksum": "",
-                "last_modified": ""
-            }
-        },
-        {
-            "story": {
+            "workflow": {
                 "version": 0,
                 "checksum": "",
                 "last_modified": ""
@@ -210,21 +203,21 @@ feature:
 
 - **If `status.json` already exists**: Proceed to Step 8.
 
-### 8. Update Status (Feature Version)
+### 8. Update Status (Workflow Version)
 - Read `{{baseDir}}/{{specDir}}/status.json`
-- Retrieve the checksum of `feature.yml` using `md5 -q`
-- Retrieve the mtime of `feature.yml` using `stat -f "%Sm" -t "%Y-%m-%dT%H:%M:%S"`
+- Retrieve the checksum of `workflow.yml` using `md5 -q`
+- Retrieve the mtime of `workflow.yml` using `stat -f "%Sm" -t "%Y-%m-%dT%H:%M:%S"`
 - Get the current time using `date -u +"%Y-%m-%dT%H:%M:%SZ"`
 - Update `status.json` with:
   - `updated_at`: current time
-  - `last_execution`: `create-feature`
-  - `steps[0].feature.version`: `1`
-  - `steps[0].feature.checksum`: checksum of `feature.yml`
-  - `steps[0].feature.last_modified`: mtime of `feature.yml`
+  - `last_execution`: `generate-workflow`
+  - `steps[0].workflow.version`: `1`
+  - `steps[0].workflow.checksum`: checksum of `workflow.yml`
+  - `steps[0].workflow.last_modified`: mtime of `workflow.yml`
 - Save the updated `status.json`
 
 ### 9. Completion
-- Display completion message: "feature.yml の作成が完了しました。"
+- Display completion message: "workflow.yml の作成が完了しました。"
 - Display summary of extracted features (feature names list)
 
 ## Execution Example
@@ -237,7 +230,7 @@ Allows creating, editing, and canceling orders.
 Includes automatic notification to customers.
 ```
 
-### Output (feature.yml)
+### Output (workflow.yml)
 ```yaml
 actor:
   - name: 倉庫管理者

@@ -38,7 +38,7 @@ Execute the following process immediately without requesting user confirmation.
 ### 2. Validate Version
 - Retrieve the current version for the corresponding `commandName` from `status.json`.
   - For `mock`: Reference root-level `mock.version`.
-  - For others: Reference `version` of the corresponding key (e.g., `feature`, `story`) under `steps`.
+  - For others: Reference `version` of the corresponding key (e.g., `workflow`, `usecase`) under `steps`.
 - **Validation logic**:
   - If current version = 0: Proceed to next step.
   - If current version > `versionNumber` (argument): Display error message "The specified version ({{versionNumber}}) is less than the current version." and terminate.
@@ -46,8 +46,7 @@ Execute the following process immediately without requesting user confirmation.
 
 ### 3. Update Status
 - Identify the target file path:
-  - `feature` → `feature.yml`
-  - `story` → `story.yml`
+  - `workflow` → `workflow.yml`
   - `usecase` → `usecase.yml`
   - `ui` → `ui.yml`
   - `screenflow` → `screenflow.md`
@@ -55,8 +54,7 @@ Execute the following process immediately without requesting user confirmation.
 - Command to step mapping:
   | Command Name         | Corresponding Step |
   |---------------------|-------------------|
-  | create-feature      | feature           |
-  | generate-story      | story             |
+  | generate-workflow   | workflow          |
   | generate-usecase    | usecase           |
   | generate-ui         | ui                |
   | generate-screenflow | screenflow        |
@@ -86,14 +84,14 @@ Display the result in the following format:
 
 ### Input
 ```bash
-/teamkit:update-status FacilityManagement generate-story 2
+/teamkit:update-status FacilityManagement generate-usecase 2
 ```
 
 ### Output Example
 
 ```
 ステータス: 成功
-コマンド: generate-story
+コマンド: generate-usecase
 バージョン: 2
 日時: 2025-11-24T16:55:32+09:00
 メッセージ: ステータスを更新しました。

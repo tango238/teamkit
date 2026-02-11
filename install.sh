@@ -164,19 +164,16 @@ get_file() {
 COMMAND_FILES=(
     "apply-feedback.md"
     "check-status.md"
-    "check.md"
-    "create-feature.md"
     "create-mock.md"
     "feedback.md"
     "generate-mock.md"
     "generate-screenflow.md"
-    "generate-story.md"
     "generate-ui.md"
     "generate-usecase.md"
+    "generate-workflow.md"
     "get-step-info.md"
     "app-init.md"
     "show-event.md"
-    "update-feature.md"
     "update-status.md"
     "create-app.md"
     "design-app.md"
@@ -199,6 +196,27 @@ should_overwrite() {
         return 1  # スキップする
     fi
 }
+
+# 廃止されたコマンドファイルの削除（アップグレード時の互換性対応）
+DEPRECATED_FILES=(
+    "create-feature.md"
+    "generate-story.md"
+    "update-feature.md"
+    "check.md"
+)
+
+deprecated_found=false
+for file in "${DEPRECATED_FILES[@]}"; do
+    target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
+    if [ -f "$target_file" ]; then
+        if [ "$deprecated_found" = false ]; then
+            echo -e "${YELLOW}廃止されたコマンドファイルを削除中...${NC}"
+            deprecated_found=true
+        fi
+        rm "$target_file"
+        echo -e "  ${GREEN}✓${NC} $file を削除しました"
+    fi
+done
 
 # .claude/commands/teamkit/ 以下の全ファイルを処理
 echo -e "${YELLOW}ファイルをダウンロード中...${NC}"
@@ -305,5 +323,5 @@ echo "  - 「フィードバック：〇〇」 → フィードバック登録�
 echo "  - 「フィードバックを適用」 → フィードバック一括適用"
 echo ""
 echo -e "${BLUE}利用可能なコマンド:${NC}"
-echo "  /teamkit:create-feature, /teamkit:create-mock, /teamkit:feedback,"
+echo "  /teamkit:generate-workflow, /teamkit:create-mock, /teamkit:feedback,"
 echo "  /teamkit:apply-feedback, /teamkit:design-app, etc."

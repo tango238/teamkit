@@ -39,9 +39,7 @@ If a gap is detected (difference > 1), display an error and stop execution.
   - **Mapping Rule**:
     | Command Name        | Corresponding Step |
     |---------------------|--------------------|
-    | create-feature      | feature            |
-    | update-feature      | feature            |
-    | generate-story      | story              |
+    | generate-workflow   | workflow           |
     | generate-usecase    | usecase            |
     | generate-ui         | ui                 |
     | generate-screenflow | screenflow         |
@@ -52,7 +50,7 @@ If a gap is detected (difference > 1), display an error and stop execution.
   - If `commandName` corresponds to `<none>`, output "検証対象外のコマンドです" and **EXIT** successfully.
   - Retrieve the current version from `status.json`:
     - For `mock`: Reference root-level `mock.version`.
-    - For others: Reference `version` of the corresponding key (e.g., `steps.feature.version`) under `steps`.
+    - For others: Reference `version` of the corresponding key (e.g., `steps.workflow.version`) under `steps`.
   - If the step does not exist in `status.json` (first time), treat current version as `0`.
 
 ### 3. Validate Version Gap
@@ -74,7 +72,7 @@ If a gap is detected (difference > 1), display an error and stop execution.
 ### Example 1: Normal Increment
 **Input**:
 Current Version: 1
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 2`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 2`
 
 **Output**:
 ```
@@ -84,7 +82,7 @@ Command: `/teamkit:check-status 1_FacilityManagement generate-story 2`
 ### Example 2: Gap Detected (Error)
 **Input**:
 Current Version: 1
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 3`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 3`
 
 **Output**:
 ```
@@ -94,7 +92,7 @@ Command: `/teamkit:check-status 1_FacilityManagement generate-story 3`
 ### Example 3: First Run (Current=0)
 **Input**:
 Current Version: 0 (Not in status.json)
-Command: `/teamkit:check-status 1_FacilityManagement generate-story 1`
+Command: `/teamkit:check-status 1_FacilityManagement generate-usecase 1`
 
 **Output**:
 ```
