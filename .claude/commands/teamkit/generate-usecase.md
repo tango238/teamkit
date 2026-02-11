@@ -28,7 +28,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 ## Purpose
 Extract use cases from `{{baseDir}}/{{specDir}}/workflow.yml` and document them in YAML format based on **Robustness Analysis**.
-Ensure all features in `workflow.yml` are covered (Tracking is mandatory).
+Ensure all workflows in `workflow.yml` are covered (Tracking is mandatory).
 
 ## Execution Steps
 
@@ -54,7 +54,7 @@ Ensure all features in `workflow.yml` are covered (Tracking is mandatory).
 
 ### 3. Read Input Files
 Read the following files and understand their content:
--   `{{baseDir}}/{{specDir}}/workflow.yml`: Feature definitions and scenarios
+-   `{{baseDir}}/{{specDir}}/workflow.yml`: Workflow definitions with structured steps (actor, activity, aggregate, event, policy)
 
 ### 4. Use Case Creation Policy (Robustness Analysis)
 
@@ -75,7 +75,7 @@ Instead of just listing steps, identify the **Actor**, **Boundary**, **Control**
 ### 5. Generate Use Cases
 
 Generate the content for `usecase.yml` following the format below.
-**Group by Use Case**, not by Feature.
+**Group by Use Case**, not by Workflow.
 
 **Output Format**:
 ```yaml
@@ -119,13 +119,15 @@ usecases:
 -   Aliases (as) should be short English identifiers (e.g., Host1, LoginUI).
 -   Names should be descriptive in Japanese.
 -   `usecase` key should be empty (null).
+-   **Actor extraction**: Use the `actor` field from workflow steps directly. Actors defined in workflow steps map to the Actor element in Robustness Analysis.
+-   **Entity extraction**: Use the `aggregate` field from workflow steps as candidates for Entity elements.
 
 ### 6. Verification (Self-Correction)
 
 **After generating the initial list of use cases, perform a check:**
-1.  Review `workflow.yml` and ensure **EVERY** feature scenario is referenced in the `trackings` of at least one use case.
-2.  If any feature scenario is missing, create an additional use case to cover it.
-3.  Ensure no "orphan" features are left behind.
+1.  Review `workflow.yml` and ensure **EVERY** workflow is referenced in the `trackings` of at least one use case.
+2.  If any workflow is missing, create an additional use case to cover it.
+3.  Ensure no "orphan" workflows are left behind.
 
 ### 7. File Saving
 - **Determine Output Filename**:
@@ -156,17 +158,36 @@ usecases:
 
 ### Input Example (workflow.yml)
 ```yaml
-feature:
-  - name: 契約管理
-    description: ホストがサービスを利用開始するための契約機能
-    scenarios:
-      - name: サービス契約の申し込みフロー
-        precondition: ホストがサービス利用を希望している
-        steps:
-          - サービス契約画面を開く
-          - 基本情報を入力する
-          - 契約内容を確認し確定する
-        postcondition: 契約が完了し管理アカウントが発行される
+actor:
+  - name: ホスト
+    description: スペース掲載者としてサービスを利用するユーザー
+
+aggregate:
+  - 契約
+  - ホストアカウント
+
+workflow:
+  - name: サービス契約の申し込みフロー
+    description: ホストがサービスを利用開始するための契約申し込みフロー
+    trigger: ホストがサービス利用を希望する
+    precondition: ホストがサービス利用を希望している
+    steps:
+      - actor: ホスト
+        activity: サービス契約画面を開く
+        aggregate: 契約
+      - actor: ホスト
+        activity: 基本情報を入力する
+        aggregate: 契約
+      - actor: ホスト
+        activity: 契約内容を確認し確定する
+        aggregate: 契約
+        event: 契約が作成された
+      - actor: system
+        activity: 管理アカウントを発行する
+        aggregate: ホストアカウント
+        event: アカウントが発行された
+        policy: アカウント自動発行ポリシー
+    postcondition: 契約が完了し管理アカウントが発行される
 ```
 
 ### Output Example (usecase.yml)
