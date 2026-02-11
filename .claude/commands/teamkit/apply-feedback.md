@@ -85,12 +85,12 @@ For each TODO item marked with `[o]` or `[p]`, load the detailed information:
 Determine the next version number for tracking changes:
 
 1. Read `{{baseDir}}/{{specDir}}/status.json` directly (do NOT use slash commands)
-2. Extract the version numbers from:
-   - `steps[0].workflow.version`
-   - `steps[1].usecase.version`
-   - `steps[2].ui.version`
-   - `steps[3].screenflow.version`
-   - `mock.version`
+2. Extract the version numbers by searching each object in the `steps` array by key name:
+   - Find the object with key `workflow` and extract its `version`
+   - Find the object with key `usecase` and extract its `version`
+   - Find the object with key `ui` and extract its `version`
+   - Find the object with key `screenflow` and extract its `version`
+   - Extract `mock.version` from the root level
 3. Find the maximum version among all values
 4. Add 1 to get **newVersionNumber**
 5. Display: `バージョン番号: {{newVersionNumber}}`
@@ -214,11 +214,11 @@ Record the new version number in status.json for ALL steps:
 - **IMPORTANT: Update version for ALL steps, regardless of whether changes were applied to that file or not**
 - This ensures all specification files maintain synchronized version numbers
 - **Do NOT use `/teamkit:update-status` slash commands here** - directly edit the `status.json` file instead to avoid interruption
-- Edit `{{baseDir}}/{{specDir}}/status.json` directly:
-  - Update `steps[0].workflow.version` to `{{newVersionNumber}}`
-  - Update `steps[1].usecase.version` to `{{newVersionNumber}}`
-  - Update `steps[2].ui.version` to `{{newVersionNumber}}`
-  - Update `steps[3].screenflow.version` to `{{newVersionNumber}}`
+- Edit `{{baseDir}}/{{specDir}}/status.json` directly by searching each object in the `steps` array by key name (do NOT rely on fixed array indices):
+  - Find the object with key `workflow` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `usecase` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `ui` in `steps` and update its `version` to `{{newVersionNumber}}`
+  - Find the object with key `screenflow` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Update `mock.version` to `{{newVersionNumber}}`
   - Update `updated_at` to current timestamp
   - Update `last_execution` to `apply-feedback`

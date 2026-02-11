@@ -197,6 +197,27 @@ should_overwrite() {
     fi
 }
 
+# 廃止されたコマンドファイルの削除（アップグレード時の互換性対応）
+DEPRECATED_FILES=(
+    "create-feature.md"
+    "generate-story.md"
+    "update-feature.md"
+    "check.md"
+)
+
+deprecated_found=false
+for file in "${DEPRECATED_FILES[@]}"; do
+    target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
+    if [ -f "$target_file" ]; then
+        if [ "$deprecated_found" = false ]; then
+            echo -e "${YELLOW}廃止されたコマンドファイルを削除中...${NC}"
+            deprecated_found=true
+        fi
+        rm "$target_file"
+        echo -e "  ${GREEN}✓${NC} $file を削除しました"
+    fi
+done
+
 # .claude/commands/teamkit/ 以下の全ファイルを処理
 echo -e "${YELLOW}ファイルをダウンロード中...${NC}"
 
