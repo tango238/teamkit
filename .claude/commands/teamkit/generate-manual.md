@@ -24,7 +24,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 ## Mission
 
-Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, and generate a comprehensive user operation manual in Markdown format. The manual should enable end users to understand and operate all features of the system.
+Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, and generate a comprehensive user operation manual in **Marp-compatible Markdown format**. The manual should enable end users to understand and operate all features of the system, and can be directly converted to A4-sized HTML/PDF via Marp CLI.
 
 **IMPORTANT**: Execute the following steps immediately without asking the user for confirmation.
 
@@ -65,93 +65,139 @@ Read the following files and understand their content:
 
 ### 4. Generate Manual
 
-Generate the manual following the structure and rules below.
+Generate the manual in **Marp-compatible Markdown format** following the structure and rules below.
 
-#### Output Structure
+#### 4-1. Marp Front Matter
+
+The file MUST begin with the following Marp front matter. Replace `【Feature Name】` with the actual feature name extracted from `README.md`.
 
 ```markdown
-# 【Feature Name】操作マニュアル
-
-## 目次
-- [1. 概要](#1-概要)
-- [2. 画面一覧](#2-画面一覧)
-- [3. 操作手順](#3-操作手順)
-- [4. 入力ルール](#4-入力ルール)
-- [5. 画面遷移](#5-画面遷移)
-- [6. 注意事項](#6-注意事項)
-
-## 1. 概要
-
-### 1.1 機能の目的
-[README.md から抽出した機能の目的・背景]
-
-### 1.2 対象ユーザー
-[usecase.yml の actor 情報から抽出]
-
-| ロール | 説明 |
-|--------|------|
-| ロール名 | そのロールの責務 |
-
-## 2. 画面一覧
-
-### 2.1 【アクター名】向け画面
-
-| # | 画面名 | 用途 | 主な操作 |
-|---|--------|------|----------|
-| 1 | 画面名 | 目的 | アクション一覧 |
-
-## 3. 操作手順
-
-### 3.1 【ユースケース名】
-
-**前提条件**: [usecase.yml の before]
-
-**操作手順**:
-
-1. **【画面名】を開く**
-   - [画面へのアクセス方法]
-
-2. **【操作内容】**
-   - 入力項目:
-     | 項目名 | 必須 | 入力形式 | 説明 |
-     |--------|------|----------|------|
-     | フィールド名 | ○/- | text/select等 | バリデーション含む説明 |
-   - 注意事項: [特記事項があれば]
-
-3. **【ボタン操作】**
-   - [ボタン名]をクリック → [遷移先・結果]
-
-**完了条件**: [usecase.yml の after]
-
 ---
-
-[上記パターンを全ユースケースについて繰り返す]
-
-## 4. 入力ルール
-
-### 4.1 バリデーション一覧
-
-| 画面名 | 項目名 | ルール | エラー時の動作 |
-|--------|--------|--------|----------------|
-| 画面名 | フィールド名 | バリデーション内容 | エラーメッセージ等 |
-
-### 4.2 共通ルール
-[ui.yml の validations セクションから抽出]
-
-## 5. 画面遷移
-
-### 5.1 メインフロー
-[screenflow.md の主要フローを簡潔に記述]
-
-### 5.2 主要な画面遷移
-
-| 操作 | 遷移元 | 遷移先 | 条件 |
-|------|--------|--------|------|
-| ボタン名 | 画面A | 画面B | 条件があれば |
-
-## 6. 注意事項
-[業務上の注意点、制約事項など]
+marp: true
+theme: default
+size: A4
+paginate: true
+header: "【Feature Name】操作マニュアル"
+footer: ""
+style: |
+  section {
+    font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", sans-serif;
+    font-size: 16px;
+    padding: 40px;
+  }
+  h1 {
+    font-size: 28px;
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+  }
+  h2 {
+    font-size: 22px;
+    color: #007bff;
+  }
+  h3 {
+    font-size: 18px;
+    color: #555;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th {
+    background: #007bff;
+    color: white;
+    padding: 8px 12px;
+    text-align: left;
+  }
+  td {
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+  }
+  tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+  header {
+    font-size: 12px;
+    color: #999;
+  }
+  footer {
+    font-size: 10px;
+    color: #999;
+  }
+---
 ```
+
+#### 4-2. Slide Structure Rules
+
+1. **Title Slide** (first slide): Create from the feature name
+   ```markdown
+   # 【Feature Name】操作マニュアル
+
+   **Version**: 1.0
+   **Date**: {{current date in YYYY-MM-DD}}
+   ```
+
+2. **Table of Contents Slide**: Insert `---` separator, then the table of contents
+
+3. **Section Separators**: Insert Marp slide separators (`---`) at each `## heading` boundary
+   - Each `## heading` starts a new slide
+   - If a section is too long (contains multiple `### headings`), split it into multiple slides at each `### heading`
+
+4. **Long Content Handling**:
+   - If a single section has more than 30 lines of content, split it across multiple slides
+   - Add a continuation marker like "（続き）" in the heading for continuation slides
+
+5. **Tables**: Write tables in standard Markdown format (Marp renders them natively)
+
+#### 4-3. Content Structure
+
+The manual content across slides should cover the following sections:
+
+```
+Slide: Title
+Slide: 目次
+Slide(s): 1. 概要 (機能の目的, 対象ユーザー)
+Slide(s): 2. 画面一覧 (アクター別)
+Slide(s): 3. 操作手順 (ユースケースごと)
+Slide(s): 4. 入力ルール (バリデーション一覧, 共通ルール)
+Slide(s): 5. 画面遷移 (メインフロー, 遷移表)
+Slide(s): 6. 注意事項
+```
+
+**Section details:**
+
+**1. 概要**
+- 1.1 機能の目的: Extract from `README.md`
+- 1.2 対象ユーザー: Extract actor info from `usecase.yml`
+  | ロール | 説明 |
+  |--------|------|
+
+**2. 画面一覧** (grouped by actor)
+  | # | 画面名 | 用途 | 主な操作 |
+  |---|--------|------|----------|
+
+**3. 操作手順** (one or more slides per use case)
+- **前提条件**: from `usecase.yml` `before`
+- **操作手順**: numbered steps with screen names, input fields table, button actions
+  | 項目名 | 必須 | 入力形式 | 説明 |
+  |--------|------|----------|------|
+- **完了条件**: from `usecase.yml` `after`
+
+**4. 入力ルール**
+- バリデーション一覧 table
+  | 画面名 | 項目名 | ルール | エラー時の動作 |
+  |--------|--------|--------|----------------|
+- 共通ルール from `ui.yml` validations
+
+**5. 画面遷移**
+- メインフロー summary from `screenflow.md`
+- 遷移表
+  | 操作 | 遷移元 | 遷移先 | 条件 |
+  |------|--------|--------|------|
+
+**6. 注意事項**
+- Business-level notes and constraints
 
 #### Generation Rules
 
@@ -171,7 +217,7 @@ Generate the manual following the structure and rules below.
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
-1. Get the MD5 checksum of the saved file: `md5 -q {{baseDir}}/{{specDir}}/manual.md`
+1. Get the MD5 checksum of the saved file: `md5sum {{baseDir}}/{{specDir}}/manual.md | awk '{print $1}'`
 2. Get current timestamp in ISO format: `date -u +"%Y-%m-%dT%H:%M:%S"`
 3. Read `{{baseDir}}/{{specDir}}/status.json`
 4. Check if `manual` entry exists in `steps`:
@@ -195,3 +241,6 @@ Generate the manual following the structure and rules below.
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
+- [ ] Marp front matter includes `marp: true` and `size: A4`
+- [ ] Slide separators (`---`) are placed at `##` heading boundaries
+- [ ] Long sections are split across multiple slides with "（続き）" markers
