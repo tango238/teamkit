@@ -51,10 +51,14 @@ The diagram is optimized for pasting into Miro's Mermaid app and follows the Eve
   - `actor` - List of actors with name and description
   - `external_system` - List of external systems with name and description
   - `aggregate` - List of aggregate names
-  - `feature` - List of features containing:
-    - `name` - Feature name
-    - `events` - List of domain events
-    - `policy` - List of policies with trigger and action
+  - `workflow` - List of workflows containing:
+    - `name` - Workflow name
+    - `steps` - List of steps, each with:
+      - `actor` - Who performs this step (actor name, external system name, or `system`)
+      - `activity` - What is done in this step
+      - `aggregate` - (optional) Target aggregate
+      - `event` - (optional) Domain event produced (past tense)
+      - `policy` - (optional) Policy name for automated steps
 
 ### 3. Generate Mermaid Diagram
 
@@ -115,7 +119,7 @@ graph LR
 
 2. **Layout Structure (Left to Right Timeline)**:
    - Start with a Pivotal Event marking the process beginning
-   - Flow through events chronologically based on feature order
+   - Flow through events chronologically based on workflow step order
    - Place actors ABOVE or connected to the aggregates/events they interact with
    - Place external systems where they are invoked in the flow
    - End with a Pivotal Event marking the process completion
@@ -151,18 +155,21 @@ graph LR
 
 Analyze the workflow.yml to determine the **chronological business process**:
 
-1. **Identify Start Point**: What event initiates the entire process?
-2. **Trace Feature Sequence**: Order features by their logical sequence in the business process
+1. **Identify Start Point**: What event initiates the entire process? (Use `workflow[].trigger`)
+2. **Trace Workflow Steps**: Follow steps in order within each workflow, extracting events and policies
 3. **Map Decision Points**: Identify where the flow branches (e.g., approval/rejection, with-loss/without-loss)
 4. **Identify End Points**: What event(s) mark completion?
 
 **Flow Analysis Steps**:
-1. Find the triggering event (often in the first feature)
-2. Follow each event → policy → action chain
-3. Identify which actors are involved at each step
-4. Note where external systems are called
+1. Find the triggering event from `workflow[].trigger`
+2. Walk through `workflow[].steps` in order:
+   - Steps with `event` → place as domain events on the timeline
+   - Steps with `policy` → show as policy nodes connecting events to actions
+   - Steps with `actor: system` or external system → show automated processing
+3. Identify which actors are involved at each step (from `step.actor`)
+4. Note where external systems are called (steps where `actor` matches an `external_system` name)
 5. Mark pivotal events (major milestones)
-6. Show the complete flow with branches
+6. Show the complete flow with branches across multiple workflows
 
 ### 5. Save File
 - Save the generated Mermaid diagram as `{{baseDir}}/{{specDir}}/eventstorming.md`
@@ -238,28 +245,32 @@ aggregate:
   - 受注
   - 在庫
 
-feature:
-  - name: 受注の作成・編集・キャンセル
-    description: 受注を管理する機能
-    events:
-      - 受注が作成された
-      - 受注がキャンセルされた
-    policy:
-      - name: 在庫引当ポリシー
-        trigger: 受注が作成された
-        action: 在庫を自動的に引き当てる
-      - name: 在庫戻しポリシー
-        trigger: 受注がキャンセルされた
-        action: 在庫を解放する
-
-  - name: 顧客への自動通知
-    description: 顧客にメール通知を送信する
-    events:
-      - 通知メールが送信された
-    policy:
-      - name: 受注確定通知ポリシー
-        trigger: 受注が作成された
-        action: 確認メールを送信する
+workflow:
+  - name: 電話受注から出荷指示までのフロー
+    description: 倉庫管理者が顧客からの電話注文を受けて出荷指示を作成するまでのフロー
+    trigger: 顧客から電話で注文を受ける
+    precondition: 倉庫管理者がログイン済み、在庫データが最新の状態
+    steps:
+      - actor: 倉庫管理者
+        activity: 顧客情報を検索・選択する
+        aggregate: 顧客
+      - actor: 倉庫管理者
+        activity: 注文商品と数量を入力し在庫状況を確認する
+        aggregate: 受注
+      - actor: 倉庫管理者
+        activity: 受注内容を確定する
+        aggregate: 受注
+        event: 受注が作成された
+      - actor: system
+        activity: 注文商品の在庫を引き当てる
+        aggregate: 在庫
+        event: 在庫が引き当てられた
+        policy: 在庫引当ポリシー
+      - actor: メール配信サービス
+        activity: 顧客に注文確認メールを送信する
+        event: 通知メールが送信された
+        policy: 受注確定通知ポリシー
+    postcondition: 受注が登録され、在庫が引当てられ、出荷指示が作成される
 ```
 
 ### Output (eventstorming.md)
