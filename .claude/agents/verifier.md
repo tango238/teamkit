@@ -162,6 +162,83 @@ done
 - 3ファイルすべてで `actor`, `activity` が必須フィールドとして扱われていること
 - 3ファイルすべてで `aggregate`, `event`, `policy` がオプションフィールドとして扱われていること
 
+### 6. Generate Command Idempotency Verification
+
+`generate` コマンドを2回連続実行しても、バージョンが1つしか上がらないことを検証する。
+
+#### 6-1. バージョンスキップロジックの検証
+
+各 generate-* コマンドの Check Status セクションで、バージョンスキップロジックが正しく実装されていることを確認する。
+
+**対象ファイル**: `generate-workflow.md`, `generate-usecase.md`, `generate-ui.md`, `generate-screenflow.md`, `generate-mock.md`, `generate-manual.md`, `generate-acceptance-test.md`
+
+各ファイルに以下のパターンが存在すること:
+- `currentVersion` >= `targetVersion` の場合に「スキップ」メッセージを表示して **STOP** する条件分岐
+
+```bash
+# 全 generate-* コマンドにスキップロジックがあること
+for f in generate-workflow.md generate-usecase.md generate-ui.md generate-screenflow.md generate-mock.md generate-manual.md generate-acceptance-test.md; do
+  echo "=== $f ==="
+  grep -c "スキップ" .claude/commands/teamkit/$f
+  grep -c "STOP" .claude/commands/teamkit/$f
+done
+```
+
+#### 6-2. バージョン依存チェーンの検証
+
+各ステップの targetVersion が前ステップの version から取得されていることを確認する:
+
+| コマンド | targetVersion の取得元 | currentVersion の取得元 |
+|---------|----------------------|----------------------|
+| generate-usecase | `workflow` step の version | `usecase` step の version |
+| generate-ui | `usecase` step の version | `ui` step の version |
+| generate-screenflow | `ui` step の version | `screenflow` step の version |
+| generate-mock | `screenflow` step の version | `mock` section の version |
+| generate-manual | `screenflow` step の version | `manual` step の version |
+| generate-acceptance-test | `ui` step の version | `acceptance_test` step の version |
+
+```bash
+# 各コマンドで正しいステップから targetVersion を取得していること
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-usecase.md | head -5
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-ui.md | head -5
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-screenflow.md | head -5
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-mock.md | head -5
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-manual.md | head -5
+grep -A2 "targetVersion" .claude/commands/teamkit/generate-acceptance-test.md | head -5
+```
+
+#### 6-3. 冪等性シナリオの論理検証
+
+以下のシナリオが論理的に成立することを、コマンドファイルの記述から確認する:
+
+**シナリオ**: `generate` を2回連続実行した場合
+
+1回目の実行:
+- generate-workflow: version 0 → 1 (生成実行)
+- generate-usecase: version 0 → 1 (生成実行)
+- generate-ui: version 0 → 1 (生成実行)
+- generate-screenflow: version 0 → 1 (生成実行)
+- generate-mock: version 0 → 1 (生成実行)
+
+2回目の実行:
+- generate-workflow: targetVersion=README未変更のため**スキップ**（workflow は README checksum で判定）
+- generate-usecase: currentVersion(1) >= targetVersion(1) → **スキップ**
+- generate-ui: currentVersion(1) >= targetVersion(1) → **スキップ**
+- generate-screenflow: currentVersion(1) >= targetVersion(1) → **スキップ**
+- generate-mock: currentVersion(1) >= targetVersion(1) → **スキップ**
+
+**検証ポイント**:
+- 2回目実行時に全ステップがスキップされ、バージョンが変わらないこと
+- Update Status セクションが targetVersion を使用しており、currentVersion + 1 ではないこと（targetVersion が変わらなければ書き込み値も変わらない）
+
+```bash
+# Update Status で targetVersion を使用していること（currentVersion + 1 ではないこと）
+for f in generate-usecase.md generate-ui.md generate-screenflow.md generate-mock.md generate-manual.md generate-acceptance-test.md; do
+  echo "=== $f ==="
+  grep -n "targetVersion" .claude/commands/teamkit/$f | grep -i "update\|version.*set\|Set to"
+done
+```
+
 ## Output
 
 検証結果をマークダウン形式のレポートファイルに保存する。
