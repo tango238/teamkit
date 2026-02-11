@@ -55,7 +55,7 @@ First, create a directory to manage specifications:
 
 ```
 your-project/
-└── specs/
+└── .teamkit/
     └── YourFeature/
         └── README.md  # Describe requirements
 ```
@@ -99,8 +99,8 @@ Extract requirements from `README.md` and generate workflow definitions:
 ```
 
 **Generated Files:**
-- `specs/YourFeature/workflow.yml` - Workflow definition
-- `specs/YourFeature/status.json` - Status management file
+- `.teamkit/YourFeature/workflow.yml` - Workflow definition
+- `.teamkit/YourFeature/status.json` - Status management file
 
 ### 3. Generate HTML Mockup
 
@@ -111,9 +111,9 @@ Generate interactive HTML mockups from UI definitions:
 ```
 
 **Generated Files:**
-- `specs/YourFeature/index.html` - Mockup index page
-- `specs/YourFeature/mock/*.html` - Mockups for each screen
-- `specs/YourFeature/mock/screens.yml` - Screen generation status
+- `.teamkit/YourFeature/index.html` - Mockup index page
+- `.teamkit/YourFeature/mock/*.html` - Mockups for each screen
+- `.teamkit/YourFeature/mock/screens.yml` - Screen generation status
 
 ## Useful Commands
 
@@ -167,7 +167,7 @@ your-project/
 │           ├── apply-feedback.md
 │           ├── get-step-info.md
 │           └── update-status.md
-└── specs/
+└── .teamkit/
     └── <feature-name>/
         ├── README.md          # Requirements definition
         ├── workflow.yml       # Workflow definition
@@ -193,7 +193,7 @@ Example of a typical development flow:
 /teamkit:create-mock OrderManagement
 
 # 4. Check the generated mockup
-# Open specs/OrderManagement/index.html in a browser
+# Open .teamkit/OrderManagement/index.html in a browser
 
 # 5. Submit feedback if any and check the mockup
 /teamkit:feedback OrderManagement -p "Please add an order cancellation function"

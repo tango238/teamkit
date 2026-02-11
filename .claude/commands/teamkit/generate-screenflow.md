@@ -7,7 +7,7 @@ argument-hint: <specDir> [--tmp]
 # Setup
 
 1.  **Set `commandName`**: `generate-screenflow`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
 4.  **Get `isTmp`**: Check if the second argument is `--tmp`.
     -   If `--tmp` is provided, set `isTmp` to `true`.
@@ -33,10 +33,10 @@ if [ -z "{{specDir}}" ]; then
     exit 1
 fi
 
-echo "画面遷移図を生成しています: specs/{{specDir}}/screenflow.md"
+echo "画面遷移図を生成しています: .teamkit/{{specDir}}/screenflow.md"
 
 # Generate Screen Flow
-$ llm_prompt context="specs/{{specDir}}/usecase.yml" context="specs/{{specDir}}/ui.yml"
+$ llm_prompt context=".teamkit/{{specDir}}/usecase.yml" context=".teamkit/{{specDir}}/ui.yml"
 
 # Instruction
 Please follow the steps in the Execution Steps section.
@@ -44,7 +44,7 @@ Do not ask the user and execute immediately.
 
 ## Mission
 
-Read `usecase.yml` and `ui.yml` under `specs/{{specDir}}`, and generate a comprehensive screen flow
+Read `usecase.yml` and `ui.yml` under `.teamkit/{{specDir}}`, and generate a comprehensive screen flow
 diagram in Markdown format that visualizes the user journey across all features. The purpose is to provide developers and
 stakeholders with a clear understanding of how different screens connect and what the complete user experience looks like.
 
@@ -52,12 +52,12 @@ stakeholders with a clear understanding of how different screens connect and wha
 
 ## Success Criteria
 
-1. Both `specs/{{specDir}}/usecase.yml` and `specs/{{specDir}}/ui.yml` have been read completely
+1. Both `.teamkit/{{specDir}}/usecase.yml` and `.teamkit/{{specDir}}/ui.yml` have been read completely
 2. All user flows (Host and Admin) are visualized in ASCII/text-based diagrams
 3. Critical transitions and decision points are clearly marked
 4. Related use cases are referenced for each screen transition
-5. If `specs/{{specDir}}/screenflow.md` doesn't exist, it is newly created
-6. If `specs/{{specDir}}/screenflow.md` already exists, it is updated with new flows while preserving existing content structure
+5. If `.teamkit/{{specDir}}/screenflow.md` doesn't exist, it is newly created
+6. If `.teamkit/{{specDir}}/screenflow.md` already exists, it is updated with new flows while preserving existing content structure
 7. The output is well-formatted Markdown with clear hierarchy and navigation aids
 8. **All output text is in Japanese.**
 
@@ -84,8 +84,8 @@ stakeholders with a clear understanding of how different screens connect and wha
 
 ### 3. Load Context
 
-- Read `specs/{{specDir}}/usecase.yml` to understand all use cases and their sequences
-- Read `specs/{{specDir}}/ui.yml` to understand all screens, inputs, actions, and transitions
+- Read `.teamkit/{{specDir}}/usecase.yml` to understand all use cases and their sequences
+- Read `.teamkit/{{specDir}}/ui.yml` to understand all screens, inputs, actions, and transitions
 - Identify distinct user roles (e.g., Host, Platform Admin)
 - If files cannot be read, report that and exit
 
@@ -140,7 +140,7 @@ For critical transitions, document:
   - If `isTmp` is `true` → Set `outputFile` to `screenflow_tmp.md`.
   - If `isTmp` is `false` → Set `outputFile` to `screenflow.md`.
 
-- Output destination is always `specs/{{specDir}}/{{outputFile}}`
+- Output destination is always `.teamkit/{{specDir}}/{{outputFile}}`
 - If file doesn't exist, create it with the template structure below
 - If file exists, update relevant sections while preserving structure
 - Ensure all diagrams are properly formatted and readable
@@ -178,7 +178,7 @@ This includes:
 
 ## Output Format Template
 
-`specs/{{specDir}}/screenflow.md` should have the following structure (Translate headers to Japanese):
+`.teamkit/{{specDir}}/screenflow.md` should have the following structure (Translate headers to Japanese):
 
   ```markdown
   # Screen Flow - [Feature Name]

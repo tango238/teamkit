@@ -6,7 +6,7 @@ constraints:
   - Ask clarifying questions before creating specifications
   - Create specifications in Japanese
   - Follow consistent format across all feature READMEs
-output_format: Feature-based README.md files in specs/ directory
+output_format: Feature-based README.md files in .teamkit/ directory
 allowed-tools:
   - Bash
   - Read
@@ -21,7 +21,7 @@ argument-hint: <appName> [-o|--output <outputDir>]
 # Setup
 
 1. **Set `commandName`**: `app-init`
-2. **Set `baseDir`**: `specs`
+2. **Set `baseDir`**: `.teamkit`
 3. **Get `appName`**: Read the first argument passed to the slash command.
     - If no argument is provided, display the error message: "Error: `appName` argument is required. Usage: `/teamkit:app-init <appName> [-o|--output <outputDir>]`" and **STOP** execution immediately.
 4. **Check for output directory**: Check if `-o` or `--output` option is passed as any argument.

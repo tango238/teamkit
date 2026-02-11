@@ -111,7 +111,7 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 
                     <h3>1. 要件をREADME.mdに記述</h3>
                     <pre><code>your-project/
-└── specs/
+└── .teamkit/
     └── YourFeature/
         └── README.md</code></pre>
                     <p>README.mdには、背景・目的・主要アクター・業務概要・要件を記述します。</p>
@@ -139,17 +139,17 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
                     <pre><code>/teamkit:create-mock YourFeature</code></pre>
                     <p>workflow → usecase → UI → screenflow → mock HTML の4ステップを自動的に順次実行します。</p>
                     <p>
-                        生成後、<code>specs/YourFeature/mock/index.html</code>
+                        生成後、<code>.teamkit/YourFeature/mock/index.html</code>
                         をブラウザで開いてモックアップを確認できます。
                     </p>
 
                     <h2>ディレクトリ構成</h2>
                     <p>
                         すべての成果物は
-                        <code>specs/&lt;feature-name&gt;/</code>
+                        <code>.teamkit/&lt;feature-name&gt;/</code>
                         配下に生成されます。
                     </p>
-                    <pre><code>specs/YourFeature/
+                    <pre><code>.teamkit/YourFeature/
 ├── README.md          # 要件定義（手動作成）
 ├── workflow.yml       # ワークフロー定義
 ├── usecase.yml        # ユースケース（ロバストネス分析）
@@ -165,10 +165,10 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 
                     <p>
                         アプリ全体のモックアップ生成時は
-                        <code>specs/app/</code>
+                        <code>.teamkit/app/</code>
                         配下にレイアウト・ナビゲーション関連ファイルが生成されます。
                     </p>
-                    <pre><code>specs/app/
+                    <pre><code>.teamkit/app/
 ├── README.md            # アプリの概要（手動作成）
 ├── 0_navigation.yml     # ナビゲーション定義
 ├── 1_layout.yml         # レイアウト定義

@@ -7,7 +7,7 @@ argument-hint: <specDir> [--tmp]
 # Setup
 
 1.  **Set `commandName`**: `generate-usecase`
-2.  **Set `baseDir`**: `specs`
+2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
 4.  **Get `isTmp`**: Check if the second argument is `--tmp`.
     -   If `--tmp` is provided, set `isTmp` to `true`.

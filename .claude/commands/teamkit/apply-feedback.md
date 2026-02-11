@@ -13,7 +13,7 @@ argument-hint: <specDir>
 # Setup
 
 1. **Set `commandName`**: `apply-feedback`
-2. **Set `baseDir`**: `specs`
+2. **Set `baseDir`**: `.teamkit`
 3. **Get `specDir`**: Read the first argument passed to the slash command.
    - If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/apply-feedback <specDir>`" and **STOP** execution immediately.
 
@@ -255,7 +255,7 @@ Display the processing results:
 
 ### Processing Flow
 
-1. Load `specs/YourFeature/feedback.md`
+1. Load `.teamkit/YourFeature/feedback.md`
 2. Find TODO items marked with `[o]`
 3. Load corresponding details from Summary section
 4. Read `status.json` directly and calculate new version number (max version + 1)
