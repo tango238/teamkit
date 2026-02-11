@@ -174,6 +174,7 @@ COMMAND_FILES=(
     "generate.md"
     "generate-manual.md"
     "generate-acceptance-test.md"
+    "create-manual.md"
     "get-step-info.md"
     "app-init.md"
     "show-event.md"
