@@ -6,10 +6,10 @@ argument-hint: <specDir>
 
 # Setup
 
-1.  **Set `commandName`**: `create-manual`
+1.  **Set `commandName`**: `manual-creator`
 2.  **Set `baseDir`**: `.teamkit`
 3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:create-manual <specDir>`" and **STOP** execution immediately.
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:manual-creator <specDir>`" and **STOP** execution immediately.
 
 # Execution
 

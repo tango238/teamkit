@@ -251,7 +251,7 @@ done
 
 # スキルファイルのリスト（.claude/skills/teamkit/ に配置）
 SKILL_FILES=(
-    "create-manual.md"
+    "manual-creator.md"
 )
 
 # スキルファイルのコピー関数（ローカルモード用）
