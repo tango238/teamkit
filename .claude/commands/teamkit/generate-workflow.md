@@ -43,6 +43,10 @@ Execute the following process immediately without asking for user confirmation.
   - If `status.json` exists:
     - Read `status.json`
     - Get `steps[0].workflow.version` as `currentVersion` (if not found, treat as `0`)
+    - Get `readme.checksum` from `status.json` as `savedChecksum`
+    - Calculate the current MD5 checksum of `{{baseDir}}/{{specDir}}/README.md` as `currentChecksum`
+    - **Idempotency Check**: If `currentVersion >= 1` AND `savedChecksum == currentChecksum`:
+      - Display "スキップ: workflow は既に最新です (README未変更, version {{currentVersion}})" and **STOP**
     - Calculate `diff = 1 - currentVersion`
     - If `diff > 1`: Display "エラー: バージョンが飛んでいます。現在のバージョン: {{currentVersion}}, 指定されたバージョン: 1" and **STOP**
     - If `diff <= 1`: Display "バージョンチェック: OK (現在: {{currentVersion}} -> 次: 1)" and proceed to Step 3

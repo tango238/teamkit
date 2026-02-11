@@ -102,20 +102,49 @@ Extract requirements from `README.md` and generate workflow definitions:
 - `.teamkit/YourFeature/workflow.yml` - Workflow definition
 - `.teamkit/YourFeature/status.json` - Status management file
 
-### 3. Generate HTML Mockup
+### 3. Generate All Specifications and Mockups
 
-Generate interactive HTML mockups from UI definitions:
+Generate all specifications and HTML mockups from the README in one command:
+
+```
+/teamkit:generate YourFeature
+```
+
+**Generated Files:**
+- `.teamkit/YourFeature/workflow.yml` - Workflow definition
+- `.teamkit/YourFeature/usecase.yml` - Use cases
+- `.teamkit/YourFeature/ui.yml` - UI definition
+- `.teamkit/YourFeature/screenflow.md` - Screen flow diagram
+- `.teamkit/YourFeature/mock/*.html` - Mockups for each screen
+
+**Options:**
+```
+/teamkit:generate YourFeature --manual     # Also generate user manual
+/teamkit:generate YourFeature --test       # Also generate acceptance tests
+/teamkit:generate YourFeature --all        # Generate manual + acceptance tests
+```
+
+Additional generated files (with options):
+- `.teamkit/YourFeature/manual.md` - User operation manual (`--manual` or `--all`)
+- `.teamkit/YourFeature/acceptance-test.md` - Acceptance test cases (`--test` or `--all`)
+
+### 4. Regenerate Mockups Only
+
+If you already have `ui.yml` and want to regenerate mockups:
 
 ```
 /teamkit:create-mock YourFeature
 ```
 
-**Generated Files:**
-- `.teamkit/YourFeature/index.html` - Mockup index page
-- `.teamkit/YourFeature/mock/*.html` - Mockups for each screen
-- `.teamkit/YourFeature/mock/screens.yml` - Screen generation status
-
 ## Useful Commands
+
+### Generate with Options
+
+Generate manual and acceptance test items along with the standard pipeline:
+
+```
+/teamkit:generate YourFeature --all
+```
 
 ### Feedback Function
 
@@ -162,6 +191,9 @@ your-project/
 │           ├── generate-ui.md
 │           ├── generate-screenflow.md
 │           ├── generate-mock.md
+│           ├── generate-manual.md
+│           ├── generate-acceptance-test.md
+│           ├── generate.md
 │           ├── create-mock.md
 │           ├── feedback.md
 │           ├── apply-feedback.md
@@ -176,6 +208,8 @@ your-project/
         ├── screenflow.md      # Screen flow diagram
         ├── status.json        # Status management
         ├── feedback.md        # Feedback
+        ├── manual.md          # User operation manual (optional)
+        ├── acceptance-test.md # Acceptance test cases (optional)
         ├── mock/screens.yml   # Screen generation status
         └── mock/*.html        # Mockups for each screen
 ```
@@ -186,11 +220,11 @@ Example of a typical development flow:
 
 ```bash
 # 1. Describe requirements in README.md
-# 2. Start with workflow definition
-/teamkit:generate-workflow OrderManagement
+# 2. Generate all specifications and mockups
+/teamkit:generate OrderManagement
 
-# 3. Automatically execute all steps
-/teamkit:create-mock OrderManagement
+# 3. Or generate with manual and acceptance tests
+/teamkit:generate OrderManagement --all
 
 # 4. Check the generated mockup
 # Open .teamkit/OrderManagement/index.html in a browser
@@ -200,6 +234,9 @@ Example of a typical development flow:
 
 # 6. Apply feedback
 /teamkit:apply-feedback OrderManagement
+
+# 7. Regenerate mockups only (after manual ui.yml edits)
+/teamkit:create-mock OrderManagement
 ```
 
 ## Output Language

@@ -85,7 +85,7 @@
                     <h1><span class="gradient-text">コマンド一覧</span></h1>
                     <p class="doc-lead">
                         Team Kit
-                        の全16コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
+                        の全19コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
                         Claude Code 上で
                         <code>/teamkit:&lt;command-name&gt;</code>
                         の形式で実行します。
@@ -241,23 +241,85 @@
                         登録→一覧、削除→確認ダイアログ、新規→フォーム
                     </p>
 
+                    <h3>generate-manual</h3>
+                    <p>仕様ファイルからユーザー向け操作マニュアルを生成します。</p>
+                    <pre><code>/teamkit:generate-manual &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>usecase.yml</code>,
+                                    <code>ui.yml</code>,
+                                    <code>screenflow.md</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>manual.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>内容</th>
+                                <td>
+                                    操作手順、画面一覧、入力ルール、画面遷移、注意事項
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>generate-acceptance-test</h3>
+                    <p>仕様ファイルから受入テスト項目を生成します。</p>
+                    <pre><code>/teamkit:generate-acceptance-test &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>usecase.yml</code>,
+                                    <code>ui.yml</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td><code>acceptance-test.md</code></td>
+                            </tr>
+                            <tr>
+                                <th>内容</th>
+                                <td>
+                                    正常系テスト、バリデーションテスト、画面遷移テスト（テストデータ例付き）
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <!-- Orchestration -->
                     <h2>オーケストレーション</h2>
 
-                    <h3>create-mock</h3>
+                    <h3>generate</h3>
                     <p>
-                        generate-usecase から generate-mock
-                        までの4ステップを自動的に順次実行します。
+                        READMEから全仕様書とモックアップを一括生成します。オプションでマニュアルと受入テスト項目も生成可能です。
                     </p>
-                    <pre><code>/teamkit:create-mock &lt;feature-name&gt;</code></pre>
+                    <pre><code>/teamkit:generate &lt;feature-name&gt;
+/teamkit:generate &lt;feature-name&gt; --manual
+/teamkit:generate &lt;feature-name&gt; --test
+/teamkit:generate &lt;feature-name&gt; --all</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
                                 <th>実行順序</th>
                                 <td>
+                                    generate-workflow →
                                     generate-usecase →
                                     generate-ui → generate-screenflow →
-                                    generate-mock
+                                    generate-mock → (generate-manual) → (generate-acceptance-test)
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>--manual</code> / <code>-m</code>: マニュアル生成、
+                                    <code>--test</code> / <code>-t</code>: 受入テスト生成、
+                                    <code>--all</code> / <code>-a</code>: 両方生成
                                 </td>
                             </tr>
                             <tr>
@@ -268,10 +330,35 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <h3>create-mock</h3>
                     <p>
-                        workflow.yml が存在しない場合は、先に generate-workflow
-                        を実行します。
+                        既存の ui.yml と screenflow.md からモックアップHTMLを生成します。
                     </p>
+                    <pre><code>/teamkit:create-mock &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>前提</th>
+                                <td>
+                                    <code>ui.yml</code> が存在すること
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>実行順序</th>
+                                <td>
+                                    (generate-screenflow) →
+                                    generate-mock
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    screenflow.md が存在しない場合は自動生成。モック再生成に便利
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <!-- Quality Management -->
                     <h2>品質管理</h2>
