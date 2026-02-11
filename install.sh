@@ -174,7 +174,7 @@ COMMAND_FILES=(
     "generate-ui.md"
     "generate-usecase.md"
     "get-step-info.md"
-    "init.md"
+    "app-init.md"
     "show-event.md"
     "update-feature.md"
     "update-status.md"
