@@ -1,0 +1,60 @@
+/* @theme A4-Manual */
+@import 'default';
+
+section {
+  width: 210mm;
+  height: 297mm;
+  justify-content: start;
+  padding: 30px;
+  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  font-size: 28px;
+  color: #333;
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 10px;
+}
+
+h2 {
+  font-size: 22px;
+  color: #007bff;
+}
+
+h3 {
+  font-size: 18px;
+  color: #555;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th {
+  background: #007bff;
+  color: white;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+td {
+  border: 1px solid #dee2e6;
+  padding: 8px 12px;
+}
+
+tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+header {
+  font-size: 12px;
+  color: #999;
+}
+
+footer {
+  font-size: 10px;
+  color: #999;
+}

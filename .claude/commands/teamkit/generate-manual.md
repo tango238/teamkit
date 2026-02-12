@@ -74,59 +74,20 @@ The file MUST begin with the following Marp front matter. Replace `【Feature Na
 ```markdown
 ---
 marp: true
-theme: default
-size: A4
 paginate: true
+theme: A4-Manual
 header: "【Feature Name】操作マニュアル"
-footer: ""
-style: |
-  section {
-    font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", sans-serif;
-    font-size: 16px;
-    padding: 40px;
-  }
-  h1 {
-    font-size: 28px;
-    color: #333;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 10px;
-  }
-  h2 {
-    font-size: 22px;
-    color: #007bff;
-  }
-  h3 {
-    font-size: 18px;
-    color: #555;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-  }
-  th {
-    background: #007bff;
-    color: white;
-    padding: 8px 12px;
-    text-align: left;
-  }
-  td {
-    border: 1px solid #dee2e6;
-    padding: 8px 12px;
-  }
-  tr:nth-child(even) {
-    background: #f8f9fa;
-  }
-  header {
-    font-size: 12px;
-    color: #999;
-  }
-  footer {
-    font-size: 10px;
-    color: #999;
-  }
+footer: "Version 1.0 | {{current date in YYYY-MM-DD}}"
 ---
 ```
+
+**Header per slide**: Override the `header` directive on each slide using an HTML comment to include both the manual title and the current chapter name:
+```markdown
+<!-- header: "【Feature Name】操作マニュアル ― 3. 操作手順" -->
+```
+This must be placed at the beginning of each slide that starts a new chapter (`## heading`).
+
+**Theme CSS**: The `A4-Manual` theme is defined in `.teamkit/themes/A4-Manual.css`. Do NOT add inline `style` blocks in the front matter.
 
 #### 4-2. Slide Structure Rules
 
@@ -241,6 +202,6 @@ Slide(s): 6. 注意事項
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
-- [ ] Marp front matter includes `marp: true` and `size: A4`
+- [ ] Marp front matter uses `theme: A4-Manual` (no inline style block)
 - [ ] Slide separators (`---`) are placed at `##` heading boundaries
 - [ ] Long sections are split across multiple slides with "（続き）" markers
