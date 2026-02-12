@@ -441,6 +441,54 @@ grep -n "Extract as scheduled\|処理対象" .claude/commands/teamkit/apply-feed
 - apply-feedback 後に `generate-mock` が呼ばれ、仕様変更がモックに反映されること
 - feedback.md の TODO が `[x]` に更新され、再実行時に二重適用されないこと
 
+### 9. Install Script Security Verification
+
+リモートから `curl` 経由で `install.sh` がダウンロード・実行された場合に、開発・保守用のエージェントファイルがインストール先に配布されないことを検証する。
+
+#### 9-1. エージェントファイルがインストール対象に含まれていないこと
+
+`install.sh` の `COMMAND_FILES`, `SKILL_FILES`, `THEME_FILES` 配列に、エージェントファイル（`verifier.md`, `doc-maintainer.md`）が含まれていないことを確認する。
+
+```bash
+# COMMAND_FILES にエージェントファイルが含まれていないこと
+grep -n "verifier\.md\|doc-maintainer\.md" install.sh
+```
+
+**検証ポイント**:
+- `COMMAND_FILES` 配列に `verifier.md` が**存在しない**こと
+- `COMMAND_FILES` 配列に `doc-maintainer.md` が**存在しない**こと
+- `SKILL_FILES` 配列に `verifier.md` が**存在しない**こと
+- `SKILL_FILES` 配列に `doc-maintainer.md` が**存在しない**こと
+- `THEME_FILES` 配列に `verifier.md` が**存在しない**こと
+- `THEME_FILES` 配列に `doc-maintainer.md` が**存在しない**こと
+
+#### 9-2. ダウンロード URL に `.claude/agents/` パスが含まれていないこと
+
+リモートモードで構築されるダウンロード URL が `.claude/agents/` ディレクトリを参照していないことを確認する。
+
+```bash
+# ダウンロード先パスにエージェントディレクトリが含まれていないこと
+grep -n "\.claude/agents" install.sh
+```
+
+**検証ポイント**:
+- `download_file`, `download_skill`, `download_theme` 各関数の URL 構築に `.claude/agents/` パスが**使用されていない**こと
+- `BASE_URL` と組み合わせて `.claude/agents/` 配下のファイルをダウンロードする処理が**存在しない**こと
+
+#### 9-3. インストール先に `.claude/agents/` ディレクトリが作成されないこと
+
+`install.sh` の `mkdir -p` やファイルコピー先のパスに `.claude/agents/` が含まれていないことを確認する。
+
+```bash
+# ターゲットディレクトリにエージェントディレクトリを作成する処理がないこと
+grep -n "agents" install.sh
+```
+
+**検証ポイント**:
+- `TARGET_DIR/.claude/agents/` を作成する `mkdir` コマンドが**存在しない**こと
+- エージェントファイルを `TARGET_DIR` 配下にコピーする処理が**存在しない**こと
+- ローカルモード (`LOCAL_MODE=true`) でもエージェントファイルがコピー対象に含まれていないこと
+
 ## Output
 
 検証結果をマークダウン形式のレポートファイルに保存する。
