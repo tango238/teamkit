@@ -90,21 +90,9 @@ Facility management involves the registration, update, deletion, and retrieval o
 Register and update facility information, room types, and room information
 ```
 
-### 2. Generate Workflow
+### 2. Generate All Specifications and Mockups
 
-Extract requirements from `README.md` and generate workflow definitions:
-
-```
-/teamkit:generate-workflow YourFeature
-```
-
-**Generated Files:**
-- `.teamkit/YourFeature/workflow.yml` - Workflow definition
-- `.teamkit/YourFeature/status.json` - Status management file
-
-### 3. Generate All Specifications and Mockups
-
-Generate all specifications and HTML mockups from the README in one command:
+Generate all specifications and HTML mockups from the README in one command. Workflow is automatically generated if it doesn't exist yet:
 
 ```
 /teamkit:generate YourFeature
@@ -121,14 +109,16 @@ Generate all specifications and HTML mockups from the README in one command:
 ```
 /teamkit:generate YourFeature --manual     # Also generate user manual
 /teamkit:generate YourFeature --test       # Also generate acceptance tests
-/teamkit:generate YourFeature --all        # Generate manual + acceptance tests
+/teamkit:generate YourFeature --capture    # Capture mock screenshots and embed in manual
+/teamkit:generate YourFeature --all        # Generate manual + acceptance tests + screenshots
 ```
 
 Additional generated files (with options):
 - `.teamkit/YourFeature/manual.md` - User operation manual (`--manual` or `--all`)
 - `.teamkit/YourFeature/acceptance-test.md` - Acceptance test cases (`--test` or `--all`)
+- `.teamkit/YourFeature/mock/screenshots/*.png` - Mock screen screenshots (`--capture` or `--all`)
 
-### 4. Regenerate Mockups Only
+### 3. Regenerate Mockups Only
 
 If you already have `ui.yml` and want to regenerate mockups:
 
@@ -145,6 +135,22 @@ Generate manual and acceptance test items along with the standard pipeline:
 ```
 /teamkit:generate YourFeature --all
 ```
+
+### Generate Manual with Screenshots
+
+Generate user manual with mock screen screenshots embedded:
+
+```
+/teamkit:generate-manual YourFeature --capture
+```
+
+Or as part of the full pipeline:
+
+```
+/teamkit:generate YourFeature --manual --capture
+```
+
+When `--capture` is specified, screenshots of each mock HTML screen are taken using Playwright and embedded in the manual with Marp-compatible image syntax (`![screen w:560](path)`). The screenshots are saved to `mock/screenshots/`.
 
 ### Feedback Function
 
@@ -211,7 +217,8 @@ your-project/
         ├── manual.md          # User operation manual (optional)
         ├── acceptance-test.md # Acceptance test cases (optional)
         ├── mock/screens.yml   # Screen generation status
-        └── mock/*.html        # Mockups for each screen
+        ├── mock/*.html        # Mockups for each screen
+        └── mock/screenshots/  # Mock screen screenshots (optional)
 ```
 
 ## Workflow Example
@@ -237,6 +244,9 @@ Example of a typical development flow:
 
 # 7. Regenerate mockups only (after manual ui.yml edits)
 /teamkit:create-mock OrderManagement
+
+# 8. Generate manual with screenshots from mockups
+/teamkit:generate-manual OrderManagement --capture
 ```
 
 ## Output Language
