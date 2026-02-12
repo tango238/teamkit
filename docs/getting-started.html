@@ -103,7 +103,7 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
                     <p>
                         インストールスクリプトは
                         <code>.claude/commands/teamkit/</code>
-                        ディレクトリに全16コマンドファイルをコピーします。
+                        ディレクトリに全19コマンドファイルをコピーします。
                     </p>
 
                     <h2>クイックスタート</h2>
@@ -152,19 +152,21 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
                         配下に生成されます。
                     </p>
                     <pre><code>.teamkit/YourFeature/
-├── README.md          # 要件定義（手動作成）
-├── workflow.yml       # ワークフロー定義
-├── usecase.yml        # ユースケース（ロバストネス分析）
-├── ui.yml             # UI定義（画面・フィールド・アクション）
-├── screenflow.md      # 画面遷移図
-├── status.json        # バージョン管理
-├── feedback.md        # フィードバック
-├── eventstorming.md   # イベントストーミング図
+├── README.md            # 要件定義（手動作成）
+├── workflow.yml         # ワークフロー定義
+├── usecase.yml          # ユースケース（ロバストネス分析）
+├── ui.yml               # UI定義（画面・フィールド・アクション）
+├── screenflow.md        # 画面遷移図
+├── manual.md            # 操作マニュアル（--manual時）
+├── acceptance-test.md   # 受入テスト（--test時）
+├── status.json          # バージョン管理
+├── feedback.md          # フィードバック
+├── eventstorming.md     # イベントストーミング図
 └── mock/
-    ├── index.html     # モックアップ一覧
-    ├── screens.yml    # 画面生成状況
-    ├── *.html         # 各画面のモックアップ
-    └── screenshots/   # 画面スクリーンショット（--capture時）</code></pre>
+    ├── index.html       # モックアップ一覧
+    ├── screens.yml      # 画面生成状況
+    ├── *.html           # 各画面のモックアップ
+    └── screenshots/     # 画面スクリーンショット（--capture時）</code></pre>
 
                     <p>
                         アプリ全体のモックアップ生成時は
