@@ -178,7 +178,7 @@ Slide(s): 6. 注意事項
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
-1. Get the MD5 checksum of the saved file: `md5sum {{baseDir}}/{{specDir}}/manual.md | awk '{print $1}'`
+1. Get the MD5 checksum of the saved file: `md5 -q {{baseDir}}/{{specDir}}/manual.md`
 2. Get current timestamp in ISO format: `date -u +"%Y-%m-%dT%H:%M:%S"`
 3. Read `{{baseDir}}/{{specDir}}/status.json`
 4. Check if `manual` entry exists in `steps`:
