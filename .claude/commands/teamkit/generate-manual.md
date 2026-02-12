@@ -1,15 +1,18 @@
 ---
 description: Generate user manual from specifications
-allowed-tools: Bash, Read, Write, Edit, Grep, Glob
-argument-hint: <specDir>
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close, mcp__playwright__browser_resize
+argument-hint: <specDir> [--capture]
 ---
 
 # Setup
 
 1.  **Set `commandName`**: `generate-manual`
 2.  **Set `baseDir`**: `.teamkit`
-3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-manual <specDir>`" and **STOP** execution immediately.
+3.  **Get `specDir`**: Read the first argument passed to the slash command (the argument that does NOT start with `--` or `-`).
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-manual <specDir> [--capture]`" and **STOP** execution immediately.
+4.  **Get `captureScreenshots`**: Check if `--capture` or `-c` argument is provided.
+    -   If provided, set `captureScreenshots` to `true`
+    -   Otherwise, set `captureScreenshots` to `false`
 
 # Execution
 
@@ -24,7 +27,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 
 ## Mission
 
-Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, and generate a comprehensive user operation manual in **Marp-compatible Markdown format**. The manual should enable end users to understand and operate all features of the system, and can be directly converted to A4-sized HTML/PDF via Marp CLI.
+Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, and generate a comprehensive user operation manual in Markdown format. The manual should enable end users to understand and operate all features of the system.
 
 **IMPORTANT**: Execute the following steps immediately without asking the user for confirmation.
 
@@ -63,102 +66,157 @@ Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/screenflow.md` - Screen flow diagrams (operation flow)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (feature overview)
 
+### 3.5. Capture Mock Screenshots (conditional)
+
+**Only execute this step if `captureScreenshots` is `true`.** If `captureScreenshots` is `false`, skip entirely to Step 4.
+
+#### Pre-check
+
+1. Verify `{{baseDir}}/{{specDir}}/mock/screens.yml` exists
+2. Verify at least one `.html` file exists in `{{baseDir}}/{{specDir}}/mock/`
+3. If either check fails → Display "警告: モックファイルが見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+
+#### Capture Process
+
+1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/mock/screenshots`
+2. Read `{{baseDir}}/{{specDir}}/mock/screens.yml` and extract all screen IDs (lines matching `- [x] screen_id` or `- [ ] screen_id`)
+3. Start a local HTTP server to serve mock HTML files (Playwright MCP blocks `file://` protocol):
+   - Via Bash (run in background): `cd {{baseDir}}/{{specDir}}/mock && python3 -m http.server 18923 &`
+   - Store the server PID for cleanup
+   - Wait 1 second for the server to start
+4. Resize browser viewport to 1280x800 via `mcp__playwright__browser_resize`
+5. For each screen ID:
+   a. Navigate to the mock HTML file via `mcp__playwright__browser_navigate` with URL: `http://localhost:18923/{screen_id}.html`
+   b. Take a screenshot via `mcp__playwright__browser_take_screenshot` with:
+      - `filename`: `{{baseDir}}/{{specDir}}/mock/screenshots/{screen_id}.png`
+      - `type`: `png`
+   c. Record the mapping: screen_id → `mock/screenshots/{screen_id}.png`
+6. Close the browser via `mcp__playwright__browser_close`
+7. Stop the HTTP server via Bash: `kill <server_pid>`
+8. Store the screenshot mapping for use in Step 4
+
 ### 4. Generate Manual
 
-Generate the manual in **Marp-compatible Markdown format** following the structure and rules below.
+Generate the manual following the structure and rules below.
 
-#### 4-1. Marp Front Matter
-
-The file MUST begin with the following Marp front matter. Replace `【Feature Name】` with the actual feature name extracted from `README.md`.
+#### Output Structure
 
 ```markdown
 ---
 marp: true
+theme: a4
 paginate: true
-theme: A4-Manual
-header: "【Feature Name】操作マニュアル"
-footer: "Version 1.0 | {{current date in YYYY-MM-DD}}"
 ---
+
+<style>
+section {
+  font-size: 14pt;
+  padding: 40px;
+}
+</style>
+
+# 【Feature Name】操作マニュアル
+
+## 目次
+- [1. 概要](#1-概要)
+- [2. 操作ガイド](#2-操作ガイド)
+- [3. 操作手順](#3-操作手順)
+- [4. 入力ルール](#4-入力ルール)
+- [5. 画面遷移](#5-画面遷移)
+- [6. 注意事項](#6-注意事項)
+
+## 1. 概要
+
+### 1.1 機能の目的
+[README.md から抽出した機能の目的・背景]
+
+### 1.2 対象ユーザー
+[usecase.yml の actor 情報から抽出]
+
+| ロール | 説明 |
+|--------|------|
+| ロール名 | そのロールの責務 |
+
+## 2. 操作ガイド
+
+### 2.1 全体の流れ
+
+[screenflow.md のメインフローと usecase.yml を元に、システムをどのような流れで使うのかを自然な文章で説明する。各ステップに**画面名**を含め、ユーザーがシステム全体の使い方を俯瞰できるようにする。番号付きリストで、主要な操作を順に記述する。]
+
+例:
+1. **タスクを確認する** — 「タスク一覧」画面で登録済みのタスクをステータス・担当者・優先度で絞り込み、進捗を確認します。
+2. **タスクを登録する** — 「タスク一覧」画面の「新規作成」から「タスク登録・編集」画面を開き、タイトル・担当者・期限などを入力して保存します。
+3. **タスクを編集する** — 「タスク一覧」画面で対象タスクの「編集」をクリックし、「タスク登録・編集」画面で内容を修正して保存します。
+4. **タスクを削除する** — 「タスク一覧」画面で「削除」をクリックし、「タスク削除確認」画面で内容を確認してから削除します。
+
+### 2.2 管理する情報
+
+[usecase.yml の entity と ui.yml の input_fields/display_fields を元に、このシステムで扱う情報の概要を表にまとめる。]
+
+| 情報 | 内容 | 主な操作画面 |
+|------|------|-------------|
+| エンティティ名 | 管理する情報の概要（どのような項目を持つか） | 関連する画面名 |
+
+### 2.3 画面一覧
+
+[ui.yml の全画面と usecase.yml の各ユースケースを統合し、各画面の用途・操作・画面遷移の流れを1つのテーブルにまとめる。アクター別にサブセクション（### 2.3 【アクター名】向け画面一覧）を設ける。]
+
+| # | 画面名 | 用途 | 主な操作 | 画面の流れ |
+|---|--------|------|----------|-----------|
+| 1 | 画面名 | 目的 | アクション一覧 | 画面A → 画面B → 画面A |
+
+## 3. 操作手順
+
+### 3.1 【ユースケース名】
+
+**前提条件**: [usecase.yml の before]
+
+**操作手順**:
+
+1. **【画面名】を開く**
+   - [画面へのアクセス方法]
+
+2. **【操作内容】**
+   - 入力項目:
+     | 項目名 | 必須 | 入力形式 | 説明 |
+     |--------|------|----------|------|
+     | フィールド名 | ○/- | text/select等 | バリデーション含む説明 |
+   - 注意事項: [特記事項があれば]
+
+3. **【ボタン操作】**
+   - [ボタン名]をクリック → [遷移先・結果]
+
+**完了条件**: [usecase.yml の after]
+
+---
+
+[上記パターンを全ユースケースについて繰り返す]
+
+## 4. 入力ルール
+
+### 4.1 バリデーション一覧
+
+| 画面名 | 項目名 | ルール | エラー時の動作 |
+|--------|--------|--------|----------------|
+| 画面名 | フィールド名 | バリデーション内容 | エラーメッセージ等 |
+
+### 4.2 共通ルール
+[ui.yml の validations セクションから抽出]
+
+## 5. 画面遷移
+
+### 5.1 メインフロー
+[screenflow.md の主要フローを簡潔に記述]
+
+### 5.2 主要な画面遷移
+
+| 操作 | 遷移元 | 遷移先 | 条件 |
+|------|--------|--------|------|
+| ボタン名 | 画面A | 画面B | 条件があれば |
+
+## 6. 注意事項
+[業務上の注意点、制約事項など]
 ```
-
-**Header per slide**: Override the `header` directive on each slide using an HTML comment to include both the manual title and the current chapter name:
-```markdown
-<!-- header: "【Feature Name】操作マニュアル ― 3. 操作手順" -->
-```
-This must be placed at the beginning of each slide that starts a new chapter (`## heading`).
-
-**Theme CSS**: The `A4-Manual` theme is defined in `.teamkit/themes/A4-Manual.css`. Do NOT add inline `style` blocks in the front matter.
-
-#### 4-2. Slide Structure Rules
-
-1. **Title Slide** (first slide): Create from the feature name
-   ```markdown
-   # 【Feature Name】操作マニュアル
-
-   **Version**: 1.0
-   **Date**: {{current date in YYYY-MM-DD}}
-   ```
-
-2. **Table of Contents Slide**: Insert `---` separator, then the table of contents
-
-3. **Section Separators**: Insert Marp slide separators (`---`) at each `## heading` boundary
-   - Each `## heading` starts a new slide
-   - If a section is too long (contains multiple `### headings`), split it into multiple slides at each `### heading`
-
-4. **Long Content Handling**:
-   - If a single section has more than 30 lines of content, split it across multiple slides
-   - Add a continuation marker like "（続き）" in the heading for continuation slides
-
-5. **Tables**: Write tables in standard Markdown format (Marp renders them natively)
-
-#### 4-3. Content Structure
-
-The manual content across slides should cover the following sections:
-
-```
-Slide: Title
-Slide: 目次
-Slide(s): 1. 概要 (機能の目的, 対象ユーザー)
-Slide(s): 2. 画面一覧 (アクター別)
-Slide(s): 3. 操作手順 (ユースケースごと)
-Slide(s): 4. 入力ルール (バリデーション一覧, 共通ルール)
-Slide(s): 5. 画面遷移 (メインフロー, 遷移表)
-Slide(s): 6. 注意事項
-```
-
-**Section details:**
-
-**1. 概要**
-- 1.1 機能の目的: Extract from `README.md`
-- 1.2 対象ユーザー: Extract actor info from `usecase.yml`
-  | ロール | 説明 |
-  |--------|------|
-
-**2. 画面一覧** (grouped by actor)
-  | # | 画面名 | 用途 | 主な操作 |
-  |---|--------|------|----------|
-
-**3. 操作手順** (one or more slides per use case)
-- **前提条件**: from `usecase.yml` `before`
-- **操作手順**: numbered steps with screen names, input fields table, button actions
-  | 項目名 | 必須 | 入力形式 | 説明 |
-  |--------|------|----------|------|
-- **完了条件**: from `usecase.yml` `after`
-
-**4. 入力ルール**
-- バリデーション一覧 table
-  | 画面名 | 項目名 | ルール | エラー時の動作 |
-  |--------|--------|--------|----------------|
-- 共通ルール from `ui.yml` validations
-
-**5. 画面遷移**
-- メインフロー summary from `screenflow.md`
-- 遷移表
-  | 操作 | 遷移元 | 遷移先 | 条件 |
-  |------|--------|--------|------|
-
-**6. 注意事項**
-- Business-level notes and constraints
 
 #### Generation Rules
 
@@ -169,12 +227,60 @@ Slide(s): 6. 注意事項
 5. **バリデーションの記載**: `ui.yml` の `validation` を入力ルールセクションに集約
 6. **アクター別の整理**: 複数のアクターがいる場合はアクター別にセクションを分ける
 7. **具体的な記述**: 抽象的な表現を避け、具体的な操作手順として記述する
+8. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
+   - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
+   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の `input_fields`/`display_fields` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
+   - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
+
+#### Screenshot Embedding Rules (only when `captureScreenshots` is `true`)
+
+When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
+
+1. **Section 2.3 画面一覧**: After each screen entry in the table, add a screenshot below the table for each screen:
+   ```markdown
+   ![{画面名} w:560](mock/screenshots/{screen_id}.png)
+   ```
+
+2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, embed the screenshot immediately after the screen name heading:
+   ```markdown
+   1. **【画面名】を開く**
+      ![画面名 w:560](mock/screenshots/{screen_id}.png)
+      - [画面へのアクセス方法]
+   ```
+
+3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
+   ```markdown
+   ![{alt_text} w:560](mock/screenshots/{screen_id}.png)
+   ```
+
+4. **Path**: Use relative paths from the manual.md location: `mock/screenshots/{screen_id}.png`
 
 ### 5. Save File
 
 - Output destination: `{{baseDir}}/{{specDir}}/manual.md`
 - If file exists, delete and regenerate completely
 - Save automatically without asking user
+
+### 5.5. Generate A4 Theme and Convert to PDF
+
+1. Create A4 theme CSS file at `{{baseDir}}/{{specDir}}/a4.css`:
+```css
+/* @theme a4 */
+
+@import "default";
+
+section {
+  width: 1033px;
+  height: 1462px;
+}
+```
+
+2. Convert manual.md to PDF via Bash:
+```bash
+npx @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set {{baseDir}}/{{specDir}}/a4.css -o {{baseDir}}/{{specDir}}/manual.pdf
+```
+
+3. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
@@ -202,6 +308,5 @@ Slide(s): 6. 注意事項
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
-- [ ] Marp front matter uses `theme: A4-Manual` (no inline style block)
-- [ ] Slide separators (`---`) are placed at `##` heading boundaries
-- [ ] Long sections are split across multiple slides with "（続き）" markers
+- [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
+- [ ] (If `--capture`) Screenshots are embedded in operation procedure sections with Marp `w:560` syntax

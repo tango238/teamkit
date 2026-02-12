@@ -239,6 +239,208 @@ for f in generate-usecase.md generate-ui.md generate-screenflow.md generate-mock
 done
 ```
 
+### 7. Documentation Consistency Verification
+
+`README.md` および `docs/` 配下のドキュメントが、コマンドファイルの最新仕様と整合しているかを検証する。
+
+#### 7-1. コマンドオプションの整合性
+
+各コマンドファイルの `argument-hint` で定義されているオプションが、ドキュメントに正しく反映されていることを確認する。
+
+```bash
+# コマンドファイルから argument-hint を収集
+grep -n "argument-hint" .claude/commands/teamkit/*.md
+
+# README.md にオプションが反映されていること
+grep -n "\-\-manual\|\-\-test\|\-\-capture\|\-\-all" README.md
+```
+
+**検証ポイント**:
+- `generate.md` の `argument-hint` に含まれる全オプション（`--manual`, `--test`, `--capture`, `--all`）が `README.md` に記載されていること
+- `generate-manual.md` の `argument-hint` に含まれる全オプション（`--capture`）が `README.md` に記載されていること
+- `docs/commands.html` の generate セクションと generate-manual セクションに同じオプションが記載されていること
+
+#### 7-2. 生成ファイル一覧の整合性
+
+コマンドが出力するファイル（`workflow.yml`, `usecase.yml`, `ui.yml`, `screenflow.md`, `mock/*.html`, `manual.md`, `acceptance-test.md`, `mock/screenshots/*.png`）が、以下のドキュメントのディレクトリ構成セクションに反映されていること:
+
+- `README.md` の「Directory Structure」セクション
+- `docs/getting-started.html` のディレクトリ構成セクション
+
+```bash
+# README.md のディレクトリ構成に必要なファイルが含まれていること
+grep -n "mock/screenshots\|manual\.md\|acceptance-test\.md\|mock/screens\.yml" README.md
+
+# docs/getting-started.html のディレクトリ構成にも反映されていること
+grep -n "mock/screenshots\|manual\.md\|acceptance-test\.md\|screenshots" docs/getting-started.html
+```
+
+#### 7-3. ワークフロー説明の整合性
+
+コマンドの実行フローに関する説明が最新であることを確認する。
+
+**検証ポイント**:
+- `README.md` で `generate` コマンドが workflow 自動生成を含む旨が記載されていること（`generate-workflow` を別ステップとして記載していないこと）
+- `docs/guides/feature-mockup.html` のワークフロー図が `generate` コマンドを起点としていること
+- `docs/getting-started.html` のクイックスタートが `generate` コマンドを使用していること
+
+```bash
+# README.md で generate-workflow が独立ステップとして記載されていないこと
+grep -n "generate-workflow" README.md
+
+# docs のクイックスタートが generate コマンドを使用していること
+grep -n "generate\|create-mock" docs/getting-started.html | grep -i "code\|pre"
+```
+
+#### 7-4. docs/commands.html の allowed-tools 整合性
+
+各コマンドファイルの frontmatter `allowed-tools` で定義されているツールが、`docs/commands.html` の記載と矛盾しないことを確認する。
+
+```bash
+# コマンドファイルの allowed-tools を収集
+grep -A1 "allowed-tools" .claude/commands/teamkit/generate-manual.md
+
+# Playwright ツールが generate-manual に含まれていることを確認
+grep "playwright" .claude/commands/teamkit/generate-manual.md
+```
+
+**検証ポイント**:
+- `generate-manual.md` に Playwright MCP ツール（`mcp__playwright__browser_navigate` 等）が `allowed-tools` に含まれていること
+- `docs/commands.html` の generate-manual セクションに `--capture` オプションの説明があること
+
+### 8. Feedback and Apply-Feedback Flow Verification
+
+`feedback` コマンドでフィードバックを登録し、`apply-feedback` コマンドでドキュメントに反映・バージョンアップされる一連のフローを検証する。
+
+#### 8-1. feedback コマンドの構造検証
+
+対象ファイル: `.claude/commands/teamkit/feedback.md`
+
+**プレビューモード (`-p` / `--preview`) が実装されていること**:
+- argument-hint に `-p|--preview` が含まれていること
+- `previewMode` の判定ロジックがあること
+- `[p]` マーカーの説明があること
+
+```bash
+# プレビューモード関連の記述確認
+grep -n "preview\|previewMode\|\-p\|--preview" .claude/commands/teamkit/feedback.md | head -10
+grep -n "\[p\]" .claude/commands/teamkit/feedback.md | head -5
+```
+
+**プレビューモック生成ステップが存在すること**:
+- プレビューモード時にモック HTML を上書き更新する指示があること
+- status.json の mock version をプレビュー版に更新する指示があること
+
+**TODO 統合ルール (One Feedback = One TODO) が存在すること**:
+- 1つのフィードバックに対して1つの TODO 項目を原則とする記述があること
+- 重複チェックプロセスがあること
+
+```bash
+grep -n "One Feedback.*One TODO\|1つのフィードバック.*1つのTODO" .claude/commands/teamkit/feedback.md
+grep -n "Duplication Check\|重複" .claude/commands/teamkit/feedback.md | head -5
+```
+
+#### 8-2. apply-feedback コマンドの構造検証
+
+対象ファイル: `.claude/commands/teamkit/apply-feedback.md`
+
+**TODO ステータスマーカーの定義が正しいこと**:
+- `[ ]` (未処理), `[o]` (処理予定), `[p]` (プレビュー/処理予定), `[x]` (完了), `[~]` (スキップ) の5種が定義されていること
+- `[o]` と `[p]` の両方が処理対象として扱われること
+
+```bash
+grep -n "\[o\]\|\[p\]\|\[x\]\|\[~\]\|\[ \]" .claude/commands/teamkit/apply-feedback.md | head -10
+```
+
+**ファイル処理順序が正しいこと**:
+- screenflow.md → ui.yml → usecase.yml → workflow.yml の順序であること
+
+```bash
+grep -A4 "File Processing Order\|処理順序" .claude/commands/teamkit/apply-feedback.md
+```
+
+**承認ドキュメント生成ステップが存在すること**:
+- `approval/` ディレクトリへの書き込み指示があること
+- 承認ドキュメントの構造（変更箇所、変更内容、適用バージョン）が定義されていること
+
+```bash
+grep -n "approval" .claude/commands/teamkit/apply-feedback.md | head -5
+```
+
+**バージョン更新ロジックが正しいこと**:
+- 全ステップの version を同一の `newVersionNumber` に更新すること
+- `newVersionNumber` = max(全ステップの version) + 1 であること
+- status.json を直接編集すること（SlashCommand を使わないこと）
+
+```bash
+grep -n "newVersionNumber\|max.*version\|ALL steps" .claude/commands/teamkit/apply-feedback.md | head -10
+grep -n "Do NOT use.*slash\|直接編集" .claude/commands/teamkit/apply-feedback.md
+```
+
+**feedback.md ステータス更新が正しいこと**:
+- `[o]` → `[x]` および `[p]` → `[x]` への更新指示があること
+- 他のマーカー (`[ ]`, `[~]`, 既存の `[x]`) を変更しない指示があること
+
+```bash
+grep -n "\[o\].*\[x\]\|\[p\].*\[x\]" .claude/commands/teamkit/apply-feedback.md
+```
+
+**モック再生成ステップが存在すること**:
+- 既存モックの削除指示があること
+- `/teamkit:generate-mock` の呼び出しがあること
+
+```bash
+grep -n "generate-mock\|Delete.*mock\|削除.*mock" .claude/commands/teamkit/apply-feedback.md
+```
+
+#### 8-3. feedback → apply-feedback フロー整合性
+
+2つのコマンド間で、以下の整合性が保たれていることを確認する:
+
+**TODO マーカーの整合性**:
+- feedback.md が生成する `[p]` マーカーを、apply-feedback.md が処理対象として認識すること
+- feedback.md が生成する `[ ]` マーカーは、apply-feedback.md が処理**しない**こと（`[o]` に手動変更が必要）
+
+```bash
+# feedback.md でのマーカー生成
+grep -n "previewMode.*true.*\[p\]\|previewMode.*false.*\[ \]" .claude/commands/teamkit/feedback.md
+# apply-feedback.md での処理対象
+grep -n "Extract as scheduled\|処理対象" .claude/commands/teamkit/apply-feedback.md
+```
+
+**status.json バージョン管理の整合性**:
+- feedback.md のプレビューモードで `mock.version` をプレビュー版（例: `v1-preview`）に更新すること
+- apply-feedback.md で全ステップの version を数値のバージョンに正規化すること
+
+**影響範囲の一貫性**:
+- feedback.md の Summary セクションの Next action レイヤー（workflow, usecase, ui, screenflow）と、apply-feedback.md のファイル処理対象（workflow.yml, usecase.yml, ui.yml, screenflow.md）が一致すること
+
+#### 8-4. エンドツーエンド シナリオ検証
+
+以下のシナリオが論理的に成立することを、コマンドファイルの記述から確認する:
+
+**シナリオ**: フィードバック → プレビュー → 反映 → バージョンアップ
+
+1. `feedback sample "変更内容" -p` 実行:
+   - feedback.md が作成され、TODO に `[p]` マーカーが付く
+   - 影響する画面のモック HTML がプレビュー更新される
+   - status.json の `mock.version` がプレビュー版になる
+
+2. ユーザーがプレビューを確認後、feedback.md の `[p]` を `[o]` に変更
+
+3. `apply-feedback sample` 実行:
+   - feedback.md から `[o]` 項目を抽出
+   - Summary セクションの Next action に従い各仕様ファイルを更新
+   - 承認ドキュメントを `approval/` に生成
+   - feedback.md の `[o]` → `[x]` に更新
+   - status.json の全ステップ version が +1 される（例: 1 → 2）
+   - モック HTML が再生成される（仕様変更を反映）
+
+**検証ポイント**:
+- フィードバック前の version = N の場合、apply-feedback 後に全ステップが version = N+1 になること
+- apply-feedback 後に `generate-mock` が呼ばれ、仕様変更がモックに反映されること
+- feedback.md の TODO が `[x]` に更新され、再実行時に二重適用されないこと
+
 ## Output
 
 検証結果をマークダウン形式のレポートファイルに保存する。

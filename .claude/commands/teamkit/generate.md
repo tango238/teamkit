@@ -19,7 +19,7 @@ allowed-tools:
   - Write
   - Glob
   - SlashCommand
-argument-hint: <specDir> [--manual] [--test] [--all]
+argument-hint: <specDir> [--manual] [--test] [--capture] [--all]
 ---
 
 # Setup
@@ -27,12 +27,13 @@ argument-hint: <specDir> [--manual] [--test] [--all]
 1. **Set `commandName`**: `generate`
 2. **Set `baseDir`**: `.teamkit`
 3. **Get `specDir`**: Read the first argument passed to the slash command (the argument that does NOT start with `--`).
-   - If no argument is provided, display: "Error: `specDir` argument is required. Usage: `/teamkit:generate <specDir> [--manual] [--test] [--all]`" and **STOP**.
+   - If no argument is provided, display: "Error: `specDir` argument is required. Usage: `/teamkit:generate <specDir> [--manual] [--test] [--capture] [--all]`" and **STOP**.
 4. **Parse Options**: Check all arguments for option flags:
    - `--manual` or `-m` → Set `generateManual` to `true`
    - `--test` or `-t` → Set `generateTest` to `true`
-   - `--all` or `-a` → Set both `generateManual` and `generateTest` to `true`
-   - If none of these flags are provided → Both `generateManual` and `generateTest` are `false`
+   - `--capture` or `-c` → Set `captureScreenshots` to `true`
+   - `--all` or `-a` → Set `generateManual`, `generateTest`, and `captureScreenshots` all to `true`
+   - If none of these flags are provided → `generateManual`, `generateTest`, and `captureScreenshots` are all `false`
 
 # Execution
 
@@ -91,9 +92,14 @@ When this command finishes (mock/ directory is created), proceed to Step 5.
 
 ### Step 5: Generate Manual (conditional)
 **Only execute if `generateManual` is `true`.**
-```
-/teamkit:generate-manual {{specDir}}
-```
+- If `captureScreenshots` is also `true`:
+  ```
+  /teamkit:generate-manual {{specDir}} --capture
+  ```
+- Otherwise:
+  ```
+  /teamkit:generate-manual {{specDir}}
+  ```
 When this command finishes (manual.md is saved), proceed to Step 6.
 
 ### Step 6: Generate Acceptance Test (conditional)
@@ -142,11 +148,12 @@ After ALL steps finish:
    - `{{baseDir}}/{{specDir}}/screenflow.md`
    - `{{baseDir}}/{{specDir}}/mock/*.html`
    - (If `generateManual` is true) `{{baseDir}}/{{specDir}}/manual.md`
+   - (If `captureScreenshots` is true) `{{baseDir}}/{{specDir}}/mock/screenshots/*.png`
    - (If `generateTest` is true) `{{baseDir}}/{{specDir}}/acceptance-test.md`
 2. Report final status summary in Japanese, including:
    - List of all generated files
    - Any steps that were skipped (already up-to-date)
-   - Options that were used (--manual, --test, --all)
+   - Options that were used (--manual, --test, --capture, --all)
 
 ---
 

@@ -41,7 +41,7 @@ $ llm_prompt context=".teamkit/{{specDir}}/ui.yml" context=".teamkit/{{specDir}}
 
 ## Mission
 
-Generate mock HTML files based on UI definitions (`ui.yml`) and screen flow diagrams (`screenflow.md`). Create an index page, screen list tracker, and individual mock screens with proper navigation and minimal styling.
+Generate lo-fi wireframe mock HTML files based on UI definitions (`ui.yml`) and screen flow diagrams (`screenflow.md`). Create an index page, screen list tracker, and individual mock screens with proper navigation. All screens must use a **hand-drawn wireframe aesthetic** (monochrome, sketchy borders, placeholder feel) and be **responsive** for mobile and A4 portrait screenshot capture.
 
 **IMPORTANT:** Execute the following steps immediately without asking the user for confirmation.
 
@@ -86,99 +86,95 @@ Create `{{baseDir}}/{{specDir}}/mock/index.html` (in the mock subdirectory).
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【Feature Name】- Mock Screen List</title>
     <style>
+        * { box-sizing: border-box; }
         body {
-            font-family: sans-serif;
+            font-family: "Segoe UI", system-ui, sans-serif;
             margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 16px;
+            background: #fafafa;
+            color: #333;
         }
         .container {
-            max-width: 1200px;
+            max-width: 960px;
             margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: #fff;
+            padding: 24px;
+            border: 2px solid #333;
         }
         h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: #333;
+            font-size: 22px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
         }
         .subtitle {
             color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
+            margin-bottom: 24px;
+            font-size: 13px;
         }
-        .category {
-            margin-bottom: 40px;
-        }
+        .category { margin-bottom: 32px; }
         .category h2 {
-            font-size: 20px;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #007bff;
-            color: #007bff;
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #999;
+            color: #333;
         }
         .screen-list {
             list-style: none;
             padding: 0;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 12px;
         }
         .screen-list li a {
             display: block;
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 4px;
+            padding: 12px 16px;
+            background: #f5f5f5;
+            border: 1.5px solid #999;
             text-decoration: none;
             color: #333;
-            transition: all 0.2s;
         }
         .screen-list li a:hover {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
-            transform: translateY(-2px);
-            box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+            background: #e8e8e8;
+            border-color: #333;
         }
         .screen-list li a .title {
             font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
         .screen-list li a .description {
-            font-size: 13px;
+            font-size: 12px;
             color: #666;
         }
-        .screen-list li a:hover .description {
-            color: #e0e0e0;
-        }
         .flow-diagram {
-            background: #e7f3ff;
-            padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 30px;
-            border-left: 4px solid #007bff;
+            background: #f0f0f0;
+            padding: 16px;
+            margin-bottom: 24px;
+            border: 1.5px solid #999;
+            border-left: 4px solid #333;
         }
         .flow-diagram h3 {
-            font-size: 16px;
-            margin-bottom: 10px;
-            color: #007bff;
+            font-size: 14px;
+            margin-bottom: 8px;
         }
         .flow-diagram p {
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
-            color: #333;
             margin: 0;
+        }
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .container { padding: 16px; }
+            .screen-list { grid-template-columns: 1fr; }
+            h1 { font-size: 18px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>【Feature Name】 - Mock Screen List</h1>
+        <h1>【Feature Name】 - Screen List</h1>
         <p class="subtitle">【Description from dirName and README.md】</p>
 
         <div class="flow-diagram">
@@ -233,6 +229,8 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 
 #### 5-1. Basic HTML Structure
 
+All mock screens MUST include the following base CSS for consistent wireframe styling and responsive layout.
+
 ```html
 <!DOCTYPE html>
 <html lang="ja">
@@ -241,14 +239,91 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>【Screen Name】</title>
     <style>
-        /* Minimal simple style */
-        body { font-family: sans-serif; margin: 20px; }
-        h1 { font-size: 24px; margin-bottom: 20px; }
-        /* Add only necessary minimal styles */
+        /* === Wireframe Base === */
+        * { box-sizing: border-box; }
+        body {
+            font-family: "Segoe UI", system-ui, sans-serif;
+            margin: 0; padding: 16px;
+            background: #fafafa; color: #333;
+        }
+        .container { max-width: 960px; margin: 0 auto; background: #fff; padding: 24px; border: 2px solid #333; }
+        h1 { font-size: 20px; border-bottom: 2px solid #333; padding-bottom: 8px; margin-bottom: 16px; }
+        h2 { font-size: 16px; border-bottom: 1px dashed #999; padding-bottom: 6px; margin-top: 24px; }
+
+        /* === Wireframe Form === */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 4px; }
+        .form-group .required { color: #c00; margin-left: 2px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px; font-size: 14px;
+            border: 1.5px solid #999; background: #fff;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none; border-color: #333;
+        }
+        .form-group .note { font-size: 11px; color: #888; margin-top: 2px; }
+
+        /* === Wireframe Table === */
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 10px; border: 1px solid #bbb; text-align: left; }
+        th { background: #eee; font-weight: bold; white-space: nowrap; }
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        /* === Wireframe Buttons === */
+        .btn {
+            display: inline-block; padding: 8px 20px; font-size: 13px;
+            border: 1.5px solid #333; background: #fff; color: #333; cursor: pointer;
+        }
+        .btn:hover { background: #eee; }
+        .btn-primary { background: #333; color: #fff; }
+        .btn-primary:hover { background: #555; }
+        .btn-danger { border-color: #999; color: #999; }
+        .btn-danger:hover { background: #f5f5f5; }
+        .btn-cancel { border-color: #999; color: #666; }
+        .actions { margin-top: 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+        /* === Wireframe Filters === */
+        .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: end; }
+        .filters input, .filters select { padding: 6px 8px; border: 1.5px solid #999; font-size: 13px; }
+
+        /* === Wireframe Tabs === */
+        .tabs { display: flex; gap: 0; border-bottom: 2px solid #333; margin-bottom: 16px; }
+        .tab { padding: 8px 16px; border: 1.5px solid #999; border-bottom: none; background: #f5f5f5; cursor: pointer; font-size: 13px; margin-bottom: -2px; }
+        .tab.active { background: #fff; border-color: #333; font-weight: bold; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* === Wireframe Breadcrumb === */
+        .breadcrumb { font-size: 12px; color: #888; margin-bottom: 12px; }
+        .breadcrumb a { color: #666; text-decoration: underline; }
+
+        /* === Wireframe Dialog === */
+        .dialog-overlay { background: rgba(0,0,0,0.3); position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .dialog { background: #fff; border: 2px solid #333; padding: 24px; max-width: 480px; width: 90%; }
+        .dialog h2 { border: none; margin-top: 0; }
+
+        /* === Responsive === */
+        @media (max-width: 600px) {
+            body { padding: 8px; }
+            .container { padding: 12px; }
+            h1 { font-size: 17px; }
+            .form-group input, .form-group select, .form-group textarea { font-size: 16px; /* prevent zoom on iOS */ }
+            .actions { flex-direction: column; }
+            .actions .btn { width: 100%; text-align: center; }
+            .filters { flex-direction: column; }
+            .filters input, .filters select { width: 100%; }
+            th, td { padding: 6px; font-size: 12px; }
+        }
     </style>
 </head>
 <body>
-    <!-- Screen Content -->
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="../index.html">Top</a> &gt; 【Screen Name】
+        </div>
+        <h1>【Screen Name】</h1>
+        <!-- Screen Content -->
+    </div>
 </body>
 </html>
 ```
@@ -262,9 +337,10 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 - Implement multi-language items with tab switching (Japanese/English)
 
 **Table Display (List Screens):**
+- Wrap `<table>` in `<div class="table-wrap">` for horizontal scroll on mobile
 - Use `<table>` to display list data
 - Put headers in `<thead>`
-- Include 2-3 items of sample data (use property management domain knowledge)
+- Include 2-3 items of sample data (use domain knowledge)
 - Place "Edit" and "Delete" buttons in an operation column
 
 **Button Placement:**
@@ -278,16 +354,16 @@ Process each `- [ ]` screen in `screens.yml` one by one and generate HTML files 
 <button onclick="location.href='next_screen.html'">Button Name</button>
 ```
 
-#### 5-3. Design Principles
+#### 5-3. Design Principles (Lo-fi Wireframe)
 
-- **Minimal Decoration:** Borders, padding, basic coloring only
-- **Focus:** Input types, display content, screen transition flow
-- **Layout:** Simple vertical stacking, use grid if necessary
-- **Color Scheme:** 
-  - Gray background: #f5f5f5
-  - Primary color: #007bff
-  - Success: #28a745
-  - Delete: #dc3545
+- **Wireframe Aesthetic:** Use the base CSS from 5-1. Do NOT add shadows, gradients, rounded corners, or colorful styling. The mock should look like a hand-drawn wireframe sketch, not a finished product.
+- **Monochrome Palette:** Black (#333), gray (#999, #bbb, #eee, #f5f5f5), white only. No brand colors (no blue, green, red highlights). The only exception is `.required` marker in red (#c00).
+- **Solid Borders:** Use `1.5px solid` or `2px solid` borders. Use `dashed` borders for section dividers. No `border-radius`.
+- **Focus:** Input types, display content, screen transition flow — NOT visual polish.
+- **Layout:** Single-column vertical stacking. Use flexbox/grid only where needed (filters, action buttons). Ensure all content flows naturally on narrow viewports.
+- **Responsive:** All screens must be readable at 375px width (mobile) through 960px (desktop). Tables must be wrapped in `.table-wrap` for horizontal scroll. Form inputs must be `width: 100%`.
+- **Breadcrumb:** Every screen must have a breadcrumb with a link back to `../index.html`.
+- **No External Dependencies:** All CSS must be inline `<style>`. No CDN links, no external fonts, no JavaScript frameworks.
 
 ### 6. Update Progress
 
@@ -314,7 +390,10 @@ Verify the following before completing:
 - [ ] Returns to list screen after Register/Update/Delete
 - [ ] Multi-language items are implemented with tab switching
 - [ ] All screens are accessible from `index.html`
-- [ ] Design is minimal and simple
+- [ ] Design follows lo-fi wireframe style (monochrome, solid borders, no shadows/gradients/rounded corners)
+- [ ] All screens are responsive (readable at 375px mobile width)
+- [ ] Tables are wrapped in `.table-wrap` for horizontal scroll
+- [ ] Every screen has a breadcrumb with link to `../index.html`
 - [ ] All items from `ui.yml` are reflected
 
 ---
@@ -324,47 +403,57 @@ Verify the following before completing:
 ### List Screen Example
 
 ```html
+<div class="breadcrumb">
+    <a href="../index.html">Top</a> &gt; 受注一覧
+</div>
+<h1>受注一覧</h1>
 <div class="filters">
-    <input type="text" placeholder="Search Order ID" />
-    <button class="btn">Search</button>
+    <input type="text" placeholder="受注IDで検索" />
+    <button class="btn">検索</button>
 </div>
 <div class="actions">
-    <button class="btn btn-primary" onclick="location.href='order_form.html'">New Order</button>
+    <button class="btn btn-primary" onclick="location.href='order_form.html'">新規受注</button>
 </div>
-<table>
-    <thead>
-        <tr><th>Order ID</th><th>Customer</th><th>Status</th><th>Action</th></tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>ORD-001</td>
-            <td>Logistics Co., Ltd.</td>
-            <td>Shipped</td>
-            <td>
-                <button onclick="location.href='order_form.html'">Edit</button>
-                <button onclick="location.href='order_delete_dialog.html'">Delete</button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr><th>受注ID</th><th>顧客名</th><th>ステータス</th><th>操作</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>ORD-001</td>
+                <td>物流株式会社</td>
+                <td>出荷済み</td>
+                <td>
+                    <button class="btn" onclick="location.href='order_form.html'">編集</button>
+                    <button class="btn btn-danger" onclick="location.href='order_delete_dialog.html'">削除</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 ```
 
 ### Form Screen Example (Multi-language)
 
 ```html
+<div class="breadcrumb">
+    <a href="../index.html">Top</a> &gt; <a href="product_list.html">商品一覧</a> &gt; 商品登録
+</div>
+<h1>商品登録</h1>
 <div class="tabs">
-    <button class="tab active" onclick="switchTab('ja')">Japanese</button>
+    <button class="tab active" onclick="switchTab('ja')">日本語</button>
     <button class="tab" onclick="switchTab('en')">English</button>
 </div>
 <div class="tab-content active" data-lang="ja">
     <div class="form-group">
-        <label>Product Name (Japanese)<span class="required">*</span></label>
-        <input type="text" maxlength="100" />
-        <span class="note">Within 100 characters</span>
+        <label>商品名（日本語）<span class="required">*</span></label>
+        <input type="text" maxlength="100" placeholder="100文字以内" />
+        <span class="note">100文字以内で入力してください</span>
     </div>
 </div>
 <div class="actions">
-    <button class="btn btn-primary" onclick="location.href='product_list.html'">Register</button>
-    <button class="btn btn-cancel" onclick="location.href='product_list.html'">Cancel</button>
+    <button class="btn btn-primary" onclick="location.href='product_list.html'">登録</button>
+    <button class="btn btn-cancel" onclick="location.href='product_list.html'">キャンセル</button>
 </div>
 ```

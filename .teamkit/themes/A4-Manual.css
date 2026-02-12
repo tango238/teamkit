@@ -1,17 +1,19 @@
-/* @theme A4-Manual */
+/*! 
+ * @theme A4-Manual 
+ * @auto-scaleing true
+ * @size a4 1033px 1462px
+ */
 @import 'default';
 
 section {
-  width: 210mm;
-  height: 297mm;
   justify-content: start;
-  padding: 30px;
   font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", sans-serif;
   font-size: 16px;
+  padding: 30px;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 24px;
   color: #333;
   border-bottom: 2px solid #007bff;
   padding-bottom: 10px;
