@@ -243,7 +243,8 @@
 
                     <h3>generate-manual</h3>
                     <p>仕様ファイルからユーザー向け操作マニュアルを生成します。</p>
-                    <pre><code>/teamkit:generate-manual &lt;feature-name&gt;</code></pre>
+                    <pre><code>/teamkit:generate-manual &lt;feature-name&gt;
+/teamkit:generate-manual &lt;feature-name&gt; --capture</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
@@ -256,7 +257,16 @@
                             </tr>
                             <tr>
                                 <th>出力</th>
-                                <td><code>manual.md</code></td>
+                                <td>
+                                    <code>manual.md</code>、
+                                    <code>mock/screenshots/*.png</code>（<code>--capture</code> 時）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>--capture</code> / <code>-c</code>: モックHTMLのスクリーンショットを撮影し、マニュアルにMarp画像構文（<code>w:560</code>）で埋め込み
+                                </td>
                             </tr>
                             <tr>
                                 <th>内容</th>
@@ -302,13 +312,14 @@
                     <pre><code>/teamkit:generate &lt;feature-name&gt;
 /teamkit:generate &lt;feature-name&gt; --manual
 /teamkit:generate &lt;feature-name&gt; --test
+/teamkit:generate &lt;feature-name&gt; --capture
 /teamkit:generate &lt;feature-name&gt; --all</code></pre>
                     <table class="doc-table">
                         <tbody>
                             <tr>
                                 <th>実行順序</th>
                                 <td>
-                                    generate-workflow →
+                                    (generate-workflow) →
                                     generate-usecase →
                                     generate-ui → generate-screenflow →
                                     generate-mock → (generate-manual) → (generate-acceptance-test)
@@ -319,7 +330,8 @@
                                 <td>
                                     <code>--manual</code> / <code>-m</code>: マニュアル生成、
                                     <code>--test</code> / <code>-t</code>: 受入テスト生成、
-                                    <code>--all</code> / <code>-a</code>: 両方生成
+                                    <code>--capture</code> / <code>-c</code>: スクリーンショット撮影＆マニュアル埋め込み、
+                                    <code>--all</code> / <code>-a</code>: すべて生成
                                 </td>
                             </tr>
                             <tr>

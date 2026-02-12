@@ -1,15 +1,18 @@
 ---
 description: Generate user manual from specifications
-allowed-tools: Bash, Read, Write, Edit, Grep, Glob
-argument-hint: <specDir>
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, mcp__playwright__browser_navigate, mcp__playwright__browser_take_screenshot, mcp__playwright__browser_close, mcp__playwright__browser_resize
+argument-hint: <specDir> [--capture]
 ---
 
 # Setup
 
 1.  **Set `commandName`**: `generate-manual`
 2.  **Set `baseDir`**: `.teamkit`
-3.  **Get `specDir`**: Read the first argument passed to the slash command.
-    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-manual <specDir>`" and **STOP** execution immediately.
+3.  **Get `specDir`**: Read the first argument passed to the slash command (the argument that does NOT start with `--` or `-`).
+    -   If no argument is provided, display the error message: "Error: `specDir` argument is required. Usage: `/teamkit:generate-manual <specDir> [--capture]`" and **STOP** execution immediately.
+4.  **Get `captureScreenshots`**: Check if `--capture` or `-c` argument is provided.
+    -   If provided, set `captureScreenshots` to `true`
+    -   Otherwise, set `captureScreenshots` to `false`
 
 # Execution
 
@@ -63,6 +66,35 @@ Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/screenflow.md` - Screen flow diagrams (operation flow)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (feature overview)
 
+### 3.5. Capture Mock Screenshots (conditional)
+
+**Only execute this step if `captureScreenshots` is `true`.** If `captureScreenshots` is `false`, skip entirely to Step 4.
+
+#### Pre-check
+
+1. Verify `{{baseDir}}/{{specDir}}/mock/screens.yml` exists
+2. Verify at least one `.html` file exists in `{{baseDir}}/{{specDir}}/mock/`
+3. If either check fails → Display "警告: モックファイルが見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+
+#### Capture Process
+
+1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/mock/screenshots`
+2. Read `{{baseDir}}/{{specDir}}/mock/screens.yml` and extract all screen IDs (lines matching `- [x] screen_id` or `- [ ] screen_id`)
+3. Start a local HTTP server to serve mock HTML files (Playwright MCP blocks `file://` protocol):
+   - Via Bash (run in background): `cd {{baseDir}}/{{specDir}}/mock && python3 -m http.server 18923 &`
+   - Store the server PID for cleanup
+   - Wait 1 second for the server to start
+4. Resize browser viewport to 1280x800 via `mcp__playwright__browser_resize`
+5. For each screen ID:
+   a. Navigate to the mock HTML file via `mcp__playwright__browser_navigate` with URL: `http://localhost:18923/{screen_id}.html`
+   b. Take a screenshot via `mcp__playwright__browser_take_screenshot` with:
+      - `filename`: `{{baseDir}}/{{specDir}}/mock/screenshots/{screen_id}.png`
+      - `type`: `png`
+   c. Record the mapping: screen_id → `mock/screenshots/{screen_id}.png`
+6. Close the browser via `mcp__playwright__browser_close`
+7. Stop the HTTP server via Bash: `kill <server_pid>`
+8. Store the screenshot mapping for use in Step 4
+
 ### 4. Generate Manual
 
 Generate the manual following the structure and rules below.
@@ -70,11 +102,24 @@ Generate the manual following the structure and rules below.
 #### Output Structure
 
 ```markdown
+---
+marp: true
+theme: a4
+paginate: true
+---
+
+<style>
+section {
+  font-size: 14pt;
+  padding: 40px;
+}
+</style>
+
 # 【Feature Name】操作マニュアル
 
 ## 目次
 - [1. 概要](#1-概要)
-- [2. 画面一覧](#2-画面一覧)
+- [2. 操作ガイド](#2-操作ガイド)
 - [3. 操作手順](#3-操作手順)
 - [4. 入力ルール](#4-入力ルール)
 - [5. 画面遷移](#5-画面遷移)
@@ -92,13 +137,33 @@ Generate the manual following the structure and rules below.
 |--------|------|
 | ロール名 | そのロールの責務 |
 
-## 2. 画面一覧
+## 2. 操作ガイド
 
-### 2.1 【アクター名】向け画面
+### 2.1 全体の流れ
 
-| # | 画面名 | 用途 | 主な操作 |
-|---|--------|------|----------|
-| 1 | 画面名 | 目的 | アクション一覧 |
+[screenflow.md のメインフローと usecase.yml を元に、システムをどのような流れで使うのかを自然な文章で説明する。各ステップに**画面名**を含め、ユーザーがシステム全体の使い方を俯瞰できるようにする。番号付きリストで、主要な操作を順に記述する。]
+
+例:
+1. **タスクを確認する** — 「タスク一覧」画面で登録済みのタスクをステータス・担当者・優先度で絞り込み、進捗を確認します。
+2. **タスクを登録する** — 「タスク一覧」画面の「新規作成」から「タスク登録・編集」画面を開き、タイトル・担当者・期限などを入力して保存します。
+3. **タスクを編集する** — 「タスク一覧」画面で対象タスクの「編集」をクリックし、「タスク登録・編集」画面で内容を修正して保存します。
+4. **タスクを削除する** — 「タスク一覧」画面で「削除」をクリックし、「タスク削除確認」画面で内容を確認してから削除します。
+
+### 2.2 管理する情報
+
+[usecase.yml の entity と ui.yml の input_fields/display_fields を元に、このシステムで扱う情報の概要を表にまとめる。]
+
+| 情報 | 内容 | 主な操作画面 |
+|------|------|-------------|
+| エンティティ名 | 管理する情報の概要（どのような項目を持つか） | 関連する画面名 |
+
+### 2.3 画面一覧
+
+[ui.yml の全画面と usecase.yml の各ユースケースを統合し、各画面の用途・操作・画面遷移の流れを1つのテーブルにまとめる。アクター別にサブセクション（### 2.3 【アクター名】向け画面一覧）を設ける。]
+
+| # | 画面名 | 用途 | 主な操作 | 画面の流れ |
+|---|--------|------|----------|-----------|
+| 1 | 画面名 | 目的 | アクション一覧 | 画面A → 画面B → 画面A |
 
 ## 3. 操作手順
 
@@ -162,12 +227,60 @@ Generate the manual following the structure and rules below.
 5. **バリデーションの記載**: `ui.yml` の `validation` を入力ルールセクションに集約
 6. **アクター別の整理**: 複数のアクターがいる場合はアクター別にセクションを分ける
 7. **具体的な記述**: 抽象的な表現を避け、具体的な操作手順として記述する
+8. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
+   - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
+   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の `input_fields`/`display_fields` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
+   - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
+
+#### Screenshot Embedding Rules (only when `captureScreenshots` is `true`)
+
+When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
+
+1. **Section 2.3 画面一覧**: After each screen entry in the table, add a screenshot below the table for each screen:
+   ```markdown
+   ![{画面名} w:560](mock/screenshots/{screen_id}.png)
+   ```
+
+2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, embed the screenshot immediately after the screen name heading:
+   ```markdown
+   1. **【画面名】を開く**
+      ![画面名 w:560](mock/screenshots/{screen_id}.png)
+      - [画面へのアクセス方法]
+   ```
+
+3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
+   ```markdown
+   ![{alt_text} w:560](mock/screenshots/{screen_id}.png)
+   ```
+
+4. **Path**: Use relative paths from the manual.md location: `mock/screenshots/{screen_id}.png`
 
 ### 5. Save File
 
 - Output destination: `{{baseDir}}/{{specDir}}/manual.md`
 - If file exists, delete and regenerate completely
 - Save automatically without asking user
+
+### 5.5. Generate A4 Theme and Convert to PDF
+
+1. Create A4 theme CSS file at `{{baseDir}}/{{specDir}}/a4.css`:
+```css
+/* @theme a4 */
+
+@import "default";
+
+section {
+  width: 1033px;
+  height: 1462px;
+}
+```
+
+2. Convert manual.md to PDF via Bash:
+```bash
+npx @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set {{baseDir}}/{{specDir}}/a4.css -o {{baseDir}}/{{specDir}}/manual.pdf
+```
+
+3. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
@@ -195,3 +308,5 @@ Generate the manual following the structure and rules below.
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
+- [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
+- [ ] (If `--capture`) Screenshots are embedded in operation procedure sections with Marp `w:560` syntax

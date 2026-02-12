@@ -17,6 +17,7 @@ BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}
 # スクリプトのディレクトリを取得（ローカル実行判定用）
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOCAL_SOURCE_DIR="$SCRIPT_DIR/.claude/commands/teamkit"
+LOCAL_SKILLS_DIR="$SCRIPT_DIR/.claude/skills/teamkit"
 
 # ローカルモード判定（ローカルにソースファイルが存在するか）
 if [ -d "$LOCAL_SOURCE_DIR" ]; then
@@ -245,6 +246,164 @@ for file in "${COMMAND_FILES[@]}"; do
         fi
     else
         get_file "$file" "$target_file"
+    fi
+done
+
+# スキルファイルのリスト（.claude/skills/teamkit/ に配置）
+SKILL_FILES=(
+    "manual-creator.md"
+)
+
+# スキルファイルのコピー関数（ローカルモード用）
+copy_local_skill() {
+    local file_path="$1"
+    local target_path="$2"
+    local source_path="$LOCAL_SKILLS_DIR/$file_path"
+
+    echo -n "  ${file_path} ... "
+
+    if [ -f "$source_path" ]; then
+        cp "$source_path" "$target_path"
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ (ファイルが見つかりません: $source_path)${NC}"
+        return 1
+    fi
+}
+
+# スキルファイルのダウンロード関数（リモートモード用）
+download_skill() {
+    local file_path="$1"
+    local target_path="$2"
+    local url="${BASE_URL}/.claude/skills/teamkit/${file_path}"
+
+    echo -n "  ${file_path} ... "
+
+    if curl -fsSL "$url" -o "$target_path" 2>/dev/null; then
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗${NC}"
+        return 1
+    fi
+}
+
+# スキルファイル取得関数（モードに応じて切り替え）
+get_skill_file() {
+    local file_path="$1"
+    local target_path="$2"
+
+    if [ "$LOCAL_MODE" = true ]; then
+        copy_local_skill "$file_path" "$target_path"
+    else
+        download_skill "$file_path" "$target_path"
+    fi
+}
+
+# .claude/skills/teamkit/ 以下のスキルファイルを処理
+echo -e "${YELLOW}スキルファイルをインストール中...${NC}"
+
+for file in "${SKILL_FILES[@]}"; do
+    target_file="$TARGET_DIR/.claude/skills/teamkit/$file"
+    target_dir="$(dirname "$target_file")"
+
+    # ターゲットディレクトリが存在しない場合は作成
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir"
+    fi
+
+    # ファイルが既に存在する場合
+    if [ -f "$target_file" ]; then
+        echo -e "${YELLOW}警告: $file は既に存在します${NC}"
+        if should_overwrite "$target_file"; then
+            get_skill_file "$file" "$target_file"
+            echo -e "    ${GREEN}✓ 上書きしました${NC}"
+        else
+            echo -e "    ${BLUE}スキップしました${NC}"
+        fi
+    else
+        get_skill_file "$file" "$target_file"
+    fi
+done
+
+# テーマファイルのリスト（.teamkit/themes/ に配置）
+THEME_FILES=(
+    "A4-Manual.css"
+)
+
+LOCAL_THEMES_DIR="$SCRIPT_DIR/.teamkit/themes"
+
+# テーマファイルのコピー関数（ローカルモード用）
+copy_local_theme() {
+    local file_path="$1"
+    local target_path="$2"
+    local source_path="$LOCAL_THEMES_DIR/$file_path"
+
+    echo -n "  ${file_path} ... "
+
+    if [ -f "$source_path" ]; then
+        cp "$source_path" "$target_path"
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗ (ファイルが見つかりません: $source_path)${NC}"
+        return 1
+    fi
+}
+
+# テーマファイルのダウンロード関数（リモートモード用）
+download_theme() {
+    local file_path="$1"
+    local target_path="$2"
+    local url="${BASE_URL}/.teamkit/themes/${file_path}"
+
+    echo -n "  ${file_path} ... "
+
+    if curl -fsSL "$url" -o "$target_path" 2>/dev/null; then
+        echo -e "${GREEN}✓${NC}"
+        return 0
+    else
+        echo -e "${RED}✗${NC}"
+        return 1
+    fi
+}
+
+# テーマファイル取得関数（モードに応じて切り替え）
+get_theme_file() {
+    local file_path="$1"
+    local target_path="$2"
+
+    if [ "$LOCAL_MODE" = true ]; then
+        copy_local_theme "$file_path" "$target_path"
+    else
+        download_theme "$file_path" "$target_path"
+    fi
+}
+
+# .teamkit/themes/ 以下のテーマファイルを処理
+echo -e "${YELLOW}テーマファイルをインストール中...${NC}"
+
+for file in "${THEME_FILES[@]}"; do
+    target_file="$TARGET_DIR/.teamkit/themes/$file"
+    target_dir="$(dirname "$target_file")"
+
+    # ターゲットディレクトリが存在しない場合は作成
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir"
+    fi
+
+    # ファイルが既に存在する場合
+    if [ -f "$target_file" ]; then
+        echo -e "${YELLOW}警告: $file は既に存在します${NC}"
+        if should_overwrite "$target_file"; then
+            get_theme_file "$file" "$target_file"
+            echo -e "    ${GREEN}✓ 上書きしました${NC}"
+        else
+            echo -e "    ${BLUE}スキップしました${NC}"
+        fi
+    else
+        get_theme_file "$file" "$target_file"
     fi
 done
 

@@ -91,14 +91,15 @@
                     <pre class="flow-diagram">README.md
   │
   ▼
-generate-workflow ─→ workflow.yml + status.json
-  │
-  ▼
-create-mock（以下を自動的に順次実行）
+generate（以下を自動的に順次実行）
+  ├─ generate-workflow   → workflow.yml + status.json
   ├─ generate-usecase    → usecase.yml
   ├─ generate-ui         → ui.yml
   ├─ generate-screenflow → screenflow.md
-  └─ generate-mock       → mock/*.html
+  ├─ generate-mock       → mock/*.html
+  ├─ generate-manual     → manual.md          （--manual / --all）
+  │   └─ --capture       → mock/screenshots/  （--capture / --all）
+  └─ generate-acceptance-test → acceptance-test.md （--test / --all）
   │
   ▼
 モックアップを確認
@@ -129,56 +130,15 @@ create-mock（以下を自動的に順次実行）
                         <li><strong>要件</strong>: アクター別の具体的な要件</li>
                     </ul>
 
-                    <h2>ステップ2: workflow.yml の生成</h2>
-                    <pre><code>/teamkit:generate-workflow YourFeature</code></pre>
+                    <h2>ステップ2: 仕様書とモックアップの一括生成</h2>
+                    <pre><code>/teamkit:generate YourFeature
+/teamkit:generate YourFeature --all    # マニュアル・テスト・スクリーンショットも生成</code></pre>
                     <p>
-                        README.mdから以下の要素を抽出し、<code
-                            >workflow.yml</code
-                        >
-                        を生成します。
-                    </p>
-                    <table class="doc-table">
-                        <thead>
-                            <tr>
-                                <th>要素</th>
-                                <th>説明</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td><code>actor</code></td>
-                                <td>アクター（利用者・役割）</td>
-                            </tr>
-                            <tr>
-                                <td><code>external_system</code></td>
-                                <td>外部システム連携</td>
-                            </tr>
-                            <tr>
-                                <td><code>aggregate</code></td>
-                                <td>集約（エンティティの状態管理単位）</td>
-                            </tr>
-                            <tr>
-                                <td><code>workflow</code></td>
-                                <td>
-                                    ワークフロー定義（各ステップに actor, activity, aggregate, event, policy を含む）
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <p>
-                        同時に
-                        <code>status.json</code>
-                        が作成され、各ステップのバージョンが管理されます。
+                        <code>generate</code>
+                        は以下のコマンドを自動的に順次実行します。<code>workflow.yml</code> が存在しない場合は自動生成されます。
                     </p>
 
-                    <h2>ステップ3: モックアップの一括生成</h2>
-                    <pre><code>/teamkit:create-mock YourFeature</code></pre>
-                    <p>
-                        <code>create-mock</code>
-                        は以下の4つのコマンドを自動的に順次実行します。
-                    </p>
-
-                    <h3>3-1. generate-usecase → usecase.yml</h3>
+                    <h3>2-1. generate-usecase → usecase.yml</h3>
                     <p>
                         ロバストネス分析に基づくユースケースを生成します。
                     </p>
@@ -191,7 +151,7 @@ create-mock（以下を自動的に順次実行）
                         </p>
                     </div>
 
-                    <h3>3-2. generate-ui → ui.yml</h3>
+                    <h3>2-2. generate-ui → ui.yml</h3>
                     <p>
                         ユースケースからUI定義を生成します。画面ごとに以下を定義します。
                     </p>
@@ -203,12 +163,12 @@ create-mock（以下を自動的に順次実行）
                         <li>関連モデル、連携情報</li>
                     </ul>
 
-                    <h3>3-3. generate-screenflow → screenflow.md</h3>
+                    <h3>2-3. generate-screenflow → screenflow.md</h3>
                     <p>
                         ユースケースとUI定義から画面遷移図を生成します。ユーザーロール別のフロー、メインフローと代替フロー、画面間の条件分岐が含まれます。
                     </p>
 
-                    <h3>3-4. generate-mock → mock/*.html</h3>
+                    <h3>2-4. generate-mock → mock/*.html</h3>
                     <p>
                         UI定義から実際のHTMLモックアップファイルを生成します。
                     </p>

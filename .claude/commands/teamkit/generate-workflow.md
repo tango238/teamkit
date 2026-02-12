@@ -218,6 +218,20 @@ workflow:
                 "checksum": "",
                 "last_modified": ""
             }
+        },
+        {
+            "manual": {
+                "version": 0,
+                "checksum": "",
+                "last_modified": ""
+            }
+        },
+        {
+            "acceptance_test": {
+                "version": 0,
+                "checksum": "",
+                "last_modified": ""
+            }
         }
     ],
     "mock": {

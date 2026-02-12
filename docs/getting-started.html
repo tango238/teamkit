@@ -135,9 +135,11 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 ### 施設管理者
 施設情報、部屋タイプ、部屋情報の登録・更新</code></pre>
 
-                    <h3>2. モックアップを一括生成</h3>
-                    <pre><code>/teamkit:create-mock YourFeature</code></pre>
-                    <p>workflow → usecase → UI → screenflow → mock HTML の4ステップを自動的に順次実行します。</p>
+                    <h3>2. 仕様書とモックアップを一括生成</h3>
+                    <pre><code>/teamkit:generate YourFeature</code></pre>
+                    <p>workflow → usecase → UI → screenflow → mock HTML を自動的に順次実行します。workflow.yml が存在しない場合は自動生成されます。</p>
+                    <pre><code># マニュアル・受入テスト・スクリーンショットもすべて生成
+/teamkit:generate YourFeature --all</code></pre>
                     <p>
                         生成後、<code>.teamkit/YourFeature/mock/index.html</code>
                         をブラウザで開いてモックアップを確認できます。
@@ -161,7 +163,8 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 └── mock/
     ├── index.html     # モックアップ一覧
     ├── screens.yml    # 画面生成状況
-    └── *.html         # 各画面のモックアップ</code></pre>
+    ├── *.html         # 各画面のモックアップ
+    └── screenshots/   # 画面スクリーンショット（--capture時）</code></pre>
 
                     <p>
                         アプリ全体のモックアップ生成時は
