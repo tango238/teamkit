@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>マニュアルの手動編集 - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link"
+                            >ドキュメント</a
+                        >
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a
+                            href="https://github.com/tango238/teamkit"
+                            class="btn btn-secondary"
+                            target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link"
+                            >はじめに</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a
+                            href="feature-mockup.html"
+                            class="sidebar-link"
+                            >機能単位のモック生成</a
+                        >
+                        <a href="app-mockup.html" class="sidebar-link"
+                            >アプリ全体のモック生成</a
+                        >
+                        <a href="feedback-and-check.html" class="sidebar-link"
+                            >フィードバックとチェック</a
+                        >
+                        <a href="event-storming.html" class="sidebar-link"
+                            >イベントストーミング</a
+                        >
+                        <a href="manual-editing.html" class="sidebar-link active"
+                            >マニュアルの手動編集</a
+                        >
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link"
+                            >コマンド一覧</a
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text"
+                            >マニュアルの手動編集</span
+                        >
+                    </h1>
+                    <p class="doc-lead">
+                        <code>generate-manual</code> で生成された <code>manual.md</code> を手動で編集し、<code>manual.pdf</code> を微調整する方法です。
+                    </p>
+
+                    <h2>概要</h2>
+                    <p>
+                        <code>/teamkit:generate-manual</code> コマンドは <code>manual.md</code>（Marp形式のMarkdown）と <code>manual.pdf</code> を自動生成します。
+                        生成後に内容を微調整したい場合、<code>manual.md</code> を直接編集してPDFを再生成できます。
+                    </p>
+
+                    <h2>ファイル構成</h2>
+                    <pre><code>.teamkit/&lt;feature&gt;/
+├── manual.md              # Marp形式のマニュアル（編集対象）
+├── manual.pdf             # 生成されるPDF
+└── mock/
+    └── screenshots/       # スクリーンショット画像
+        ├── screen_a.png
+        └── screen_b.png
+
+.teamkit/themes/
+└── A4-Manual.css          # 共有テーマファイル</code></pre>
+
+                    <h2>手順1: manual.md を編集する</h2>
+                    <p>
+                        <code>.teamkit/&lt;feature&gt;/manual.md</code> をテキストエディタで開き、内容を修正します。
+                    </p>
+
+                    <h3>Marp の基本構文</h3>
+                    <p>manual.md は <a href="https://marp.app/" target="_blank" style="color: var(--color-primary)">Marp</a> 形式の Markdown です。以下の構文が使われています。</p>
+
+                    <h4>フロントマター</h4>
+                    <pre><code>---
+marp: true
+theme: A4-Manual
+paginate: true
+---</code></pre>
+                    <p>
+                        <code>theme: A4-Manual</code> は共有テーマ <code>.teamkit/themes/A4-Manual.css</code> を参照します。この行は変更しないでください。
+                    </p>
+
+                    <h4>改ページ（スライド区切り）</h4>
+                    <pre><code>---</code></pre>
+                    <p>
+                        水平線 <code>---</code> がページの区切りになります。改ページを追加・削除することでページの分割を調整できます。
+                    </p>
+
+                    <h4>ページレイアウト</h4>
+                    <pre><code>&lt;!-- class: content --&gt;</code></pre>
+                    <p>
+                        この Marp ディレクティブは<strong>グローバル</strong>に適用され、以降のすべてのスライドに <code>content</code> クラスが付与されます。
+                    </p>
+                    <ul>
+                        <li><strong>タイトルページ（1ページ目）</strong>: クラスなし → 縦中央寄せ</li>
+                        <li><strong>2ページ目以降</strong>: <code>content</code> クラス → 縦上寄せ</li>
+                    </ul>
+                    <div class="info-box">
+                        <p>
+                            <strong>注意:</strong> <code>&lt;!-- class: content --&gt;</code>（アンダースコアなし）はグローバルディレクティブで、以降の全スライドに適用されます。
+                            <code>&lt;!-- _class: cover --&gt;</code>（アンダースコアあり）はローカルディレクティブで、そのスライドのみに適用されます。
+                        </p>
+                    </div>
+
+                    <h4>画像の埋め込み</h4>
+                    <pre><code>![画面名 w:560](mock/screenshots/screen_id.png)</code></pre>
+                    <p>
+                        <code>w:560</code> は Marp の画像ディレクティブで、幅560pxで表示します。A4スライドの約半分の幅です。
+                        値を変更することで画像サイズを調整できます。
+                    </p>
+                    <ul>
+                        <li><code>w:400</code> — 小さめに表示</li>
+                        <li><code>w:560</code> — 標準（推奨）</li>
+                        <li><code>w:800</code> — 大きめに表示</li>
+                    </ul>
+
+                    <h2>手順2: PDF を再生成する</h2>
+                    <p>
+                        編集後、以下のコマンドでPDFを再生成します。プロジェクトルートまたは worktree のルートで実行してください。
+                    </p>
+                    <pre><code>npx --yes @marp-team/marp-cli \
+  .teamkit/&lt;feature&gt;/manual.md \
+  --pdf \
+  --allow-local-files \
+  --html \
+  --theme-set .teamkit/themes/A4-Manual.css \
+  -o .teamkit/&lt;feature&gt;/manual.pdf</code></pre>
+
+                    <h3>オプション説明</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>オプション</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>--pdf</code></td>
+                                <td>PDF形式で出力</td>
+                            </tr>
+                            <tr>
+                                <td><code>--allow-local-files</code></td>
+                                <td>ローカル画像ファイル（スクリーンショット）の読み込みを許可</td>
+                            </tr>
+                            <tr>
+                                <td><code>--html</code></td>
+                                <td>Markdown内のHTMLタグを有効化</td>
+                            </tr>
+                            <tr>
+                                <td><code>--theme-set</code></td>
+                                <td>カスタムテーマファイルのパスを指定</td>
+                            </tr>
+                            <tr>
+                                <td><code>-o</code></td>
+                                <td>出力先ファイルパス</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>よくある編集例</h2>
+
+                    <h3>テキストの修正</h3>
+                    <p>
+                        通常のMarkdownと同じように、テキストを直接編集するだけです。
+                    </p>
+
+                    <h3>改ページの追加</h3>
+                    <p>
+                        内容が多くて1ページに収まらない場合、区切りたい位置に <code>---</code> を追加します。
+                    </p>
+                    <pre><code>### 3.1 ユースケースA
+
+（前半の内容）
+
+---
+
+（後半の内容）</code></pre>
+
+                    <h3>改ページの削除</h3>
+                    <p>
+                        不要な改ページがある場合、該当する <code>---</code> 行を削除します。
+                    </p>
+
+                    <h3>スクリーンショットのサイズ変更</h3>
+                    <pre><code># 小さくする
+![画面名 w:400](mock/screenshots/screen_id.png)
+
+# 大きくする
+![画面名 w:800](mock/screenshots/screen_id.png)
+
+# フル幅にする（余白なし）
+![画面名 w:960](mock/screenshots/screen_id.png)</code></pre>
+
+                    <h3>スクリーンショットの追加・削除</h3>
+                    <p>
+                        スクリーンショット画像は <code>mock/screenshots/</code> ディレクトリに配置されています。
+                        新しい画像を追加する場合は同ディレクトリに配置し、Markdown内で参照します。
+                    </p>
+                    <pre><code>---
+
+**新しい画面名**
+主な操作: 操作A、操作B
+
+![新しい画面名 w:560](mock/screenshots/new_screen.png)</code></pre>
+
+                    <h3>テーブルの編集</h3>
+                    <p>標準のMarkdownテーブル構文で編集できます。</p>
+                    <pre><code>| 項目名 | 必須 | 入力形式 | 説明 |
+|--------|------|----------|------|
+| フィールドA | ○ | テキスト | 説明文 |
+| フィールドB | - | セレクト | 説明文 |</code></pre>
+
+                    <h2>注意事項</h2>
+                    <ul>
+                        <li>
+                            <strong>再生成で上書きされる:</strong>
+                            <code>/teamkit:generate-manual</code> を再度実行すると、手動編集した内容は上書きされます。
+                            手動編集した <code>manual.md</code> をバックアップするか、再生成前にコミットしてください。
+                        </li>
+                        <li>
+                            <strong>status.json は更新されない:</strong>
+                            手動でPDFを再生成しても <code>status.json</code> は更新されません。
+                            <code>status.json</code> の更新が必要な場合は <code>/teamkit:generate-manual</code> を使用してください。
+                        </li>
+                        <li>
+                            <strong>テーマファイルは共有:</strong>
+                            <code>.teamkit/themes/A4-Manual.css</code> は全機能で共有されています。
+                            テーマを変更すると他の機能のマニュアルにも影響します。
+                        </li>
+                        <li>
+                            <strong>画像パスは相対パス:</strong>
+                            スクリーンショットのパスは <code>manual.md</code> からの相対パスです。
+                            ファイルを移動する場合はパスも合わせて修正してください。
+                        </li>
+                    </ul>
+
+                    <h2>VS Code でのプレビュー</h2>
+                    <p>
+                        VS Code の <a href="https://marketplace.visualstudio.com/items?itemName=marp-team.marp-vscode" target="_blank" style="color: var(--color-primary)">Marp for VS Code</a> 拡張機能をインストールすると、
+                        <code>manual.md</code> のプレビューをリアルタイムで確認しながら編集できます。
+                    </p>
+                    <ol>
+                        <li>VS Code で <code>Marp for VS Code</code> 拡張機能をインストール</li>
+                        <li><code>manual.md</code> を開く</li>
+                        <li><kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> でプレビューを表示</li>
+                    </ol>
+                    <div class="info-box">
+                        <p>
+                            <strong>ヒント:</strong> VS Code のプレビューではカスタムテーマが反映されない場合があります。
+                            最終確認は必ずPDF出力で行ってください。
+                        </p>
+                    </div>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feature-mockup.html"
+                                    >機能単位のモックアップ生成</a
+                                >
+                            </li>
+                            <li>
+                                <a href="feedback-and-check.html"
+                                    >フィードバックと整合性チェック</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>

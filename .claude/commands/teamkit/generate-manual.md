@@ -104,18 +104,15 @@ Generate the manual following the structure and rules below.
 ```markdown
 ---
 marp: true
-theme: a4
+theme: A4-Manual
 paginate: true
 ---
 
-<style>
-section {
-  font-size: 14pt;
-  padding: 40px;
-}
-</style>
-
 # 【Feature Name】操作マニュアル
+
+---
+
+<!-- class: content -->
 
 ## 目次
 - [1. 概要](#1-概要)
@@ -124,6 +121,8 @@ section {
 - [4. 入力ルール](#4-入力ルール)
 - [5. 画面遷移](#5-画面遷移)
 - [6. 注意事項](#6-注意事項)
+
+---
 
 ## 1. 概要
 
@@ -232,10 +231,17 @@ section {
 6. **アクター別の整理**: 複数のアクターがいる場合はアクター別にセクションを分ける
 7. **具体的な記述**: 抽象的な表現を避け、具体的な操作手順として記述する
 8. **改ページの挿入**: 以下の箇所に Marp のページ区切り（`---`）を必ず挿入する
+   - **タイトル（`# 【Feature Name】操作マニュアル`）** の直後
+   - **目次** の直後（`## 1. 概要` の直前）
+   - **`## 2. 操作ガイド`** の直前
    - **`### 2.2 管理する情報`** の直前
    - **`### 2.3 画面一覧`** の直前
    - **各画面キャプチャ（スクリーンショット画像）** の直前
-9. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
+9. **ページレイアウト**: テーマ `A4-Manual` を使用する。共有テーマファイル `.teamkit/themes/A4-Manual.css` を利用する（specDir 内にローカル CSS を生成しない）
+   - 1ページ目（タイトル）: 縦中央寄せ（デフォルト）
+   - 2ページ目以降: 縦上寄せ。タイトルの後の改ページの直後に `<!-- class: content -->` を挿入する（グローバルディレクティブで以降全スライドに適用される）
+   - `<style>` タグによるインラインスタイルは使用しない（テーマ CSS に集約する）
+10. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
    - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
    - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の `input_fields`/`display_fields` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
    - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
@@ -244,21 +250,17 @@ section {
 
 When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
 
-1. **Section 2.3 画面一覧**: After each screen entry in the table, add a page break (`---`) followed by a screenshot for each screen:
+1. **Section 2.3 画面一覧**: After each screen entry in the table, add a page break (`---`) followed by the screen name (bold), main operations, and a screenshot for each screen:
    ```markdown
    ---
+
+   **{画面名}**
+   主な操作: {主な操作（テーブルの「主な操作」列の内容）}
 
    ![{画面名} w:560](mock/screenshots/{screen_id}.png)
    ```
 
-2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, add a page break (`---`) before the screenshot, then embed it:
-   ```markdown
-   ---
-
-   1. **【画面名】を開く**
-      ![画面名 w:560](mock/screenshots/{screen_id}.png)
-      - [画面へのアクセス方法]
-   ```
+2. **Section 3. 操作手順**: スクリーンショットは埋め込まない。画面キャプチャは Section 2.3 にのみ配置する。
 
 3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
    ```markdown
@@ -273,26 +275,14 @@ When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
 - If file exists, delete and regenerate completely
 - Save automatically without asking user
 
-### 5.5. Generate A4 Theme and Convert to PDF
+### 5.5. Convert to PDF using shared A4-Manual theme
 
-1. Create A4 theme CSS file at `{{baseDir}}/{{specDir}}/a4.css`:
-```css
-/* @theme a4 */
-
-@import "default";
-
-section {
-  width: 1033px;
-  height: 1462px;
-}
-```
-
-2. Convert manual.md to PDF via Bash:
+1. Convert manual.md to PDF via Bash using the shared theme file:
 ```bash
-npx @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set {{baseDir}}/{{specDir}}/a4.css -o {{baseDir}}/{{specDir}}/manual.pdf
+npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set {{baseDir}}/themes/A4-Manual.css -o {{baseDir}}/{{specDir}}/manual.pdf
 ```
 
-3. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
+2. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
@@ -321,4 +311,5 @@ npx @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-fi
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
 - [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
-- [ ] (If `--capture`) Screenshots are embedded in operation procedure sections with Marp `w:560` syntax
+- [ ] (If `--capture`) Screenshots are embedded in Section 2.3 画面一覧 with screen name, main operations, and Marp `w:560` syntax
+- [ ] (If `--capture`) Section 3 操作手順 does NOT contain screenshots
