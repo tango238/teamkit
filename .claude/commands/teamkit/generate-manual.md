@@ -149,6 +149,8 @@ section {
 3. **タスクを編集する** — 「タスク一覧」画面で対象タスクの「編集」をクリックし、「タスク登録・編集」画面で内容を修正して保存します。
 4. **タスクを削除する** — 「タスク一覧」画面で「削除」をクリックし、「タスク削除確認」画面で内容を確認してから削除します。
 
+---
+
 ### 2.2 管理する情報
 
 [usecase.yml の entity と ui.yml の input_fields/display_fields を元に、このシステムで扱う情報の概要を表にまとめる。]
@@ -156,6 +158,8 @@ section {
 | 情報 | 内容 | 主な操作画面 |
 |------|------|-------------|
 | エンティティ名 | 管理する情報の概要（どのような項目を持つか） | 関連する画面名 |
+
+---
 
 ### 2.3 画面一覧
 
@@ -227,7 +231,11 @@ section {
 5. **バリデーションの記載**: `ui.yml` の `validation` を入力ルールセクションに集約
 6. **アクター別の整理**: 複数のアクターがいる場合はアクター別にセクションを分ける
 7. **具体的な記述**: 抽象的な表現を避け、具体的な操作手順として記述する
-8. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
+8. **改ページの挿入**: 以下の箇所に Marp のページ区切り（`---`）を必ず挿入する
+   - **`### 2.2 管理する情報`** の直前
+   - **`### 2.3 画面一覧`** の直前
+   - **各画面キャプチャ（スクリーンショット画像）** の直前
+9. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
    - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
    - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の `input_fields`/`display_fields` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
    - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
@@ -236,13 +244,17 @@ section {
 
 When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
 
-1. **Section 2.3 画面一覧**: After each screen entry in the table, add a screenshot below the table for each screen:
+1. **Section 2.3 画面一覧**: After each screen entry in the table, add a page break (`---`) followed by a screenshot for each screen:
    ```markdown
+   ---
+
    ![{画面名} w:560](mock/screenshots/{screen_id}.png)
    ```
 
-2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, embed the screenshot immediately after the screen name heading:
+2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, add a page break (`---`) before the screenshot, then embed it:
    ```markdown
+   ---
+
    1. **【画面名】を開く**
       ![画面名 w:560](mock/screenshots/{screen_id}.png)
       - [画面へのアクセス方法]
