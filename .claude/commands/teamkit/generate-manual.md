@@ -260,14 +260,7 @@ When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
    ![{画面名} w:560](mock/screenshots/{screen_id}.png)
    ```
 
-2. **Section 3. 操作手順**: When a step references opening or interacting with a screen, add a page break (`---`) before the screenshot, then embed it:
-   ```markdown
-   ---
-
-   1. **【画面名】を開く**
-      ![画面名 w:560](mock/screenshots/{screen_id}.png)
-      - [画面へのアクセス方法]
-   ```
+2. **Section 3. 操作手順**: スクリーンショットは埋め込まない。画面キャプチャは Section 2.3 にのみ配置する。
 
 3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
    ```markdown
@@ -318,4 +311,5 @@ npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-lo
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
 - [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
-- [ ] (If `--capture`) Screenshots are embedded in operation procedure sections with Marp `w:560` syntax
+- [ ] (If `--capture`) Screenshots are embedded in Section 2.3 画面一覧 with screen name, main operations, and Marp `w:560` syntax
+- [ ] (If `--capture`) Section 3 操作手順 does NOT contain screenshots
