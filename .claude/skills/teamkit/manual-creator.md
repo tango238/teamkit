@@ -54,7 +54,7 @@ npx --yes @marp-team/marp-cli --version
 Run the following command to generate A4-sized HTML. The `--theme-set` option loads the custom `A4-Manual` theme CSS:
 
 ```bash
-npx --yes @marp-team/marp-cli "{{baseDir}}/{{specDir}}/manual.md" --html --theme-set .teamkit/themes/A4-Manual.css --output "{{baseDir}}/{{specDir}}/manual.html"
+npx --yes @marp-team/marp-cli "{{baseDir}}/{{specDir}}/manual.md" --html --allow-local-files --theme-set .teamkit/themes/A4-Manual.css --output "{{baseDir}}/{{specDir}}/manual.html"
 ```
 
 - Verify that `{{baseDir}}/{{specDir}}/manual.html` is created
@@ -65,7 +65,7 @@ npx --yes @marp-team/marp-cli "{{baseDir}}/{{specDir}}/manual.md" --html --theme
 Run the following command to convert to PDF:
 
 ```bash
-npx --yes @marp-team/marp-cli "{{baseDir}}/{{specDir}}/manual.md" --pdf --theme-set .teamkit/themes/A4-Manual.css --output "{{baseDir}}/{{specDir}}/manual.pdf"
+npx --yes @marp-team/marp-cli "{{baseDir}}/{{specDir}}/manual.md" --pdf --allow-local-files --theme-set .teamkit/themes/A4-Manual.css --output "{{baseDir}}/{{specDir}}/manual.pdf"
 ```
 
 - Verify that `{{baseDir}}/{{specDir}}/manual.pdf` is created

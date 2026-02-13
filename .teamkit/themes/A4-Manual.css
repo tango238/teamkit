@@ -1,54 +1,75 @@
-/*! 
- * @theme A4-Manual 
- * @auto-scaleing true
- * @size a4 1033px 1462px
- */
-@import 'default';
+/* @theme A4-Manual */
 
 section {
-  justify-content: start;
+  width: 1033px;
+  height: 1462px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  overflow: hidden;
   font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Meiryo", sans-serif;
-  font-size: 16px;
-  padding: 30px;
+  font-size: 13px;
+  padding: 50px 30px 30px;
+  background: white;
+  color: #333;
+  line-height: 1.6;
+  word-wrap: break-word;
+}
+
+section.content {
+  justify-content: start;
 }
 
 h1 {
-  font-size: 24px;
+  font-size: 20px;
   color: #333;
   border-bottom: 2px solid #007bff;
   padding-bottom: 10px;
 }
 
 h2 {
-  font-size: 22px;
+  font-size: 18px;
   color: #007bff;
 }
 
 h3 {
-  font-size: 18px;
+  font-size: 15px;
   color: #555;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+ul, ol {
+  margin: 0.5em 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 th {
   background: #007bff;
   color: white;
-  padding: 8px 12px;
+  padding: 6px 10px;
   text-align: left;
 }
 
 td {
   border: 1px solid #dee2e6;
-  padding: 8px 12px;
+  padding: 6px 10px;
 }
 
 tr:nth-child(even) {
   background: #f8f9fa;
+}
+
+img {
+  max-width: 100%;
 }
 
 header {
