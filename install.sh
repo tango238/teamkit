@@ -15,15 +15,23 @@ BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
 
 # スクリプトのディレクトリを取得（ローカル実行判定用）
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOCAL_SOURCE_DIR="$SCRIPT_DIR/.claude/commands/teamkit"
-LOCAL_SKILLS_DIR="$SCRIPT_DIR/.claude/skills/teamkit"
-
-# ローカルモード判定（ローカルにソースファイルが存在するか）
-if [ -d "$LOCAL_SOURCE_DIR" ]; then
-    LOCAL_MODE=true
-else
+# curl | bash の場合、BASH_SOURCE[0] が空になるためリモートモードを強制
+if [ -z "${BASH_SOURCE[0]}" ] || [ "${BASH_SOURCE[0]}" = "bash" ]; then
     LOCAL_MODE=false
+    SCRIPT_DIR=""
+    LOCAL_SOURCE_DIR=""
+    LOCAL_SKILLS_DIR=""
+else
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    LOCAL_SOURCE_DIR="$SCRIPT_DIR/.claude/commands/teamkit"
+    LOCAL_SKILLS_DIR="$SCRIPT_DIR/.claude/skills/teamkit"
+
+    # ローカルモード判定（ローカルにソースファイルが存在するか）
+    if [ -d "$LOCAL_SOURCE_DIR" ]; then
+        LOCAL_MODE=true
+    else
+        LOCAL_MODE=false
+    fi
 fi
 
 # 引数チェック
@@ -61,39 +69,6 @@ if [ -z "$TARGET_DIR" ]; then
     exit 1
 fi
 
-# 引数を解析
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --yes|-y|--force|-f)
-            FORCE_OVERWRITE=true
-            shift
-            ;;
-        *)
-            if [ -z "$TARGET_DIR" ]; then
-                TARGET_DIR="$1"
-            fi
-            shift
-            ;;
-    esac
-done
-
-if [ -z "$TARGET_DIR" ]; then
-    echo -e "${RED}エラー: ターゲットディレクトリのパスを指定してください${NC}"
-    echo ""
-    echo "使用方法:"
-    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- <ターゲットディレクトリのパス>"
-    echo "  または"
-    echo "  ./install.sh <ターゲットディレクトリのパス>"
-    echo ""
-    echo "オプション:"
-    echo "  --yes, -y, --force, -f  既存ファイルを確認せずに上書き"
-    echo ""
-    echo "例:"
-    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- ."
-    echo "  curl -fsSL https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/install.sh | bash -s -- --yes /path/to/target-project"
-    exit 1
-fi
-
 # ターゲットディレクトリの存在確認と作成
 if [ ! -d "$TARGET_DIR" ]; then
     echo -e "${YELLOW}警告: ターゲットディレクトリが存在しません: $TARGET_DIR${NC}"
@@ -104,6 +79,10 @@ fi
 # 絶対パスに変換
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
+# ローカルモードでソースとターゲットが同一ディレクトリの場合はリモートモードにフォールバック
+if [ "$LOCAL_MODE" = true ] && [ "$SCRIPT_DIR" = "$TARGET_DIR" ]; then
+    LOCAL_MODE=false
+fi
 
 echo -e "${BLUE}Team Kit コマンドのインストールを開始します${NC}"
 if [ "$LOCAL_MODE" = true ]; then
