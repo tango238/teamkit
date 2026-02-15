@@ -53,6 +53,9 @@ Verify that both `specDir` and `comment` arguments are provided. If either is mi
 ### 2. Pre-check
 - Check if `{{baseDir}}/{{specDir}}/status.json` exists
 - If the file does not exist, display an error message and stop execution
+- Read `status.json` and check if optional specification files have been generated:
+  - If the `manual` step in the `steps` array has `version > 0`, set `manualGenerated` to `true`, otherwise `false`
+  - If the `acceptance_test` step in the `steps` array has `version > 0`, set `acceptanceTestGenerated` to `true`, otherwise `false`
 
 ### 3. Understand & Think
 - Understand the feedback content provided in the `comment` argument
@@ -82,6 +85,8 @@ Verify the impact on each specification file in the following order (each step s
 2. Considering the impact from step 1, verify impact on `ui.yml`
 3. Considering the impact from step 2, verify impact on `usecase.yml`
 4. Considering the impact from step 3, verify impact on `workflow.yml`
+5. If `manualGenerated` is `true`: Considering the impacts from steps 1-4, verify impact on `manual.md`
+6. If `acceptanceTestGenerated` is `true`: Considering the impacts from steps 1-4, verify impact on `acceptance-test.md`
 
 ### 6. Generate Feedback Document
 Based on the verification results, write out the issues and next actions:
@@ -141,6 +146,8 @@ TODO項目を作成する前に、以下の重複パターンをチェックす�
   - usecase: 本人確認関連ステップを削除
   - ui: 本人確認入力フィールドを削除
   - screenflow: 本人確認フローを削除
+  - manual: 本人確認に関する操作手順セクションを削除・更新（manualGenerated が true の場合のみ）
+  - acceptance_test: 本人確認関連のテストケースを削除・更新（acceptanceTestGenerated が true の場合のみ）
 ```
 
 ---
@@ -210,6 +217,8 @@ The generated `feedback.md` should follow this structure:
   - usecase: {{how to fix it and consideration}}
   - ui: {{how to fix it and consideration}}
   - screenflow: {{how to fix it and consideration}}
+  - manual: {{how to fix it and consideration}}  ← manualGenerated が true の場合のみ記載
+  - acceptance_test: {{how to fix it and consideration}}  ← acceptanceTestGenerated が true の場合のみ記載
 - Notes: {{if any notes or consideration}}
 
 ## 2. {{short name of correction item 2 from feedback 1}}
@@ -220,13 +229,15 @@ The generated `feedback.md` should follow this structure:
   - usecase: {{how to fix it and consideration}}
   - ui: {{how to fix it and consideration}}
   - screenflow: {{how to fix it and consideration}}
+  - manual: {{how to fix it and consideration}}  ← manualGenerated が true の場合のみ記載
+  - acceptance_test: {{how to fix it and consideration}}  ← acceptanceTestGenerated が true の場合のみ記載
 - Notes: {{if any notes or consideration}}
 <!-- Continue for all correction items -->  
 
 ```
 
 ### 「次のアクション」の記載ルール
-- 1つのTODO項目に対して、影響を受ける全ての仕様ファイル（feature, story, usecase, ui, screenflow）への変更指示を**1つの統合された説明**として記載する
+- 1つのTODO項目に対して、影響を受ける全ての仕様ファイル（workflow, usecase, ui, screenflow、および生成済みの場合は manual, acceptance_test）への変更指示を**1つの統合された説明**として記載する
 - プロセスごとに分けずに、論理的な流れで変更内容を説明する
 - 具体的なファイル名や変更箇所は必要に応じて言及するが、箇条書きでプロセス別に分けない
 - 「次のアクション」は、ユーザーが迷わず修正できるよう、**具体的な変更内容と例を必ず記載**してください。
