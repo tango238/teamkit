@@ -44,6 +44,11 @@ Verify that required files exist before proceeding:
 - **Validation**:
   - If any of these files do not exist → Display the message "Error: `status.json` or `workflow.yml` does not exist. Please run /clean" and **STOP** execution.
 
+- **Check optional specification status**:
+  - Read `status.json` and check the `steps` array:
+    - If the `manual` step has `version > 0`, set `manualGenerated` to `true`, otherwise `false`
+    - If the `acceptance_test` step has `version > 0`, set `acceptanceTestGenerated` to `true`, otherwise `false`
+
 ### 2. Load Feedback File
 
 Load the feedback file containing TODO items to process:
@@ -90,6 +95,8 @@ Determine the next version number for tracking changes:
    - Find the object with key `usecase` and extract its `version`
    - Find the object with key `ui` and extract its `version`
    - Find the object with key `screenflow` and extract its `version`
+   - If `manualGenerated` is `true`: Find the object with key `manual` and extract its `version`
+   - If `acceptanceTestGenerated` is `true`: Find the object with key `acceptance_test` and extract its `version`
    - Extract `mock.version` from the root level
 3. Find the maximum version among all values
 4. Add 1 to get **newVersionNumber**
@@ -207,7 +214,7 @@ Mark processed items as completed:
 - Save feedback.md
 - Do not change existing other items (`[ ]`, `[~]`, already `[x]` items)
 
-#### 8. Update All Step Versions
+### 8. Update All Step Versions
 
 Record the new version number in status.json for ALL steps:
 
@@ -220,6 +227,7 @@ Record the new version number in status.json for ALL steps:
   - Find the object with key `ui` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Find the object with key `screenflow` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Update `mock.version` to `{{newVersionNumber}}`
+  - **Do NOT update `manual` or `acceptance_test` versions here** — their versions are updated by the respective generate commands in Step 10. Updating them here would cause the generate commands to skip regeneration due to their idempotency check (`currentVersion >= targetVersion`).
   - Update `updated_at` to current timestamp
   - Update `last_execution` to `apply-feedback`
 - The version number represents the feedback application batch, not individual file changes
@@ -233,7 +241,18 @@ Regenerate all files to reflect the changes:
 - Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
-### 10. Report Results
+### 10. Regenerate Manual and Acceptance Tests (if previously generated)
+
+If manual or acceptance tests were previously generated, regenerate them to reflect the applied changes:
+
+- If `manualGenerated` is `true`:
+  - Execute `/teamkit:generate-manual {{specDir}}`
+  - If an error occurs during generation, report it
+- If `acceptanceTestGenerated` is `true`:
+  - Execute `/teamkit:generate-acceptance-test {{specDir}}`
+  - If an error occurs during generation, report it
+
+### 11. Report Results
 
 Display the processing results:
 
@@ -267,7 +286,8 @@ Display the processing results:
 6. Update feedback.md: change `[o]` to `[x]`
 7. Directly edit `status.json` to update ALL step versions to newVersionNumber (do NOT use slash commands)
 8. Execute `/teamkit:generate-mock YourFeature`
-9. Report results
+9. If manual/acceptance tests were previously generated, regenerate them
+10. Report results
 
 ---
 
@@ -309,6 +329,8 @@ Diff:
   - screenflow: 5
   - mock: 5
 ✓ モックHTMLを生成しました
+✓ マニュアルを再生成しました (version: 5)      ← manualGenerated が true の場合のみ
+✓ 受け入れテストを再生成しました (version: 5)  ← acceptanceTestGenerated が true の場合のみ
 
 処理完了:
 - 適用項目数: 2件
