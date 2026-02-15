@@ -126,11 +126,11 @@ theme: A4-Manual
 paginate: true
 ---
 
+<!-- _class: title -->
+
 # 【Feature Name】操作マニュアル
 
 ---
-
-<!-- class: content -->
 
 ## 目次
 - [1. 概要](#1-概要)
@@ -256,9 +256,10 @@ paginate: true
    - **`### 2.3 画面一覧`** の直前
    - **各画面キャプチャ（スクリーンショット画像）** の直前
 9. **ページレイアウト**: テーマ `A4-Manual` を使用する。共有テーマファイル `.teamkit/themes/A4-Manual.css` を利用する（specDir 内にローカル CSS を生成しない）
-   - 1ページ目（タイトル）: 縦中央寄せ（デフォルト）
-   - 2ページ目以降: 縦上寄せ。タイトルの後の改ページの直後に `<!-- class: content -->` を挿入する（グローバルディレクティブで以降全スライドに適用される）
+   - 1ページ目（タイトル）: 縦中央寄せ。frontmatter の直後に `<!-- _class: title -->` をローカルディレクティブとして挿入する（1ページ目のみに適用）
+   - 2ページ目以降: テーマ CSS のデフォルト（`justify-content: flex-start`）により縦上寄せ。追加のディレクティブは不要
    - `<style>` タグによるインラインスタイルは使用しない（テーマ CSS に集約する）
+   - **重要**: Marp は各スライドを個別の `<svg><foreignobject>` で囲むため、`:first-of-type` や `<!-- class: content -->` グローバルディレクティブでは正しく動作しない。タイトルページのみ `<!-- _class: title -->` ローカルディレクティブで明示的にクラスを付与すること
 10. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
    - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
    - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の各 view の `sections` > `input_fields`（`type: "data_table"` のフィールドを含む）を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
@@ -293,14 +294,62 @@ When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
 - If file exists, delete and regenerate completely
 - Save automatically without asking user
 
-### 5.5. Convert to PDF using shared A4-Manual theme
+### 5.5. Ensure A4-Manual theme exists and convert to PDF
 
-1. Convert manual.md to PDF via Bash using the shared theme file:
-```bash
-npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set {{baseDir}}/themes/A4-Manual.css -o {{baseDir}}/{{specDir}}/manual.pdf
+1. Check if `{{baseDir}}/themes/A4-Manual.css` exists. If it does NOT exist, create the directory and file:
+   - Via Bash: `mkdir -p {{baseDir}}/themes`
+   - Create `{{baseDir}}/themes/A4-Manual.css` with the following content:
+
+```css
+/* @theme A4-Manual */
+
+section {
+  width: 794px;
+  height: 1123px;
+  font-size: 13pt;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans CJK JP', 'Yu Gothic', sans-serif;
+  padding: 40px 50px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  line-height: 1.6;
+  color: #1a1a1a;
+  background: white;
+}
+
+section.title {
+  justify-content: center;
+}
+
+section h1 { font-size: 28pt; text-align: center; border-bottom: 3px solid #333; padding-bottom: 16px; }
+section h2 { font-size: 20pt; color: #1a1a1a; border-bottom: 2px solid #666; padding-bottom: 8px; margin-top: 24px; }
+section h3 { font-size: 16pt; color: #333; margin-top: 16px; }
+section h4 { font-size: 14pt; color: #444; margin-top: 12px; }
+section table { font-size: 10pt; width: 100%; border-collapse: collapse; margin: 8px 0; }
+section table th { background-color: #f0f0f0; font-weight: bold; padding: 6px 8px; border: 1px solid #ccc; text-align: left; }
+section table td { padding: 5px 8px; border: 1px solid #ccc; vertical-align: top; }
+section table tr:nth-child(even) td { background-color: #fafafa; }
+section ul, section ol { margin: 4px 0; padding-left: 24px; }
+section li { margin: 2px 0; }
+section img { display: block; margin: 8px auto; border: 1px solid #ddd; border-radius: 4px; }
+section strong { color: #1a1a1a; }
+section p { margin: 4px 0; }
+section blockquote { border-left: 4px solid #666; padding-left: 16px; color: #555; margin: 8px 0; }
+section a { color: #0366d6; text-decoration: none; }
+section code { background-color: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+footer { font-size: 9pt; color: #999; }
 ```
 
-2. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
+   - **重要**: `@import 'default'` は使用しないこと（Marp のデフォルトテーマが `justify-content: center` を上書きしてしまうため）
+   - **重要**: タイトルページの縦中央寄せには `section.title` クラスセレクタを使用すること（`:first-of-type` は Marp の DOM 構造上すべてのスライドに適用されてしまうため不可）
+
+2. Convert manual.md to PDF via Bash using **absolute paths** for the theme file (relative paths may cause "Not found" errors with marp-cli):
+```bash
+npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-local-files --html --theme-set $(pwd)/{{baseDir}}/themes/A4-Manual.css -o {{baseDir}}/{{specDir}}/manual.pdf
+```
+
+3. Verify PDF was generated: check that `{{baseDir}}/{{specDir}}/manual.pdf` exists
 
 ### 6. Update Status (Direct Write - No SlashCommand)
 
