@@ -226,9 +226,8 @@ Record the new version number in status.json for ALL steps:
   - Find the object with key `usecase` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Find the object with key `ui` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Find the object with key `screenflow` in `steps` and update its `version` to `{{newVersionNumber}}`
-  - If `manualGenerated` is `true`: Find the object with key `manual` in `steps` and update its `version` to `{{newVersionNumber}}`
-  - If `acceptanceTestGenerated` is `true`: Find the object with key `acceptance_test` in `steps` and update its `version` to `{{newVersionNumber}}`
   - Update `mock.version` to `{{newVersionNumber}}`
+  - **Do NOT update `manual` or `acceptance_test` versions here** — their versions are updated by the respective generate commands in Step 10. Updating them here would cause the generate commands to skip regeneration due to their idempotency check (`currentVersion >= targetVersion`).
   - Update `updated_at` to current timestamp
   - Update `last_execution` to `apply-feedback`
 - The version number represents the feedback application batch, not individual file changes
@@ -328,12 +327,10 @@ Diff:
   - usecase: 5
   - ui: 5
   - screenflow: 5
-  - manual: 5      ← 生成済みの場合のみ
-  - acceptance_test: 5  ← 生成済みの場合のみ
   - mock: 5
 ✓ モックHTMLを生成しました
-✓ マニュアルを再生成しました      ← manualGenerated が true の場合のみ
-✓ 受け入れテストを再生成しました  ← acceptanceTestGenerated が true の場合のみ
+✓ マニュアルを再生成しました (version: 5)      ← manualGenerated が true の場合のみ
+✓ 受け入れテストを再生成しました (version: 5)  ← acceptanceTestGenerated が true の場合のみ
 
 処理完了:
 - 適用項目数: 2件
