@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>システム概要の要件定義 - Team Kit</title>
+        <link rel="stylesheet" href="../style.css" />
+        <link rel="stylesheet" href="../doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="../index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="../index.html#docs" class="nav-link">ドキュメント</a>
+                        <a href="../commands.html" class="nav-link">コマンド</a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-secondary" target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="../getting-started.html" class="sidebar-link">はじめに</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="app-init.html" class="sidebar-link active">システム概要の要件定義</a>
+                        <a href="feature-mockup.html" class="sidebar-link">機能単位のモック生成</a>
+                        <a href="app-mockup.html" class="sidebar-link">アプリ全体のモック生成</a>
+                        <a href="feedback-and-check.html" class="sidebar-link">フィードバックとチェック</a>
+                        <a href="event-storming.html" class="sidebar-link">イベントストーミング</a>
+                        <a href="manual-editing.html" class="sidebar-link">マニュアルの手動編集</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="../commands.html" class="sidebar-link">コマンド一覧</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1>
+                        <span class="gradient-text">システム概要の要件定義</span>
+                    </h1>
+                    <p class="doc-lead">
+                        <code>app-init</code> コマンドを使って、AIとの対話を通じてアプリケーションの要件を整理し、機能別のREADME.mdファイルを自動生成するワークフローです。
+                    </p>
+
+                    <h2>概要</h2>
+                    <p>
+                        <code>app-init</code> は、アプリケーション開発の最初のステップとして、対話形式で要件をヒアリングし、構造化された要件定義書を生成します。README.mdを手動で書く代わりに、AIの質問に答えるだけで要件定義が完成します。
+                    </p>
+                    <pre class="flow-diagram">app-init（対話型ヒアリング）
+  │
+  ├─ アプリケーション概要
+  ├─ 対象ユーザー
+  ├─ ユーザー権限
+  ├─ 主要機能
+  ├─ 各機能の詳細
+  └─ 技術要件
+  │
+  ▼
+要件の確認・承認
+  │
+  ▼
+ファイル生成
+  ├─ .teamkit/README.md（全体概要）
+  ├─ .teamkit/&lt;feature-1&gt;/README.md
+  ├─ .teamkit/&lt;feature-2&gt;/README.md
+  └─ ...</pre>
+
+                    <h2>使い方</h2>
+                    <pre><code>/teamkit:app-init MyApp</code></pre>
+                    <p>出力ディレクトリを指定する場合:</p>
+                    <pre><code>/teamkit:app-init MyApp -o specs</code></pre>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>引数・オプション</th>
+                                <th>説明</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>&lt;appName&gt;</code></td>
+                                <td>アプリケーション名（必須）</td>
+                            </tr>
+                            <tr>
+                                <td><code>-o</code>, <code>--output</code></td>
+                                <td>出力ディレクトリ（デフォルト: <code>.teamkit</code>）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h2>ヒアリングの流れ</h2>
+                    <p>AIが以下の6つのステップで質問を行います。各ステップに答えるだけで、要件が整理されていきます。</p>
+
+                    <h3>ステップ1: アプリケーション概要</h3>
+                    <p>アプリケーションの目的や概要を聞かれます。</p>
+                    <div class="info-box">
+                        <p><strong>質問例:</strong> このアプリケーションは何をするものですか？簡単な説明をお願いします。</p>
+                    </div>
+
+                    <h3>ステップ2: 対象ユーザー</h3>
+                    <p>アプリケーションを利用するユーザーの種類を確認します。</p>
+                    <div class="info-box">
+                        <p><strong>質問例:</strong> このアプリケーションを使うのは誰ですか？（例：管理者、一般ユーザー、店舗スタッフなど）</p>
+                    </div>
+
+                    <h3>ステップ3: ユーザー権限</h3>
+                    <p>ユーザー種別ごとの権限の違いを確認します。</p>
+
+                    <h3>ステップ4: 主要機能</h3>
+                    <p>アプリケーションに必要な主要機能の一覧を聞き出します。</p>
+
+                    <h3>ステップ5: 各機能の詳細</h3>
+                    <p>主要機能ごとに、管理するデータ、必要な画面、ユーザー操作を確認します。</p>
+                    <div class="info-box">
+                        <p><strong>確認内容:</strong></p>
+                        <ul>
+                            <li>管理するデータ（名前、日付、ステータスなど）</li>
+                            <li>必要な画面（一覧、詳細、登録/編集など）</li>
+                            <li>ユーザーの操作（CRUD、検索、フィルタなど）</li>
+                        </ul>
+                    </div>
+
+                    <h3>ステップ6: 技術要件</h3>
+                    <p>Webアプリかモバイルか、認証方式、外部連携などの技術的な要件を確認します。</p>
+
+                    <h2>要件の確認と承認</h2>
+                    <p>
+                        すべてのヒアリングが完了すると、AIが収集した情報を整理して表示します。内容を確認し、問題なければ承認することでファイル生成に進みます。修正が必要な場合は、該当部分を再ヒアリングできます。
+                    </p>
+
+                    <h2>生成されるファイル</h2>
+
+                    <h3>全体概要（README.md）</h3>
+                    <p><code>.teamkit/README.md</code> には、以下の情報が含まれます。</p>
+                    <ul>
+                        <li>アプリケーションの概要</li>
+                        <li>対象ユーザーの説明</li>
+                        <li>ユーザー種別テーブル（種別・役割・権限）</li>
+                        <li>主要機能一覧テーブル（各機能READMEへのリンク付き）</li>
+                        <li>技術要件・非機能要件</li>
+                        <li>画面遷移概要</li>
+                    </ul>
+
+                    <h3>機能別README.md</h3>
+                    <p><code>.teamkit/&lt;feature-slug&gt;/README.md</code> には、以下の情報が含まれます。</p>
+                    <ul>
+                        <li>機能概要</li>
+                        <li>データ定義（エンティティテーブル: フィールド名、型、必須、バリデーション）</li>
+                        <li>画面一覧（SC-{コード}-{番号} 形式のID付き）</li>
+                        <li>ユースケース（UC-{コード}-{番号} 形式のID付き、基本フロー・代替フロー）</li>
+                    </ul>
+
+                    <h3>ディレクトリ構成例</h3>
+                    <pre><code>.teamkit/
+├── README.md                          # 全体概要
+├── product-management/
+│   └── README.md                     # 商品管理の要件定義
+├── order-management/
+│   └── README.md                     # 注文管理の要件定義
+└── customer-management/
+    └── README.md                     # 顧客管理の要件定義</code></pre>
+                    <p>
+                        ディレクトリ名は機能名を英語のケバブケースに自動変換します（例:「商品管理」→ <code>product-management</code>）。
+                    </p>
+
+                    <h2>次のステップ</h2>
+                    <p>
+                        <code>app-init</code> で要件定義が完成したら、各機能のREADME.mdをもとに仕様書とモックアップを生成できます。
+                    </p>
+                    <pre><code># 各機能の仕様書とモックアップを一括生成
+/teamkit:generate product-management
+/teamkit:generate order-management
+
+# または全オプション付きで生成
+/teamkit:generate product-management --all</code></pre>
+
+                    <div class="related-links">
+                        <h3>関連ガイド</h3>
+                        <ul>
+                            <li>
+                                <a href="feature-mockup.html">機能単位のモックアップ生成</a>
+                                - README.mdからモックアップを生成する基本ワークフロー
+                            </li>
+                            <li>
+                                <a href="app-mockup.html">アプリ全体のモックアップ生成</a>
+                                - 複数機能を統合したアプリ全体のモック生成
+                            </li>
+                            <li><a href="../commands.html">コマンド一覧</a> - 全コマンドのリファレンス</li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
