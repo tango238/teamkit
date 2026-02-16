@@ -51,6 +51,11 @@
                     <div class="sidebar-title">ガイド</div>
                     <div class="sidebar-links">
                         <a
+                            href="guides/app-init.html"
+                            class="sidebar-link"
+                            >対話型の要件定義</a
+                        >
+                        <a
                             href="guides/feature-mockup.html"
                             class="sidebar-link"
                             >機能単位のモック生成</a
@@ -436,6 +441,42 @@
 
                     <!-- App Generation -->
                     <h2>アプリ全体生成</h2>
+
+                    <h3>app-init</h3>
+                    <p>
+                        対話形式でアプリケーションの要件をヒアリングし、機能別のREADME.mdを自動生成します。
+                    </p>
+                    <pre><code>/teamkit:app-init &lt;appName&gt;
+/teamkit:app-init &lt;appName&gt; -o &lt;outputDir&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>対話によるヒアリング（概要、対象ユーザー、権限、主要機能、各機能の詳細、技術要件）</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>.teamkit/README.md</code>（全体概要）、
+                                    <code>.teamkit/&lt;feature-slug&gt;/README.md</code>（各機能の要件定義）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>-o</code>, <code>--output</code> -
+                                    出力ディレクトリ（デフォルト:
+                                    <code>.teamkit</code>）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    6ステップの構造化インタビュー、ユーザー確認後にファイル生成、日本語出力
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <h3>plan-app</h3>
                     <p>対話形式でアプリのナビゲーション構造を計画します。</p>
