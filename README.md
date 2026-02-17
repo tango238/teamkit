@@ -118,14 +118,6 @@ Additional generated files (with options):
 - `.teamkit/YourFeature/acceptance-test.md` - Acceptance test cases (`--test` or `--all`)
 - `.teamkit/YourFeature/mock/screenshots/*.png` - Mock screen screenshots (`--capture` or `--all`)
 
-### 3. Regenerate Mockups Only
-
-If you already have `ui.yml` and want to regenerate mockups:
-
-```
-/teamkit:create-mock YourFeature
-```
-
 ## Useful Commands
 
 ### Generate with Options
