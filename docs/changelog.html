@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>更新履歴 - Team Kit</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="doc-style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+
+    <body>
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-content">
+                    <a href="index.html" class="logo">
+                        <span class="logo-icon">🛠️</span>
+                        <span class="logo-text">Team Kit</span>
+                    </a>
+                    <div class="nav-links">
+                        <a href="index.html#docs" class="nav-link">ドキュメント</a>
+                        <a href="commands.html" class="nav-link">コマンド</a>
+                        <a href="https://github.com/tango238/teamkit" class="btn btn-secondary" target="_blank"
+                            >GitHub</a
+                        >
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="doc-layout">
+            <aside class="doc-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-links">
+                        <a href="getting-started.html" class="sidebar-link">はじめに</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">ガイド</div>
+                    <div class="sidebar-links">
+                        <a href="guides/app-init.html" class="sidebar-link">システム概要の要件定義</a>
+                        <a href="guides/feature-mockup.html" class="sidebar-link">機能単位のモック生成</a>
+                        <a href="guides/app-mockup.html" class="sidebar-link">アプリ全体のモック生成</a>
+                        <a href="guides/feedback-and-check.html" class="sidebar-link">フィードバックとチェック</a>
+                        <a href="guides/event-storming.html" class="sidebar-link">イベントストーミング</a>
+                        <a href="guides/manual-editing.html" class="sidebar-link">マニュアルの手動編集</a>
+                    </div>
+                </div>
+                <div class="sidebar-section">
+                    <div class="sidebar-title">リファレンス</div>
+                    <div class="sidebar-links">
+                        <a href="commands.html" class="sidebar-link">コマンド一覧</a>
+                        <a href="changelog.html" class="sidebar-link active">更新履歴</a>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="doc-main">
+                <div class="doc-content">
+                    <h1><span class="gradient-text">更新履歴</span></h1>
+                    <p class="doc-lead">Team Kit の主な変更内容をまとめています。</p>
+
+                    <h2>2026-02-16</h2>
+                    <p><strong>PR #23</strong> - app-init ドキュメント追加</p>
+                    <ul>
+                        <li><code>app-init</code> コマンドのドキュメントページを新規追加</li>
+                        <li>「対話型の要件定義」を「システム概要の要件定義」に名称変更</li>
+                    </ul>
+
+                    <h2>2026-02-15</h2>
+                    <p><strong>PR #22</strong> - フィードバック影響検査の拡張</p>
+                    <ul>
+                        <li>マニュアル・受け入れテストが生成済みの場合、フィードバック影響検査の対象に追加</li>
+                        <li><code>apply-feedback</code> で manual / acceptance_test のバージョンを誤って更新しないよう修正</li>
+                        <li><code>curl | bash</code> 実行時にローカルモードと誤判定される問題を修正</li>
+                    </ul>
+
+                    <h2>2026-02-13</h2>
+                    <p><strong>PR #20</strong> - マニュアル改ページ対応</p>
+                    <ul>
+                        <li>マニュアル生成時にセクション 2.2, 2.3、画面キャプチャ前に改ページを挿入</li>
+                    </ul>
+                    <p><strong>PR #21</strong> - マニュアル生成のレイアウト改善</p>
+                    <ul>
+                        <li>マニュアルのレイアウトとテーマを改善</li>
+                        <li>Section 3 からスクリーンショットを除外</li>
+                        <li>マニュアル手動編集ガイドを追加</li>
+                    </ul>
+
+                    <h2>2026-02-12</h2>
+                    <p><strong>PR #17</strong> - マニュアル生成機能の追加</p>
+                    <ul>
+                        <li><code>generate-manual</code> コマンドで Marp 形式のマニュアルを生成</li>
+                        <li><code>manual-creator</code> スキルで PDF 変換を実行</li>
+                        <li>カスタム A4-Manual Marp テーマを追加</li>
+                        <li>スクリーンショット撮影機能（<code>--capture</code> オプション）を追加</li>
+                    </ul>
+                    <p><strong>PR #18</strong> - ドキュメント修正</p>
+                    <ul>
+                        <li><code>getting-started.html</code> のコマンド数・ディレクトリ構成を修正</li>
+                    </ul>
+                    <p><strong>PR #19</strong> - インストールスクリプトのセキュリティ検証</p>
+                    <ul>
+                        <li><code>install.sh</code> リモート実行時にエージェントファイルが配布されないことを検証する項目を追加</li>
+                    </ul>
+
+                    <h2>2026-02-11</h2>
+                    <p><strong>PR #13</strong> - init コマンドのリネーム</p>
+                    <ul>
+                        <li><code>init</code> コマンドを <code>app-init</code> にリネーム（命名の明確化）</li>
+                    </ul>
+                    <p><strong>PR #14</strong> - ユーザーストーリー生成の廃止</p>
+                    <ul>
+                        <li>ストーリー生成機能を削除し、<code>feature</code> を <code>workflow</code> に統一</li>
+                        <li><code>check-feature</code> / <code>update-feature</code> コマンドを廃止</li>
+                    </ul>
+                    <p><strong>PR #12</strong> - ベースディレクトリの変更</p>
+                    <ul>
+                        <li><code>baseDir</code> を <code>specs/</code> から <code>.teamkit/</code> に変更（全コマンドファイル対象）</li>
+                        <li>ドキュメントとインストールスクリプトの参照先を更新</li>
+                    </ul>
+                    <p><strong>PR #15</strong> - ワークフロー構造のスイムレーン対応</p>
+                    <ul>
+                        <li><code>workflow.yml</code> の構造を <code>feature</code> 形式から <code>workflow</code> 形式に変更（スイムレーン対応）</li>
+                    </ul>
+                    <p><strong>PR #16</strong> - generate コマンドの追加</p>
+                    <ul>
+                        <li>README から全仕様書・モックアップを一括生成する <code>generate</code> コマンドを追加</li>
+                        <li><code>create-mock</code> の簡略化</li>
+                        <li>冪等性の検証機能を追加</li>
+                    </ul>
+
+                    <h2>2026-02-05</h2>
+                    <p><strong>PR #11</strong> - SKILL 自動実行の強化</p>
+                    <ul>
+                        <li>自然言語プロンプトに対する SKILL 自動実行ルールを追加</li>
+                        <li><code>auto-apply.md</code> を削除し、既存の <code>apply-feedback</code> に統合</li>
+                        <li>前回コマンドの <code>specDir</code> を自動記憶する機能を追加</li>
+                        <li><code>install.sh</code> にローカルモードを追加</li>
+                        <li>フィードバック入力のトリガーパターンを拡充</li>
+                    </ul>
+
+                    <h2>2026-01-28</h2>
+                    <p><strong>ドキュメントサイトの構築</strong></p>
+                    <ul>
+                        <li><code>docs.html</code> を <code>index.html</code> に統合し、各ドキュメントページを新規作成</li>
+                        <li>GitHub Pages 用の <code>static.yml</code> を追加</li>
+                    </ul>
+
+                    <h2>破壊的変更まとめ</h2>
+                    <table class="doc-table">
+                        <thead>
+                            <tr>
+                                <th>変更内容</th>
+                                <th>日付</th>
+                                <th>PR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>specs/</code> ディレクトリが <code>.teamkit/</code> に変更</td>
+                                <td>2026-02-11</td>
+                                <td>#12</td>
+                            </tr>
+                            <tr>
+                                <td><code>init</code> コマンドが <code>app-init</code> に改名</td>
+                                <td>2026-02-11</td>
+                                <td>#13</td>
+                            </tr>
+                            <tr>
+                                <td><code>workflow.yml</code> の構造がスイムレーン形式に変更</td>
+                                <td>2026-02-11</td>
+                                <td>#15</td>
+                            </tr>
+                            <tr>
+                                <td><code>check-feature</code> / <code>update-feature</code> コマンドの廃止</td>
+                                <td>2026-02-11</td>
+                                <td>#14</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
