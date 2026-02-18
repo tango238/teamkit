@@ -138,7 +138,7 @@ allowed-tools:
      - 現在のページに対応するナビゲーション項目に `active` クラスを追加
   4. **コンテンツ生成ルール**:
      - `sitemap.yml` の `file` からHTMLファイル名を生成
-     - `ui.yml` の該当 view の `data_table` > `columns` からテーブルヘッダーを生成（`data_table` > `data` からサンプル行を生成、`row_actions` から行アクションを生成）
+     - `ui.yml` の該当 view の `sections` > `input_fields` から `type: "data_table"` のフィールドを探し、その `columns` からテーブルヘッダーを生成（`data` からサンプル行を生成、`row_actions` から行アクションを生成）
      - `ui.yml` の該当 view の `sections` > `input_fields` のフィルター用フィールドからフィルター要素を生成
      - `ui.yml` の該当 view の structured `actions`（`id`, `type`, `label`, `style`, `to`）からボタンを生成
      - `ui.yml` の該当 view の `sections` > `input_fields`（`id`, `type`, `label`）からフォーム要素を生成

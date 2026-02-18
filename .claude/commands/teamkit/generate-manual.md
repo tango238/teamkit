@@ -62,7 +62,7 @@ Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, 
 
 Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/usecase.yml` - Use case definitions (operation procedures)
-- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with title, sections, input_fields, actions, data_table)
+- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with title, sections containing input_fields, actions)
 - `{{baseDir}}/{{specDir}}/screenflow.md` - Screen flow diagrams (operation flow)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (feature overview)
 
@@ -152,7 +152,7 @@ paginate: true
 
 ### 2.2 管理する情報
 
-[usecase.yml の entity と ui.yml の各 view の sections > input_fields および data_table を元に、このシステムで扱う情報の概要を表にまとめる。]
+[usecase.yml の entity と ui.yml の各 view の sections > input_fields（type: "data_table" のフィールドを含む）を元に、このシステムで扱う情報の概要を表にまとめる。]
 
 | 情報 | 内容 | 主な操作画面 |
 |------|------|-------------|
@@ -224,7 +224,7 @@ paginate: true
 #### Generation Rules
 
 1. **ユースケースベース**: `usecase.yml` の各ユースケースを操作手順の単位とする
-2. **画面情報の反映**: `ui.yml` の各 view の `sections` > `input_fields`、`data_table`（columns, data, row_actions）、structured `actions`（id, type, label, style, to）を操作手順に反映
+2. **画面情報の反映**: `ui.yml` の各 view の `sections` > `input_fields`（`type: "data_table"` のフィールドは columns, data, row_actions を参照）、structured `actions`（id, type, label, style, to）を操作手順に反映
 3. **遷移情報の反映**: `screenflow.md` のフロー図を画面遷移セクションに反映
 4. **必須項目の明示**: `sections` > `input_fields` 内の `required: true` フィールドは操作手順で明確に示す
 5. **バリデーションの記載**: `ui.yml` の各 view > `sections` > `input_fields` のバリデーションルールを入力ルールセクションに集約
@@ -243,7 +243,7 @@ paginate: true
    - `<style>` タグによるインラインスタイルは使用しない（テーマ CSS に集約する）
 10. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
    - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
-   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の各 view の `sections` > `input_fields` および `data_table` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
+   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の各 view の `sections` > `input_fields`（`type: "data_table"` のフィールドを含む）を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
    - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
 
 #### Screenshot Embedding Rules (only when `captureScreenshots` is `true`)

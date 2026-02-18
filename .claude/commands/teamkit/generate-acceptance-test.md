@@ -58,7 +58,7 @@ Read `usecase.yml` and `ui.yml` under `.teamkit/{{specDir}}`, and generate compr
 
 Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/usecase.yml` - Use case definitions (test scenario basis)
-- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with sections, input_fields, actions, data_table)
+- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with sections containing input_fields, actions)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (acceptance criteria basis)
 
 ### 4. Generate Acceptance Test Cases
