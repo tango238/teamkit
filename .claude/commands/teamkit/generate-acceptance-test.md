@@ -58,7 +58,7 @@ Read `usecase.yml` and `ui.yml` under `.teamkit/{{specDir}}`, and generate compr
 
 Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/usecase.yml` - Use case definitions (test scenario basis)
-- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (input fields, validations, actions)
+- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with sections containing input_fields, actions)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (acceptance criteria basis)
 
 ### 4. Generate Acceptance Test Cases
@@ -126,7 +126,7 @@ Generate the test cases following the structure and rules below.
 | 項目 | 内容 |
 |------|------|
 | **テストID** | TC-NNN |
-| **対象画面** | [ui.yml の画面名] |
+| **対象画面** | [ui.yml の view の title] |
 | **テスト区分** | バリデーション |
 | **優先度** | 高 |
 
@@ -180,8 +180,8 @@ Generate the test cases following the structure and rules below.
 #### Generation Rules
 
 1. **ユースケースベース**: `usecase.yml` の各ユースケースに対して最低1つの正常系テストケースを作成
-2. **バリデーションテスト**: `ui.yml` の `required: true` フィールドおよび `validation` ルールに対してテストケースを作成
-3. **画面遷移テスト**: `ui.yml` の `actions` から主要な画面遷移をテストケースとして作成
+2. **バリデーションテスト**: `ui.yml` の各 view > `sections` > `input_fields` 内の `required: true` フィールドおよびバリデーションルールに対してテストケースを作成
+3. **画面遷移テスト**: `ui.yml` の各 view > structured `actions`（`id`, `type`, `label`, `style`, `to`）から主要な画面遷移をテストケースとして作成
 4. **テストデータ**: 具体的なテストデータ例を記載（ドメインに即したリアルなデータ）
 5. **優先度の付与**:
    - **高**: 主要なユースケースの正常系、必須項目バリデーション
@@ -191,9 +191,9 @@ Generate the test cases following the structure and rules below.
 7. **テストID**: TC-001 から連番で付与、カテゴリをまたいで一意にする
 8. **異常系の網羅**:
    - 必須項目の未入力
-   - 文字数上限超過（`validation` に記載がある場合）
+   - 文字数上限超過（`sections` > `input_fields` のバリデーションに記載がある場合）
    - 不正な入力形式（数値フィールドに文字列など）
-   - 選択肢の未選択（`select`, `radio_group`）
+   - 選択肢の未選択（`type: select`, `type: radio_group` で `options: [{value, label}]` 形式のフィールド）
 
 ### 5. Save File
 
@@ -221,7 +221,7 @@ Generate the test cases following the structure and rules below.
 ## Quality Checklist
 
 - [ ] All use cases from `usecase.yml` have at least one normal-case test
-- [ ] All required fields from `ui.yml` have validation tests
+- [ ] All required fields from `ui.yml` views' `sections` > `input_fields` have validation tests
 - [ ] All major screen transitions have test cases
 - [ ] Test data examples are realistic and domain-appropriate
 - [ ] All test cases have clear expected results

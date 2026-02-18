@@ -91,9 +91,10 @@ stakeholders with a clear understanding of how different screens connect and wha
 
 ### 4. Extract Screen Information
 
-- List all screens from `ui.yml` grouped by actor
-- Identify input fields, actions, and validations for each screen
-- Map actions to screen transitions (e.g., "Login" button → "Authentication Code Screen")
+- List all screens from `ui.yml` `view` object (each key is a screen ID, e.g., `order_list`, `order_form`)
+- For each screen, use `title` for display name and `actor` for grouping
+- Identify fields from `sections` → `input_fields`, and structured `actions` for each screen
+- Map screen transitions from `actions` with `type: "navigate"` and `to` property (target screen ID)
 - Note conditional flows (e.g., "if validation fails", "if no active bookings")
 
 ### 5. Map Use Cases to Screens
@@ -230,7 +231,7 @@ This includes:
   - Do NOT modify `usecase.yml` or `ui.yml`
   - Ensure diagrams are properly formatted and use consistent notation
   - Keep descriptions concise but complete
-  - Use exact screen names from `ui.yml`
+  - Use exact screen `title` values from `ui.yml` for display, and screen IDs (object keys) for references
   - Reference use case line numbers or identifiers when possible
   - Preserve existing content structure if `screenflow.md` already exists
   - **Output MUST be in Japanese.**

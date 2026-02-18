@@ -45,6 +45,16 @@ Generate lo-fi wireframe mock HTML files based on UI definitions (`ui.yml`) and 
 
 **IMPORTANT:** Execute the following steps immediately without asking the user for confirmation.
 
+### ui.yml Format
+
+The `ui.yml` uses an **object map** format where:
+- `view` is an object with screen IDs as keys (e.g., `order_list`, `order_form`)
+- Each screen has `title`, `description`, `actor`, `purpose`
+- Fields are organized in `sections` → `input_fields` (each field has `id`, `type`, `label`)
+- Actions are structured objects with `id`, `type`, `label`, `style`, `to`
+- Options use `{value, label}` format
+- List screens use `data_table` type with `columns`, `data`, `row_actions`
+
 ---
 
 ## Execution Steps
@@ -73,7 +83,8 @@ Create `{{baseDir}}/{{specDir}}/mock/index.html` (in the mock subdirectory).
 **Key Requirements:**
 - Extract feature name from directory name and README.md
 - Group screens by category headers (##) from `screenflow.md`
-- All links must use `mock/` prefix (e.g., `href="mock/facility_list.html"`)
+- Screen links use the screen ID as filename: `href="mock/{screen_id}.html"` (screen IDs are the keys of the `view` object in `ui.yml`)
+- Use `title` and `description` from each screen definition for display
 - Include a flow diagram section summarizing the main screen flow
 
 #### Output Example
@@ -182,14 +193,14 @@ Create `{{baseDir}}/{{specDir}}/mock/index.html` (in the mock subdirectory).
             <p>【Summarize main flow from screenflow.md】</p>
         </div>
 
-        <!-- Group by Category -->
+        <!-- Group by Category from screenflow.md headers -->
         <div class="category">
             <h2>【Category Name】</h2>
             <ul class="screen-list">
                 <li>
-                    <a href="mock/screen_name.html">
-                        <div class="title">Screen Name</div>
-                        <div class="description">Screen Description</div>
+                    <a href="mock/screen_id.html">
+                        <div class="title">【screen.title from ui.yml】</div>
+                        <div class="description">【screen.description from ui.yml】</div>
                     </a>
                 </li>
             </ul>
@@ -204,8 +215,8 @@ Create `{{baseDir}}/{{specDir}}/mock/index.html` (in the mock subdirectory).
 Create `{{baseDir}}/{{specDir}}/mock/screens.yml` to track generation progress.
 
 **Steps:**
-1. Extract all screen names from `screenflow.md` in order
-2. Convert screen names to alphanumeric filenames (e.g., "Order Basic Info List" -> `order_list`)
+1. Extract all screen IDs from the `view` object keys in `ui.yml`
+2. The screen ID is already in snake_case format (e.g., `order_list`, `order_form`)
 3. Create directory `{{baseDir}}/{{specDir}}/mock` if it doesn't exist
 4. Generate `screens.yml` with unchecked items
 
@@ -237,7 +248,7 @@ All mock screens MUST include the following base CSS for consistent wireframe st
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【Screen Name】</title>
+    <title>【screen.title】</title>
     <style>
         /* === Wireframe Base === */
         * { box-sizing: border-box; }
@@ -302,6 +313,38 @@ All mock screens MUST include the following base CSS for consistent wireframe st
         .dialog { background: #fff; border: 2px solid #333; padding: 24px; max-width: 480px; width: 90%; }
         .dialog h2 { border: none; margin-top: 0; }
 
+        /* === Wireframe Section === */
+        .section { margin-bottom: 24px; }
+        .section-title { font-size: 15px; font-weight: bold; border-bottom: 1px dashed #999; padding-bottom: 6px; margin-bottom: 12px; }
+
+        /* === Wireframe Toggle === */
+        .toggle-group { margin-bottom: 16px; }
+        .toggle-group label { font-weight: bold; font-size: 13px; margin-bottom: 4px; display: block; }
+        .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; }
+        .toggle-switch { width: 44px; height: 24px; border: 1.5px solid #999; background: #eee; display: inline-block; position: relative; cursor: pointer; }
+        .toggle-switch::after { content: ""; position: absolute; width: 18px; height: 18px; top: 2px; left: 2px; background: #999; transition: 0.2s; }
+        .toggle-switch.on { background: #ccc; border-color: #333; }
+        .toggle-switch.on::after { left: 22px; background: #333; }
+
+        /* === Wireframe Radio/Checkbox Group === */
+        .radio-group, .checkbox-group { margin-bottom: 16px; }
+        .radio-group label.group-label, .checkbox-group label.group-label { display: block; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
+        .radio-option, .checkbox-option { display: block; padding: 4px 0; font-size: 13px; }
+        .radio-option.horizontal, .checkbox-option.horizontal { display: inline-block; margin-right: 16px; }
+        .option-description { display: block; font-size: 11px; color: #888; margin-left: 20px; }
+
+        /* === Wireframe Repeater === */
+        .repeater { border: 1.5px solid #999; padding: 12px; margin-bottom: 16px; }
+        .repeater-item { border-bottom: 1px dashed #ccc; padding: 8px 0; display: flex; gap: 8px; align-items: end; flex-wrap: wrap; }
+        .repeater-item:last-child { border-bottom: none; }
+        .repeater-add { margin-top: 8px; }
+
+        /* === Wireframe Pagination === */
+        .pagination { display: flex; gap: 4px; align-items: center; margin-top: 12px; font-size: 13px; }
+        .pagination .page { padding: 4px 10px; border: 1px solid #999; cursor: pointer; }
+        .pagination .page.active { background: #333; color: #fff; border-color: #333; }
+        .pagination .page-info { margin-left: 12px; color: #888; }
+
         /* === Responsive === */
         @media (max-width: 600px) {
             body { padding: 8px; }
@@ -319,40 +362,75 @@ All mock screens MUST include the following base CSS for consistent wireframe st
 <body>
     <div class="container">
         <div class="breadcrumb">
-            <a href="../index.html">Top</a> &gt; 【Screen Name】
+            <a href="../index.html">Top</a> &gt; 【screen.title】
         </div>
-        <h1>【Screen Name】</h1>
-        <!-- Screen Content -->
+        <h1>【screen.title】</h1>
+        <!-- Screen Content: render each section -->
     </div>
 </body>
 </html>
 ```
 
-#### 5-2. UI Element Implementation Guidelines
+#### 5-2. UI Element Rendering Rules (from `ui.yml`)
 
-**Form Elements (from `ui.yml`):**
-- Wrap each input item in `.form-group`
-- Use `<label>` tags; add `<span class="required">*</span>` for required fields
-- Specify character limits and validation conditions in `placeholder` or `.note`
-- Implement multi-language items with tab switching (Japanese/English)
+For each screen, iterate over `sections` and render each `input_fields` entry based on its `type`.
 
-**Table Display (List Screens):**
-- Wrap `<table>` in `<div class="table-wrap">` for horizontal scroll on mobile
-- Use `<table>` to display list data
-- Put headers in `<thead>`
-- Include 2-3 items of sample data (use domain knowledge)
-- Place "Edit" and "Delete" buttons in an operation column
+**Field-to-HTML Mapping:**
 
-**Button Placement:**
-- Register/Update button → Transition to list screen (`*_list.html`)
-- Delete button → Transition to delete confirmation dialog (`*_delete_dialog.html`)
-- New Registration button → Transition to form screen (`*_form.html`)
-- Cancel button → Return to previous screen (usually list)
+| `type` in ui.yml | HTML Rendering |
+|---|---|
+| `text` | `<input type="{input_type or text}">` in `.form-group` |
+| `textarea` | `<textarea rows="{rows or 4}">` in `.form-group` |
+| `number` | `<input type="number" min="{min}" max="{max}" step="{step}">` with `unit` suffix |
+| `select` | `<select>` with `<option>` for each item in `options` |
+| `radio_group` | Radio buttons in `.radio-group`; use `direction` for layout |
+| `checkbox_group` | Checkboxes in `.checkbox-group`; use `direction` for layout |
+| `checkbox` | Single `<input type="checkbox">` with label |
+| `toggle` | `.toggle` with `.toggle-switch` + `checked_label`/`unchecked_label` |
+| `combobox` | `<input type="text" list="...">` + `<datalist>` or `<select>` with search |
+| `date_picker` | `<input type="date">` in `.form-group` |
+| `time_picker` | `<input type="time">` in `.form-group` |
+| `duration_picker` | `<select>` for value + `<select>` for unit |
+| `duration_input` | `<input type="number">` + unit label |
+| `multi_select` | Multiple checkboxes or multi-select element |
+| `file_upload` | `<input type="file">` with accept and description |
+| `image_uploader` | File input with image preview placeholder |
+| `photo_manager` | Grid of image placeholders with add button |
+| `repeater` | `.repeater` with sample rows from `item_fields`; add/remove buttons |
+| `data_table` | `<table>` in `.table-wrap` with columns from `columns`, sample data from `data`, `row_actions` in last column, pagination below |
+| `heading` | `<h{level}>` tag |
+| `badge` | `<span>` with count and label |
+| `tabs` | `.tabs` with tab buttons |
+| `accordion_panel` | Collapsible section with toggle |
+| `disclosure` | Show/hide toggle section |
+| `pagination` | `.pagination` with page numbers |
 
-**Screen Transition Implementation:**
-```html
-<button onclick="location.href='next_screen.html'">Button Name</button>
-```
+**Section Rendering:**
+- Each `section` in ui.yml becomes an `<h2>` heading (from `section_name`) followed by rendered fields
+- Wrap each section in `.section` div
+
+**Action Rendering:**
+- Actions are structured objects: use `style` to determine CSS class
+  - `primary` → `.btn .btn-primary`
+  - `secondary` → `.btn .btn-cancel`
+  - `danger` → `.btn .btn-danger`
+  - `link` → `<a>` style text link
+- For `type: "navigate"`: use `onclick="location.href='{to}.html'"` with the `to` screen ID
+- For `type: "submit"`: use standard button
+- For actions with `confirm`: add `onclick="if(confirm('{message}')) ..."`
+
+**Required Fields:**
+- If `required: true`, add `<span class="required">*</span>` after the label text
+
+**Description/Notes:**
+- If `description` exists, render as `<span class="note">{description}</span>` below the input
+
+**Data Table Rendering (List Screens):**
+- Render `columns` as `<thead>` headers (use `label` property)
+- Render `data` array as `<tbody>` rows
+- Add a final "操作" column for `row_actions` (buttons with `label` and optional `style`)
+- Wrap in `.table-wrap` for mobile scroll
+- If `pagination` is configured, add `.pagination` below the table
 
 #### 5-3. Design Principles (Lo-fi Wireframe)
 
@@ -385,75 +463,168 @@ After creating each mock HTML file, update the corresponding line in `screens.ym
 ## Output Quality Checklist
 
 Verify the following before completing:
-- [ ] All screens are generated as HTML files
-- [ ] Transition links between screens are set correctly
-- [ ] Returns to list screen after Register/Update/Delete
-- [ ] Multi-language items are implemented with tab switching
+- [ ] All screens from `view` object in `ui.yml` are generated as HTML files
+- [ ] All `sections` and `input_fields` are rendered in each screen
+- [ ] Transition links between screens use correct screen IDs (from `actions[].to`)
+- [ ] `data_table` columns, sample data, and row_actions are rendered correctly
 - [ ] All screens are accessible from `index.html`
 - [ ] Design follows lo-fi wireframe style (monochrome, solid borders, no shadows/gradients/rounded corners)
 - [ ] All screens are responsive (readable at 375px mobile width)
 - [ ] Tables are wrapped in `.table-wrap` for horizontal scroll
 - [ ] Every screen has a breadcrumb with link to `../index.html`
-- [ ] All items from `ui.yml` are reflected
+- [ ] Required fields show `*` marker
+- [ ] Action buttons use correct style classes (primary/danger/secondary)
 
 ---
 
 ## Execution Example
 
-### List Screen Example
+### List Screen Example (from ui.yml data_table)
 
 ```html
 <div class="breadcrumb">
     <a href="../index.html">Top</a> &gt; 受注一覧
 </div>
 <h1>受注一覧</h1>
-<div class="filters">
-    <input type="text" placeholder="受注IDで検索" />
-    <button class="btn">検索</button>
+
+<!-- Section: 検索・フィルター -->
+<div class="section">
+    <h2>検索・フィルター</h2>
+    <div class="filters">
+        <div class="form-group" style="flex:1; min-width:200px; margin-bottom:0;">
+            <label>キーワード検索</label>
+            <input type="text" placeholder="受注ID、顧客名で検索" />
+        </div>
+        <div class="form-group" style="min-width:150px; margin-bottom:0;">
+            <label>ステータス</label>
+            <select>
+                <option value="">すべて</option>
+                <option value="pending">処理中</option>
+                <option value="shipped">出荷済み</option>
+            </select>
+        </div>
+    </div>
 </div>
-<div class="actions">
-    <button class="btn btn-primary" onclick="location.href='order_form.html'">新規受注</button>
-</div>
-<div class="table-wrap">
-    <table>
-        <thead>
-            <tr><th>受注ID</th><th>顧客名</th><th>ステータス</th><th>操作</th></tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>ORD-001</td>
-                <td>物流株式会社</td>
-                <td>出荷済み</td>
-                <td>
-                    <button class="btn" onclick="location.href='order_form.html'">編集</button>
-                    <button class="btn btn-danger" onclick="location.href='order_delete_dialog.html'">削除</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+<!-- Section: 受注一覧 (data_table) -->
+<div class="section">
+    <h2>受注一覧</h2>
+    <div class="actions" style="margin-bottom:12px; margin-top:0;">
+        <button class="btn btn-primary" onclick="location.href='order_form.html'">新規受注</button>
+    </div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>受注ID</th><th>顧客名</th><th>合計金額</th><th>ステータス</th><th>操作</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>ORD-001</td>
+                    <td>物流株式会社</td>
+                    <td>¥150,000</td>
+                    <td>出荷済み</td>
+                    <td>
+                        <button class="btn">編集</button>
+                        <button class="btn btn-danger">削除</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>ORD-002</td>
+                    <td>配送サービス</td>
+                    <td>¥89,000</td>
+                    <td>処理中</td>
+                    <td>
+                        <button class="btn">編集</button>
+                        <button class="btn btn-danger">削除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination">
+        <span class="page active">1</span>
+        <span class="page">2</span>
+        <span class="page">3</span>
+        <span class="page-info">全20件中 1-10件</span>
+    </div>
 </div>
 ```
 
-### Form Screen Example (Multi-language)
+### Form Screen Example (sections with structured fields)
 
 ```html
 <div class="breadcrumb">
-    <a href="../index.html">Top</a> &gt; <a href="product_list.html">商品一覧</a> &gt; 商品登録
+    <a href="../index.html">Top</a> &gt; <a href="order_list.html">受注一覧</a> &gt; 受注登録
 </div>
-<h1>商品登録</h1>
-<div class="tabs">
-    <button class="tab active" onclick="switchTab('ja')">日本語</button>
-    <button class="tab" onclick="switchTab('en')">English</button>
-</div>
-<div class="tab-content active" data-lang="ja">
+<h1>受注登録</h1>
+
+<!-- Section: 基本情報 -->
+<div class="section">
+    <h2>基本情報</h2>
     <div class="form-group">
-        <label>商品名（日本語）<span class="required">*</span></label>
-        <input type="text" maxlength="100" placeholder="100文字以内" />
-        <span class="note">100文字以内で入力してください</span>
+        <label>顧客名<span class="required">*</span></label>
+        <input type="text" list="customer_list" placeholder="検索して選択" />
+        <datalist id="customer_list">
+            <option value="物流株式会社">
+            <option value="配送サービス">
+        </datalist>
+    </div>
+    <div class="form-group">
+        <label>受注日<span class="required">*</span></label>
+        <input type="date" />
     </div>
 </div>
+
+<!-- Section: 明細 (repeater) -->
+<div class="section">
+    <h2>明細</h2>
+    <div class="repeater">
+        <div class="repeater-item">
+            <div class="form-group" style="flex:2;">
+                <label>商品名<span class="required">*</span></label>
+                <input type="text" />
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>数量<span class="required">*</span></label>
+                <input type="number" min="1" />
+            </div>
+            <div class="form-group" style="flex:1;">
+                <label>単価<span class="required">*</span></label>
+                <input type="number" /> <span class="note">円</span>
+            </div>
+            <button class="btn btn-danger" style="align-self:end;">✕</button>
+        </div>
+        <button class="btn repeater-add">明細を追加</button>
+    </div>
+</div>
+
+<!-- Section: 配送 -->
+<div class="section">
+    <h2>配送</h2>
+    <div class="radio-group">
+        <label class="group-label">配送方法<span class="required">*</span></label>
+        <label class="radio-option">
+            <input type="radio" name="shipping_method" value="standard" /> 通常配送
+            <span class="option-description">3-5営業日</span>
+        </label>
+        <label class="radio-option">
+            <input type="radio" name="shipping_method" value="express" /> 速達
+            <span class="option-description">翌営業日</span>
+        </label>
+    </div>
+    <div class="form-group">
+        <label>希望納品日</label>
+        <input type="date" />
+    </div>
+    <div class="form-group">
+        <label>備考</label>
+        <textarea rows="4" placeholder="特記事項があれば入力してください"></textarea>
+    </div>
+</div>
+
+<!-- Actions -->
 <div class="actions">
-    <button class="btn btn-primary" onclick="location.href='product_list.html'">登録</button>
-    <button class="btn btn-cancel" onclick="location.href='product_list.html'">キャンセル</button>
+    <button class="btn btn-primary">登録</button>
+    <button class="btn btn-cancel" onclick="location.href='order_list.html'">キャンセル</button>
 </div>
 ```
