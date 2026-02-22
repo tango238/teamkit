@@ -72,27 +72,45 @@ Read the following files and understand their content:
 
 #### Pre-check
 
-1. Verify `{{baseDir}}/{{specDir}}/mock/screens.yml` exists
-2. Verify at least one `.html` file exists in `{{baseDir}}/{{specDir}}/mock/`
-3. If either check fails → Display "警告: モックファイルが見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+1. Verify `{{baseDir}}/{{specDir}}/ui.yml` exists
+2. If the file does not exist → Display "警告: ui.yml が見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+
+#### Resolve mokkun Version
+
+1. Read `{{baseDir}}/{{specDir}}/status.json`
+2. Check if `tools.mokkun.version` exists and is not empty
+3. **If version exists** → Set `{{mokkunVersion}}` to that value
+4. **If version does NOT exist** → Resolve the latest version:
+   ```bash
+   npm view mokkun version
+   ```
+   - Set `{{mokkunVersion}}` to the result
+   - Update `status.json`: set `tools.mokkun` to:
+     ```json
+     {
+       "version": "{{mokkunVersion}}",
+       "resolved_at": "{{currentTimestamp}}"
+     }
+     ```
+   - Save `status.json`
 
 #### Capture Process
 
-1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/mock/screenshots`
-2. Read `{{baseDir}}/{{specDir}}/mock/screens.yml` and extract all screen IDs (lines matching `- [x] screen_id` or `- [ ] screen_id`)
-3. Start a local HTTP server to serve mock HTML files (Playwright MCP blocks `file://` protocol):
-   - Via Bash (run in background): `cd {{baseDir}}/{{specDir}}/mock && python3 -m http.server 18923 &`
+1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/screenshots`
+2. Extract all screen IDs from `ui.yml` (`view` object keys, e.g., `order_list`, `order_form`)
+3. Start mokkun to serve mock screens (Playwright MCP blocks `file://` protocol):
+   - Via Bash (run in background): `npx mokkun@{{mokkunVersion}} {{baseDir}}/{{specDir}}/ui.yml &`
    - Store the server PID for cleanup
-   - Wait 1 second for the server to start
+   - Wait 3 seconds for the server to start
 4. Resize browser viewport to 1280x800 via `mcp__playwright__browser_resize`
 5. For each screen ID:
-   a. Navigate to the mock HTML file via `mcp__playwright__browser_navigate` with URL: `http://localhost:18923/{screen_id}.html`
+   a. Navigate to the mokkun screen via `mcp__playwright__browser_navigate` with URL: `http://localhost:3333/#/{screen_id}`
    b. Take a screenshot via `mcp__playwright__browser_take_screenshot` with:
-      - `filename`: `{{baseDir}}/{{specDir}}/mock/screenshots/{screen_id}.png`
+      - `filename`: `{{baseDir}}/{{specDir}}/screenshots/{screen_id}.png`
       - `type`: `png`
-   c. Record the mapping: screen_id → `mock/screenshots/{screen_id}.png`
+   c. Record the mapping: screen_id → `screenshots/{screen_id}.png`
 6. Close the browser via `mcp__playwright__browser_close`
-7. Stop the HTTP server via Bash: `kill <server_pid>`
+7. Stop the mokkun server via Bash: `kill <server_pid>`
 8. Store the screenshot mapping for use in Step 4
 
 ### 4. Generate Manual
@@ -257,17 +275,17 @@ When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
    **{画面名}**
    主な操作: {主な操作（テーブルの「主な操作」列の内容）}
 
-   ![{画面名} w:560](mock/screenshots/{screen_id}.png)
+   ![{画面名} w:560](screenshots/{screen_id}.png)
    ```
 
 2. **Section 3. 操作手順**: スクリーンショットは埋め込まない。画面キャプチャは Section 2.3 にのみ配置する。
 
 3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
    ```markdown
-   ![{alt_text} w:560](mock/screenshots/{screen_id}.png)
+   ![{alt_text} w:560](screenshots/{screen_id}.png)
    ```
 
-4. **Path**: Use relative paths from the manual.md location: `mock/screenshots/{screen_id}.png`
+4. **Path**: Use relative paths from the manual.md location: `screenshots/{screen_id}.png`
 
 ### 5. Save File
 
@@ -310,6 +328,6 @@ npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-lo
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
-- [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
+- [ ] (If `--capture`) All mock screens have corresponding screenshots in `screenshots/`
 - [ ] (If `--capture`) Screenshots are embedded in Section 2.3 画面一覧 with screen name, main operations, and Marp `w:560` syntax
 - [ ] (If `--capture`) Section 3 操作手順 does NOT contain screenshots

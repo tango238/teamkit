@@ -50,7 +50,7 @@ Execute the following process immediately without requesting user confirmation.
   - `usecase` → `usecase.yml`
   - `ui` → `ui.yml`
   - `screenflow` → `screenflow.md`
-  - `mock` → `mock/screens.yml`
+  - `mock` → `ui.yml`
 - Command to step mapping:
   | Command Name         | Corresponding Step |
   |---------------------|-------------------|

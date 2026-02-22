@@ -42,9 +42,9 @@ allowed-tools:
 
 - **href属性**: 同一ディレクトリ内のファイル名のみを指定する
   - 例: `facility_list.html`（○）
-  - 例: `../.teamkit/facility/mock/facility_list.html`（×）
+  - 例: `../.teamkit/facility/ui.yml`（×）
 - **CSS参照**: `css/custom.css` のみを使用する
-- **禁止**: 処理対象ディレクトリ配下の `mock/` フォルダへのリンクは使用しない
+- **禁止**: 処理対象ディレクトリ配下の仕様ファイルへのリンクは使用しない
 
 
 # スタイルの適用方法
@@ -88,7 +88,7 @@ allowed-tools:
   - 読み込んだ `ui.yml` から `ナビゲーション対象ページ一覧` に関連するページのみを抽出し `1_pages.yml` に追記する
     - **関連ページの判定基準**:
       - ui.yml のページ名と 0_navigation.yml の `label` が一致するページ
-      - ui.yml の mock ファイル名と 0_navigation.yml の `href` が一致するページ
+      - ui.yml の view キー名と 0_navigation.yml の `href`（拡張子を除いたもの）が一致するページ
       - `screenflow.md` で上記ページから遷移可能なページ（子ページ、モーダル、ダイアログなど）
     - 記載内容については Output Example にある pages.yml を参照
 
@@ -100,7 +100,7 @@ allowed-tools:
     - ui.yml に `file` フィールドがある場合: その値を使用
     - ui.yml に `file` フィールドがない場合: `name` フィールドから生成（スネークケース + `.html`）
     - 全体で重複しない、意味が分かる長さの名前にすること
-  - mock フィールドには処理対象ディレクトリの mock パスを記録（存在しない場合は省略可）
+  - source フィールドには処理対象ディレクトリの ui.yml パスと screen_id を `{dir}/ui.yml#{screen_id}` 形式で記録
   - **セクション分類ルール**:
     - `auth`: ログイン、サインアップ、パスワードリセットなど認証関連のページ
     - `main`: 認証後にアクセスする業務機能のページ
@@ -131,7 +131,7 @@ allowed-tools:
   3. `header-main` の場合: `header` セクションからサイトヘッダーを生成し、`footer` セクションからフッターを生成
   4. `navigation` の各項目をナビゲーションリンクとして配置
      - **重要**: リンク先は `{{baseDir}}/{{outputDir}}/` 配下のHTMLファイル名のみ（例: `product_list.html`）
-     - mockディレクトリへの相対パスは使用しない
+     - 仕様ディレクトリへの相対パスは使用しない
 - CSSスタイルの適用方法: 外部CSSを作成して `{{baseDir}}/{{outputDir}}/css/` 配下に保存し、`<link>` タグで参照する
 
 ## 5. CSS ファイル生成
@@ -279,20 +279,20 @@ sitemap:
       - id: login
         file: login.html
         title: ログイン
-        mock: auth/mock/login.html
+        source: auth/ui.yml#login
         links:
           - signup.html
           - password_reset.html
       - id: signup
         file: signup.html
         title: 新規登録
-        mock: auth/mock/signup.html
+        source: auth/ui.yml#signup
         links:
           - login.html
       - id: password-reset
         file: password_reset.html
         title: パスワードリセット
-        mock: auth/mock/password_reset.html
+        source: auth/ui.yml#password_reset
         links:
           - login.html
 
@@ -303,7 +303,7 @@ sitemap:
         - id: dashboard
           file: dashboard.html
           title: ダッシュボード
-          mock: dashboard/mock/dashboard.html
+          source: dashboard/ui.yml#dashboard
           nav_level: 1
 
     product:
@@ -312,7 +312,7 @@ sitemap:
         - id: product-list
           file: product_list.html
           title: 商品一覧
-          mock: product/mock/product_list.html
+          source: product/ui.yml#product_list
           nav_level: 1
           links:
             - product_form.html
@@ -320,18 +320,18 @@ sitemap:
         - id: product-form
           file: product_form.html
           title: 商品登録・編集
-          mock: product/mock/product_form.html
+          source: product/ui.yml#product_form
           nav_level: 2
           parent: product-list
         - id: category-list
           file: category_list.html
           title: カテゴリ管理
-          mock: product/mock/category_list.html
+          source: product/ui.yml#category_list
           nav_level: 1
         - id: inventory-list
           file: inventory_list.html
           title: 在庫管理
-          mock: product/mock/inventory_list.html
+          source: product/ui.yml#inventory_list
           nav_level: 1
 
     order:
@@ -340,20 +340,20 @@ sitemap:
         - id: order-list
           file: order_list.html
           title: 注文一覧
-          mock: order/mock/order_list.html
+          source: order/ui.yml#order_list
           nav_level: 1
           links:
             - order_detail.html
         - id: order-detail
           file: order_detail.html
           title: 注文詳細
-          mock: order/mock/order_detail.html
+          source: order/ui.yml#order_detail
           nav_level: 2
           parent: order-list
         - id: shipping-list
           file: shipping_list.html
           title: 出荷管理
-          mock: order/mock/shipping_list.html
+          source: order/ui.yml#shipping_list
           nav_level: 1
     ...
 

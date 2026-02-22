@@ -32,7 +32,7 @@ Execute the following instructions using `baseDir` and `specDir`.
 -   **Preview mode behavior**:
     -   If `previewMode` is `true`:
         -   Save the file with TODO items marked as `[p]` (preview flag) instead of `[ ]`.
-        -   Generate preview mock HTML files for affected screens only (see Step 6).
+        -   Apply feedback to affected screens in ui.yml and suggest running mokkun to preview (see Step 4).
     -   If `previewMode` is `false`: Save the file with TODO items marked as `[ ]` (normal unchecked state).
 
 ---
@@ -62,22 +62,22 @@ Verify that both `specDir` and `comment` arguments are provided. If either is mi
 - Consider the impact on functionality and UI/UX
 - Think about next actions and approaches to address the feedback
 
-### 4. Generate Preview Mock (Preview Mode Only)
+### 4. Apply Preview Changes (Preview Mode Only)
 **Skip this step if `previewMode` is `false`.**
 
-If `previewMode` is `true`, generate preview mock HTML files for the affected screens first, so the user can visually confirm the changes:
+If `previewMode` is `true`, apply the feedback to ui.yml for the affected screens, so the user can visually confirm the changes via mokkun:
 
 1. **Identify affected screens**: Based on the feedback comment, identify which screens in `screenflow.md` and `ui.yml` are likely affected.
 
 2. **Read status.json**: Read `{{baseDir}}/{{specDir}}/status.json` and get the current `mock` version number.
 
-3. **Generate mock files**: For each affected screen:
-   - Apply the feedback content to the screen
-   - Overwrite the existing mock file to: `{{baseDir}}/{{specDir}}/mock/{{screen_name}}.html`
+3. **Apply feedback to ui.yml**: For each affected screen:
+   - Apply the feedback content to the corresponding view in `{{baseDir}}/{{specDir}}/ui.yml`
+   - Save the updated `ui.yml`
 
 4. **Update status.json**: Update the `mock` version number as preview version (e.g. `v1-preview`) in `{{baseDir}}/{{specDir}}/status.json`.
 
-5. **Output**: Display the list of updated mock files to the user.
+5. **Output**: Display the list of updated screens to the user and suggest running `/teamkit:generate-mock {{specDir}}` to preview changes in mokkun.
 
 ### 5. Verify Impact
 Verify the impact on each specification file in the following order (each step should consider the impact from the previous step):
@@ -173,11 +173,11 @@ TODO項目を作成する前に、以下の重複パターンをチェックす�
 2. Check for `-p` or `--preview` option
 3. Check `.teamkit/YourFeature/status.json` exists
 4. Analyze the feedback: "施設の削除機能が必要です"
-5. (Preview mode only) Generate preview mock HTML files first:
+5. (Preview mode only) Apply feedback to ui.yml first:
    - Read `mock` version from `status.json`
-   - Apply feedback to affected screens
-   - Overwrite existing mock files in `.teamkit/YourFeature/mock/`
+   - Apply feedback to affected screens in `ui.yml`
    - Update `status.json` with preview version
+   - Suggest running `/teamkit:generate-mock` to preview
 6. Verify impact across all specification files
 7. Generate or update `.teamkit/YourFeature/feedback.md`
    - If preview mode: TODO items are marked with `[p]`

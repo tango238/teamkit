@@ -233,11 +233,10 @@ Record the new version number in status.json for ALL steps:
 - The version number represents the feedback application batch, not individual file changes
 - **CRITICAL: Proceed immediately to Step 9 after updating status.json. Do not wait for user input.**
 
-### 9. Execute Create Mock
+### 9. Execute Generate Mock
 
-Regenerate all files to reflect the changes:
+Regenerate mock preview to reflect the changes:
 
-- Delete all files in `{{baseDir}}/{{specDir}}/mock` and `{{baseDir}}/{{specDir}}/index.html`
 - Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
