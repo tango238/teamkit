@@ -98,13 +98,13 @@ Read the following files and understand their content:
 
 1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/screenshots`
 2. Extract all screen IDs from `ui.yml` (`view` object keys, e.g., `order_list`, `order_form`)
-3. Start mokkun to serve mock screens (Playwright MCP blocks `file://` protocol):
-   - Via Bash (run in background): `npx mokkun@{{mokkunVersion}} {{baseDir}}/{{specDir}}/ui.yml &`
+3. Start mokkun on port **13333** to avoid conflicts with generate-mock (port 3333):
+   - Via Bash (run in background): `npx mokkun@{{mokkunVersion}} {{baseDir}}/{{specDir}}/ui.yml --port 13333 &`
    - Store the server PID for cleanup
    - Wait 3 seconds for the server to start
 4. Resize browser viewport to 1280x800 via `mcp__playwright__browser_resize`
 5. For each screen ID:
-   a. Navigate to the mokkun screen via `mcp__playwright__browser_navigate` with URL: `http://localhost:3333/#/{screen_id}`
+   a. Navigate to the mokkun screen via `mcp__playwright__browser_navigate` with URL: `http://localhost:13333/#/{screen_id}`
    b. Take a screenshot via `mcp__playwright__browser_take_screenshot` with:
       - `filename`: `{{baseDir}}/{{specDir}}/screenshots/{screen_id}.png`
       - `type`: `png`
