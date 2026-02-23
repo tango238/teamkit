@@ -65,6 +65,22 @@
                     <h1><span class="gradient-text">更新履歴</span></h1>
                     <p class="doc-lead">Team Kit の主な変更内容をまとめています。</p>
 
+                    <h2>2026-02-23</h2>
+                    <p><strong>PR #28</strong> - mokkun 互換対応・HTML 生成の刷新</p>
+                    <ul>
+                        <li><code>ui.yml</code> スキーマを mokkun 互換フォーマットに刷新</li>
+                        <li><code>generate-mock</code> を mokkun 起動方式に変更し、<code>mock/</code> ディレクトリ参照を全面整理</li>
+                        <li><code>generate-ui</code> のスキーマを mokkun 互換に修正</li>
+                        <li><code>generate-manual</code> の mokkun ポートを 13333 に変更し <code>generate-mock</code> との競合を回避</li>
+                        <li><code>data_table</code> の参照パスを <code>sections &gt; input_fields</code> 内に修正</li>
+                    </ul>
+
+                    <h2>2026-02-17</h2>
+                    <p><strong>PR #25</strong> - 更新履歴ページの追加</p>
+                    <ul>
+                        <li>更新履歴ページ（<code>changelog.html</code>）を新規追加</li>
+                    </ul>
+
                     <h2>2026-02-16</h2>
                     <p><strong>PR #23</strong> - app-init ドキュメント追加</p>
                     <ul>
@@ -162,6 +178,16 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <tr>
+                                <td><code>ui.yml</code> スキーマが mokkun 互換フォーマットに変更</td>
+                                <td>2026-02-23</td>
+                                <td>#28</td>
+                            </tr>
+                            <tr>
+                                <td><code>generate-mock</code> が mokkun 起動方式に変更</td>
+                                <td>2026-02-23</td>
+                                <td>#28</td>
+                            </tr>
                             <tr>
                                 <td><code>specs/</code> ディレクトリが <code>.teamkit/</code> に変更</td>
                                 <td>2026-02-11</td>
