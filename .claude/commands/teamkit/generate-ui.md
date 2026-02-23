@@ -300,6 +300,21 @@ Use these types for headings, status indicators, and informational elements with
 | `pagination` | Page navigation | `total_items`, `current_page`, `page_size` |
 | `float_area` | Floating action area | `position`, `float_align` |
 
+### 4-5. Additional Field Types (mokkun Extended)
+
+mokkun が追加サポートするフィールドタイプ。必要に応じて利用可能。
+
+| Type | Purpose | Key Properties |
+|---|---|---|
+| `google_map_embed` | Google Maps 地図埋め込み | `width`, `height`, `zoom`, `show_open_link` |
+| `browser` | 階層型ナビゲーション選択 | `items: [{value, label, children?}]`, `max_columns` (default: 3) |
+| `calendar` | 月ビューカレンダー日付選択 | `from`, `to` (ISO日付), `week_starts_on` (0=日/1=月), `locale` |
+| `segmented_control` | ボタングループ単一選択 | `options: [{value, label}]`, `default` |
+| `line_clamp` | テキスト省略表示（展開可能） | `lines` (1-6, default: 3), `text` |
+| `response_message` | ステータスメッセージ表示 | `variant` (success/error/warning/info), `message`, `details` |
+| `dropdown` | メニュー/フィルタ/ソート | `variant` (menu/filter/sort), `options: [{value, label}]` |
+| `delete_confirm_dialog` | 削除確認ダイアログ | `message`, `title`, `targetName`, `targetType` |
+
 ## 5. Actions
 
 Actions define buttons and their behavior. Each action MUST have:
@@ -388,19 +403,31 @@ options:
 Extract UI components used in 3+ screens.
 ```yaml
 common_components:
-  - component_name: "Component Name"
+  - name: "Component Name"
     description: "Description"
     type: "field_group|action_group|layout|template"
     used_in: ["screen_id_a", "screen_id_b"]
 ```
 
 ## 10. Validations
-Extract business rules and validations from stories and use cases.
+Extract business rules and validations from stories and use cases. ルートレベルにオブジェクトマップ形式で定義する。
 ```yaml
 validations:
-  - field: "field_id"
-    rule: "validation_rule_name"
+  title_required:
+    rules:
+      - required: true
+      - min_length: 1
+      - max_length: 100
+    message: "タイトルは必須です（1〜100文字）"
+  date_future:
+    rules:
+      - min: "today"
+    message: "本日以降の日付を指定してください"
 ```
+
+**IMPORTANT**:
+- `validations` はルートレベルにのみ定義する。各画面の `view` 定義内には `validations` を含めないこと。
+- オブジェクトマップ形式（`{ ruleName: { rules, message } }`）を使用する。配列形式 `[{ field, rule }]` は使用しない。
 
 ## 11. Screen Composition Examples
 
@@ -628,4 +655,5 @@ notification_settings:
 - **Options**: ALWAYS use `{value, label}` format. Never use flat string arrays.
 - **Sections**: ALWAYS group fields into sections, even if there's only one section.
 - **Actions**: ALWAYS use structured actions with `id`, `type`, `label`, `style`. Include `to` for navigation.
+- **Navigation targets**: `to` で指定する遷移先は、同じ `actor` の画面に限定する。異なるアクターの画面への遷移は設計しない。
 - **Data Tables**: For list/table screens, use `data_table` with columns, sample data (2-3 rows), and row_actions. Do NOT use flat `display_fields`.
