@@ -62,7 +62,7 @@ Read `usecase.yml`, `ui.yml`, and `screenflow.md` under `.teamkit/{{specDir}}`, 
 
 Read the following files and understand their content:
 - `{{baseDir}}/{{specDir}}/usecase.yml` - Use case definitions (operation procedures)
-- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (screen names, fields, actions)
+- `{{baseDir}}/{{specDir}}/ui.yml` - Screen definitions (view object map with title, sections containing input_fields, actions)
 - `{{baseDir}}/{{specDir}}/screenflow.md` - Screen flow diagrams (operation flow)
 - `{{baseDir}}/{{specDir}}/README.md` - Original requirements (feature overview)
 
@@ -72,27 +72,45 @@ Read the following files and understand their content:
 
 #### Pre-check
 
-1. Verify `{{baseDir}}/{{specDir}}/mock/screens.yml` exists
-2. Verify at least one `.html` file exists in `{{baseDir}}/{{specDir}}/mock/`
-3. If either check fails → Display "警告: モックファイルが見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+1. Verify `{{baseDir}}/{{specDir}}/ui.yml` exists
+2. If the file does not exist → Display "警告: ui.yml が見つかりません。スクリーンショットのキャプチャをスキップします。" and set `captureScreenshots` to `false`, then skip to Step 4.
+
+#### Resolve mokkun Version
+
+1. Read `{{baseDir}}/{{specDir}}/status.json`
+2. Check if `tools.mokkun.version` exists and is not empty
+3. **If version exists** → Set `{{mokkunVersion}}` to that value
+4. **If version does NOT exist** → Resolve the latest version:
+   ```bash
+   npm view mokkun version
+   ```
+   - Set `{{mokkunVersion}}` to the result
+   - Update `status.json`: set `tools.mokkun` to:
+     ```json
+     {
+       "version": "{{mokkunVersion}}",
+       "resolved_at": "{{currentTimestamp}}"
+     }
+     ```
+   - Save `status.json`
 
 #### Capture Process
 
-1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/mock/screenshots`
-2. Read `{{baseDir}}/{{specDir}}/mock/screens.yml` and extract all screen IDs (lines matching `- [x] screen_id` or `- [ ] screen_id`)
-3. Start a local HTTP server to serve mock HTML files (Playwright MCP blocks `file://` protocol):
-   - Via Bash (run in background): `cd {{baseDir}}/{{specDir}}/mock && python3 -m http.server 18923 &`
+1. Create the screenshots directory via Bash: `mkdir -p {{baseDir}}/{{specDir}}/screenshots`
+2. Extract all screen IDs from `ui.yml` (`view` object keys, e.g., `order_list`, `order_form`)
+3. Start mokkun on port **13333** to avoid conflicts with generate-mock (port 3333):
+   - Via Bash (run in background): `npx mokkun@{{mokkunVersion}} {{baseDir}}/{{specDir}}/ui.yml --port 13333 &`
    - Store the server PID for cleanup
-   - Wait 1 second for the server to start
+   - Wait 3 seconds for the server to start
 4. Resize browser viewport to 1280x800 via `mcp__playwright__browser_resize`
 5. For each screen ID:
-   a. Navigate to the mock HTML file via `mcp__playwright__browser_navigate` with URL: `http://localhost:18923/{screen_id}.html`
+   a. Navigate to the mokkun screen via `mcp__playwright__browser_navigate` with URL: `http://localhost:13333/#/{screen_id}`
    b. Take a screenshot via `mcp__playwright__browser_take_screenshot` with:
-      - `filename`: `{{baseDir}}/{{specDir}}/mock/screenshots/{screen_id}.png`
+      - `filename`: `{{baseDir}}/{{specDir}}/screenshots/{screen_id}.png`
       - `type`: `png`
-   c. Record the mapping: screen_id → `mock/screenshots/{screen_id}.png`
+   c. Record the mapping: screen_id → `screenshots/{screen_id}.png`
 6. Close the browser via `mcp__playwright__browser_close`
-7. Stop the HTTP server via Bash: `kill <server_pid>`
+7. Stop the mokkun server via Bash: `kill <server_pid>`
 8. Store the screenshot mapping for use in Step 4
 
 ### 4. Generate Manual
@@ -152,7 +170,7 @@ paginate: true
 
 ### 2.2 管理する情報
 
-[usecase.yml の entity と ui.yml の input_fields/display_fields を元に、このシステムで扱う情報の概要を表にまとめる。]
+[usecase.yml の entity と ui.yml の各 view の sections > input_fields（type: "data_table" のフィールドを含む）を元に、このシステムで扱う情報の概要を表にまとめる。]
 
 | 情報 | 内容 | 主な操作画面 |
 |------|------|-------------|
@@ -204,7 +222,7 @@ paginate: true
 | 画面名 | フィールド名 | バリデーション内容 | エラーメッセージ等 |
 
 ### 4.2 共通ルール
-[ui.yml の validations セクションから抽出]
+[ui.yml の各 view > sections > input_fields のバリデーションルールから抽出]
 
 ## 5. 画面遷移
 
@@ -224,10 +242,10 @@ paginate: true
 #### Generation Rules
 
 1. **ユースケースベース**: `usecase.yml` の各ユースケースを操作手順の単位とする
-2. **画面情報の反映**: `ui.yml` の `input_fields`, `display_fields`, `actions` を操作手順に反映
+2. **画面情報の反映**: `ui.yml` の各 view の `sections` > `input_fields`（`type: "data_table"` のフィールドは columns, data, row_actions を参照）、structured `actions`（id, type, label, style, to）を操作手順に反映
 3. **遷移情報の反映**: `screenflow.md` のフロー図を画面遷移セクションに反映
-4. **必須項目の明示**: `required: true` のフィールドは操作手順で明確に示す
-5. **バリデーションの記載**: `ui.yml` の `validation` を入力ルールセクションに集約
+4. **必須項目の明示**: `sections` > `input_fields` 内の `required: true` フィールドは操作手順で明確に示す
+5. **バリデーションの記載**: `ui.yml` の各 view > `sections` > `input_fields` のバリデーションルールを入力ルールセクションに集約
 6. **アクター別の整理**: 複数のアクターがいる場合はアクター別にセクションを分ける
 7. **具体的な記述**: 抽象的な表現を避け、具体的な操作手順として記述する
 8. **改ページの挿入**: 以下の箇所に Marp のページ区切り（`---`）を必ず挿入する
@@ -243,7 +261,7 @@ paginate: true
    - `<style>` タグによるインラインスタイルは使用しない（テーマ CSS に集約する）
 10. **操作ガイドの生成**: Section 2 は以下のルールに従って生成する
    - **2.1 全体の流れ**: `screenflow.md` のメインフローと `usecase.yml` のユースケースを元に、システムの使い方の全体像を番号付きリストで記述する。各項目に必ず「画面名」を含め、どの画面で何をするのかが一目でわかるようにする。操作手順 (Section 3) の詳細に入る前の俯瞰的な説明として機能すること。
-   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の `input_fields`/`display_fields` を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
+   - **2.2 管理する情報**: `usecase.yml` の entity と `ui.yml` の各 view の `sections` > `input_fields`（`type: "data_table"` のフィールドを含む）を元に、システムで扱う情報（エンティティ）をテーブルにまとめる。情報ごとにどのような項目を持ち、どの画面で操作できるかを記載する。
    - **2.3 画面一覧**: `ui.yml` の全画面と `usecase.yml` の各ユースケースを統合し、1つのテーブルにまとめる。各画面の用途・主な操作・画面の流れ（画面A → 画面B の形式）を含める。アクターが複数いる場合はアクター別にサブセクションを設ける。スクリーンショットがある場合はテーブルの後に各画面のスクリーンショットを配置する。
 
 #### Screenshot Embedding Rules (only when `captureScreenshots` is `true`)
@@ -257,17 +275,17 @@ When `captureScreenshots` is `true` and screenshots were captured in Step 3.5:
    **{画面名}**
    主な操作: {主な操作（テーブルの「主な操作」列の内容）}
 
-   ![{画面名} w:560](mock/screenshots/{screen_id}.png)
+   ![{画面名} w:560](screenshots/{screen_id}.png)
    ```
 
 2. **Section 3. 操作手順**: スクリーンショットは埋め込まない。画面キャプチャは Section 2.3 にのみ配置する。
 
 3. **Marp image syntax**: Always use `w:560` directive for half-width display on A4 slides:
    ```markdown
-   ![{alt_text} w:560](mock/screenshots/{screen_id}.png)
+   ![{alt_text} w:560](screenshots/{screen_id}.png)
    ```
 
-4. **Path**: Use relative paths from the manual.md location: `mock/screenshots/{screen_id}.png`
+4. **Path**: Use relative paths from the manual.md location: `screenshots/{screen_id}.png`
 
 ### 5. Save File
 
@@ -310,6 +328,6 @@ npx --yes @marp-team/marp-cli {{baseDir}}/{{specDir}}/manual.md --pdf --allow-lo
 - [ ] Required fields are clearly marked
 - [ ] Manual is written in Japanese
 - [ ] Instructions are specific and actionable (not vague)
-- [ ] (If `--capture`) All mock screens have corresponding screenshots in `mock/screenshots/`
+- [ ] (If `--capture`) All mock screens have corresponding screenshots in `screenshots/`
 - [ ] (If `--capture`) Screenshots are embedded in Section 2.3 画面一覧 with screen name, main operations, and Marp `w:560` syntax
 - [ ] (If `--capture`) Section 3 操作手順 does NOT contain screenshots

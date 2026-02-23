@@ -88,7 +88,7 @@ When this command finishes (screenflow.md is saved), IMMEDIATELY proceed to Step
 ```
 /teamkit:generate-mock {{specDir}}
 ```
-When this command finishes (mock/ directory is created), proceed to Step 5.
+When this command finishes (mokkun is launched), proceed to Step 5.
 
 ### Step 5: Generate Manual (conditional)
 **Only execute if `generateManual` is `true`.**
@@ -146,9 +146,8 @@ After ALL steps finish:
    - `{{baseDir}}/{{specDir}}/usecase.yml`
    - `{{baseDir}}/{{specDir}}/ui.yml`
    - `{{baseDir}}/{{specDir}}/screenflow.md`
-   - `{{baseDir}}/{{specDir}}/mock/*.html`
    - (If `generateManual` is true) `{{baseDir}}/{{specDir}}/manual.md`
-   - (If `captureScreenshots` is true) `{{baseDir}}/{{specDir}}/mock/screenshots/*.png`
+   - (If `captureScreenshots` is true) `{{baseDir}}/{{specDir}}/screenshots/*.png`
    - (If `generateTest` is true) `{{baseDir}}/{{specDir}}/acceptance-test.md`
 2. Report final status summary in Japanese, including:
    - List of all generated files

@@ -56,7 +56,7 @@ When this command finishes, IMMEDIATELY proceed to Step 2.
 ```
 /teamkit:generate-mock {{specDir}}
 ```
-When this command finishes (mock/ directory is created), proceed to Completion.
+When this command finishes (mokkun is launched), proceed to Completion.
 
 ---
 
@@ -65,7 +65,7 @@ When this command finishes (mock/ directory is created), proceed to Completion.
 After all steps finish:
 1. Verify files exist using Glob:
    - `{{baseDir}}/{{specDir}}/screenflow.md`
-   - `{{baseDir}}/{{specDir}}/mock/*.html`
+   - `{{baseDir}}/{{specDir}}/ui.yml`
 2. Report final status summary in Japanese
 
 ---

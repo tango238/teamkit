@@ -50,7 +50,7 @@ allowed-tools:
 - すべてのHTMLファイルは `{{baseDir}}/{{outputDir}}/` 配下に生成する
 - CSSファイルは `{{baseDir}}/{{outputDir}}/css/` 配下に生成する
 - ナビゲーションおよびページ間のリンクはすべて同一ディレクトリ内の相対パス（例: `facility_list.html`）を使用する
-- **重要**: 処理対象ディレクトリ配下の `mock/` フォルダへのリンクは使用しない
+- **重要**: 処理対象ディレクトリ配下の仕様ファイルへの直接リンクは使用しない
 
 # ツール使用ルール
 
@@ -122,9 +122,9 @@ allowed-tools:
 - 各ページについて以下を実行:
   1. **出力先決定**: `{{baseDir}}/{{outputDir}}/{file}` に新規HTMLファイルを作成
      - 例: sitemap.ymlの `file: facility_list.html` → `{{baseDir}}/{{outputDir}}/facility_list.html`
-  2. **UI定義の読み込み**: sitemap.ymlの `mock` フィールドからパスを解析し、対応する `ui.yml` を読み込む
-     - mockパスから機能ディレクトリを特定: `{機能ディレクトリ}/mock/{file}` → `{{baseDir}}/{機能ディレクトリ}/ui.yml`
-     - 例: `mock: 2-1_facility/mock/facility_list.html` → `{{baseDir}}/2-1_facility/ui.yml`
+  2. **UI定義の読み込み**: sitemap.ymlの `source` フィールドからパスを解析し、対応する `ui.yml` を読み込む
+     - sourceパスから機能ディレクトリとscreen_idを特定: `{機能ディレクトリ}/ui.yml#{screen_id}` → `{{baseDir}}/{機能ディレクトリ}/ui.yml` の `view.{screen_id}`
+     - 例: `source: 2-1_facility/ui.yml#facility_list` → `{{baseDir}}/2-1_facility/ui.yml` の `view.facility_list`
   3. **HTML生成**:
      - `common_layout.html` をベースとしてコピー
      - **ナビゲーション同期（必須）**:
@@ -138,10 +138,10 @@ allowed-tools:
      - 現在のページに対応するナビゲーション項目に `active` クラスを追加
   4. **コンテンツ生成ルール**:
      - `sitemap.yml` の `file` からHTMLファイル名を生成
-     - `ui.yml` の `display_fields` からテーブルヘッダーを生成
-     - `ui.yml` の `filters` からフィルター要素を生成
-     - `ui.yml` の `actions` からボタンを生成
-     - `ui.yml` の `input_fields` からフォーム要素を生成
+     - `ui.yml` の該当 view の `sections` > `input_fields` から `type: "data_table"` のフィールドを探し、その `columns` からテーブルヘッダーを生成（`data` からサンプル行を生成、`row_actions` から行アクションを生成）
+     - `ui.yml` の該当 view の `sections` > `input_fields` のフィルター用フィールドからフィルター要素を生成
+     - `ui.yml` の該当 view の structured `actions`（`id`, `type`, `label`, `style`, `to`）からボタンを生成
+     - `ui.yml` の該当 view の `sections` > `input_fields`（`id`, `type`, `label`）からフォーム要素を生成
      - サンプルデータを含めて実際のUIをシミュレート
   5. **リンク先の設定**:
      - sitemap.yml の `links` に基づいてボタンやリンクの遷移先を設定
@@ -177,7 +177,7 @@ allowed-tools:
 
 - `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを確認する
 - 各HTMLファイルについて、対応する `ui.yml` を参照する
-  - sitemap.yml の `mock` フィールドから機能ディレクトリを特定
+  - sitemap.yml の `source` フィールドから機能ディレクトリとscreen_idを特定
   - ui.ymlのパス構築: `{{baseDir}}/{機能ディレクトリ}/ui.yml`
 - `ui.yml` に定義された画面項目と、対応するHTMLファイル内の項目を検証する
   - 検証の際、`ui.yml` をマスターデータとし、過不足があればHTMLファイルを修正する
@@ -192,7 +192,7 @@ allowed-tools:
 - `{{baseDir}}/{{outputDir}}/sitemap.yml` に基づいてHTMLファイル内のリンク先を検証する
   - sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
   - 各ページの `links` 配列に定義されたリンク先が、HTMLファイル内に正しく設定されているかチェック
-  - **重要**: リンク先は同一ディレクトリ内のファイル名のみ（mockディレクトリへのパスは不正）
+  - **重要**: リンク先は同一ディレクトリ内のファイル名のみ（仕様ディレクトリへのパスは不正）
   - 検証の際、`sitemap.yml` をマスターデータとし、差分があればHTMLファイルを修正する
   - 修正後、再度検証を実行する（最大3回まで）
   - **3回実行しても差分が解消されない場合**:
@@ -210,7 +210,7 @@ allowed-tools:
     1. ナビゲーションに `nav_level: 1` のページのみが含まれているか
     2. `nav_level: 2` 以上のページがナビゲーションに含まれていないか
     3. 各項目のラベル（表示テキスト）が一致しているか
-    4. **リンク先が同一ディレクトリ内のファイル名になっているか**（mockへのパスは不正）
+    4. **リンク先が同一ディレクトリ内のファイル名になっているか**（仕様ディレクトリへのパスは不正）
   - 差分があればHTMLファイルを修正する
 
 - **nav_level検証**:
@@ -266,20 +266,20 @@ sitemap:
       - id: login
         file: login.html
         title: ログイン
-        mock: auth/mock/login.html
+        source: auth/ui.yml#login
         links:
           - signup.html
           - password_reset.html
       - id: signup
         file: signup.html
         title: 新規登録
-        mock: auth/mock/signup.html
+        source: auth/ui.yml#signup
         links:
           - login.html
       - id: password-reset
         file: password_reset.html
         title: パスワードリセット
-        mock: auth/mock/password_reset.html
+        source: auth/ui.yml#password_reset
         links:
           - login.html
 
@@ -290,7 +290,7 @@ sitemap:
         - id: dashboard
           file: dashboard.html
           title: ダッシュボード
-          mock: dashboard/mock/dashboard.html
+          source: dashboard/ui.yml#dashboard
           nav_level: 1
 
     product:
@@ -299,7 +299,7 @@ sitemap:
         - id: product-list
           file: product_list.html
           title: 商品一覧
-          mock: product/mock/product_list.html
+          source: product/ui.yml#product_list
           nav_level: 1
           links:
             - product_form.html
@@ -307,18 +307,18 @@ sitemap:
         - id: product-form
           file: product_form.html
           title: 商品登録・編集
-          mock: product/mock/product_form.html
+          source: product/ui.yml#product_form
           nav_level: 2
           parent: product-list
         - id: category-list
           file: category_list.html
           title: カテゴリ管理
-          mock: product/mock/category_list.html
+          source: product/ui.yml#category_list
           nav_level: 1
         - id: inventory-list
           file: inventory_list.html
           title: 在庫管理
-          mock: product/mock/inventory_list.html
+          source: product/ui.yml#inventory_list
           nav_level: 1
 
     order:
@@ -327,20 +327,20 @@ sitemap:
         - id: order-list
           file: order_list.html
           title: 注文一覧
-          mock: order/mock/order_list.html
+          source: order/ui.yml#order_list
           nav_level: 1
           links:
             - order_detail.html
         - id: order-detail
           file: order_detail.html
           title: 注文詳細
-          mock: order/mock/order_detail.html
+          source: order/ui.yml#order_detail
           nav_level: 2
           parent: order-list
         - id: shipping-list
           file: shipping_list.html
           title: 出荷管理
-          mock: order/mock/shipping_list.html
+          source: order/ui.yml#shipping_list
           nav_level: 1
     ...
 

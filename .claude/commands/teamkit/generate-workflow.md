@@ -237,7 +237,8 @@ workflow:
     "mock": {
         "version": 0,
         "last_modified": ""
-    }
+    },
+    "tools": {}
 }
 ```
 

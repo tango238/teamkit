@@ -152,24 +152,24 @@ Example of approval document (`approval/ui.md`):
 
 ## 基本ルール
 
-### ルール1: 施設登録画面のinput_fieldsを修正
-- 変更箇所: 施設登録画面の「住所」フィールド（行21-26）
+### ルール1: 施設登録画面の sections > input_fields を修正
+- 変更箇所: 施設登録画面（view: facility_register）の sections > input_fields 内「住所」フィールド（行21-26）
 - 変更内容: 「住所」フィールドを削除し、「都道府県」「市区町村」「番地」「建物名」の4フィールドを追加
 - 詳細:
-  - 都道府県: type=select, required=true, 47都道府県から選択
-  - 市区町村: type=text, required=true, 100文字以内
-  - 番地: type=text, required=true, 100文字以内
-  - 建物名: type=text, required=false, 100文字以内
+  - 都道府県: id=prefecture, type=select, label=都道府県, required=true, options=[{value, label}] 形式で47都道府県
+  - 市区町村: id=city, type=text, label=市区町村, required=true, 100文字以内
+  - 番地: id=street, type=text, label=番地, required=true, 100文字以内
+  - 建物名: id=building, type=text, label=建物名, required=false, 100文字以内
 - 適用バージョン: 2
 
-### ルール2: 施設更新画面のinput_fieldsを修正
-- 変更箇所: 施設更新画面の「住所」フィールド（行71-75）
-- 変更内容: 施設登録画面と同様に4フィールドに分割
+### ルール2: 施設更新画面の sections > input_fields を修正
+- 変更箇所: 施設更新画面（view: facility_update）の sections > input_fields 内「住所」フィールド（行71-75）
+- 変更内容: 施設登録画面と同様に4フィールドに分割（id, type, label 形式）
 - 適用バージョン: 2
 
-### ルール3: validationsセクションに住所関連フィールドを追加
-- 変更箇所: validationsセクション
-- 変更内容: 都道府県、市区町村、番地、建物名のバリデーションルールを追加
+### ルール3: input_fields 内に住所関連フィールドのバリデーションを追加
+- 変更箇所: 各 view の sections > input_fields 内の該当フィールド
+- 変更内容: 都道府県、市区町村、番地、建物名の各 input_field にバリデーションルールを追加
 - 適用バージョン: 2
 ```
 
@@ -233,11 +233,10 @@ Record the new version number in status.json for ALL steps:
 - The version number represents the feedback application batch, not individual file changes
 - **CRITICAL: Proceed immediately to Step 9 after updating status.json. Do not wait for user input.**
 
-### 9. Execute Create Mock
+### 9. Execute Generate Mock
 
-Regenerate all files to reflect the changes:
+Regenerate mock preview to reflect the changes:
 
-- Delete all files in `{{baseDir}}/{{specDir}}/mock` and `{{baseDir}}/{{specDir}}/index.html`
 - Execute `/teamkit:generate-mock {{specDir}}`
 - If an error occurs during generation, report it
 
