@@ -8,11 +8,11 @@ argument-hint: <specDir> [--piece <name>]
 
 1.  **Set `commandName`**: `export-to-takt`
 2.  **Set `baseDir`**: `.teamkit`
-3.  **Get `specDir`**: Read the first argument passed to the slash command (the argument that does NOT start with `--` or `-p`).
-    -   If no argument is provided, display the error message: "エラー: `specDir` 引数が必要です。使用方法: `/teamkit:export-to-takt <specDir> [--piece <name>]`" and **STOP** execution immediately.
-4.  **Get `piece`**: Check all arguments for `--piece <name>` or `-p <name>`.
-    -   If found, set `piece` to the value following `--piece` or `-p`.
+3.  **Get `piece`**: First, check all arguments for `--piece <name>` or `-p <name>`.
+    -   If found, set `piece` to the value following `--piece` or `-p`, and remove both the flag and its value from the argument list.
     -   If not found, set `piece` to `"default"`.
+4.  **Get `specDir`**: From the remaining arguments (after removing `--piece`/`-p` and its value in step 3), read the first argument that does NOT start with `--`.
+    -   If no argument remains, display the error message: "エラー: `specDir` 引数が必要です。使用方法: `/teamkit:export-to-takt <specDir> [--piece <name>]`" and **STOP** execution immediately.
 
 # Execution
 
