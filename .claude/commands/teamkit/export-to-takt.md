@@ -28,7 +28,7 @@ Execute the following instructions using `baseDir`, `specDir`, and `piece`.
 # Export to Takt Command
 
 ## Purpose
-Convert TeamKit specification artifacts in `{{baseDir}}/{{specDir}}/` into a Takt task directory (`.takt/tasks/{slug}/`) with an AI-generated implementation instruction document (`order.md`).
+Convert TeamKit specification artifacts in `{{baseDir}}/{{specDir}}/` into a Takt task directory (`.takt/tasks/{{slug}}/`) with an AI-generated implementation instruction document (`order.md`).
 Execute the following process immediately without asking for user confirmation.
 
 ## Execution Steps
@@ -117,6 +117,7 @@ Use the Read tool to read each of the following files from `{{baseDir}}/{{specDi
 - `ui.yml`
 - `screenflow.md`
 - `README.md` (if exists)
+- `manual.md` (if exists)
 - `acceptance-test.md` (if exists)
 
 Understand the content of all files before proceeding.
