@@ -162,6 +162,7 @@ COMMAND_FILES=(
     "design-app.md"
     "plan-app.md"
     "export-to-takt.md"
+    "takt-init.md"
 )
 
 # 既存ファイルの上書き確認関数
