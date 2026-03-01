@@ -55,50 +55,69 @@ TeamKit が生成する仕様ファイルのスキーマ定義。
 
 ## workflow.yml
 
-ビジネスワークフローの定義。
+ビジネスワークフローの定義（Event Storming ベース）。
 
-- **トップレベル**: `workflows` 配列
-- 各 workflow:
+- **トップレベルキー**: `actor`, `external_system`, `aggregate`, `workflow`
+- `actor`: アクター配列（グローバル定義）
+  - `name`: アクター名
+  - `description`: 責務の説明
+- `external_system`: 外部システム配列（グローバル定義、optional）
+  - `name`: 外部システム名
+  - `description`: 連携内容の説明
+- `aggregate`: 集約名の配列
+- `workflow`: ワークフロー配列
   - `name`: ワークフロー名
   - `description`: 説明
-  - `actors`: アクターの配列（`name`, `role`）
+  - `trigger`: ワークフローを開始するイベントやアクション
+  - `precondition`: 開始前に必要な状態
   - `steps`: ステップの配列
-    - `name`: ステップ名
-    - `actor`: 実行アクター
-    - `action`: 実行内容
-    - `event`: 発生イベント（optional）
-    - `policy`: ビジネスルール（optional）
-  - `external_systems`: 外部システム連携（optional）
+    - `actor`: 実行アクター（actor名, external_system名, または `system`）
+    - `activity`: 実行内容
+    - `aggregate`: 対象の集約（optional）
+    - `event`: ドメインイベント（過去形、optional）
+    - `policy`: ポリシー名（optional）
+  - `postcondition`: ワークフロー完了後の状態
 
 ## usecase.yml
 
 ユースケースの定義（Robustness Analysis ベース）。
 
 - **トップレベル**: `usecases` 配列
-- 各 usecase:
+- 各要素:
+  - `usecase`: null（キーのみ）
   - `name`: ユースケース名
-  - `actor`: アクター情報（`name`, `role`）
-  - `boundary`: 境界オブジェクト（画面・API等）
-  - `control`: コントロールオブジェクト（ビジネスロジック）
-  - `entity`: エンティティオブジェクト（データモデル）
-  - `steps`: 正常系ステップの配列
-  - `alternative_flows`: 代替フロー（optional）
+  - `stories`: 関連ユーザーストーリーの配列
+  - `trackings`: workflow.yml の対応行への参照配列
+  - `actor`: アクター情報（`name`, `as`）
+  - `before`: 事前条件
+  - `after`: 事後条件
+  - `boundary`: 境界オブジェクト（`name`, `as`）
+  - `control`: コントロールオブジェクト（`name`, `as`）
+  - `entity`: エンティティオブジェクト（`name`, `as`）
+  - `steps`: ステップの配列
+    - `step`: `[Alias] --> [Alias]` 形式のフロー定義
+    - `label`: ステップ番号とアクション説明
+    - `note`: 補足説明（optional）
 
 ## ui.yml
 
-UI 画面仕様の定義。
+UI 画面仕様の定義（mokkun 互換）。
 
-- **トップレベル**: `views` 配列
-- 各 view:
-  - `screen_id`: 画面ID
+- **トップレベル**: `view` オブジェクトマップ（キーが screen_id）
+- 各画面（`view.{screen_id}`）:
   - `title`: 画面タイトル
+  - `description`: 画面の説明
+  - `actor`: アクター名
+  - `purpose`: 目的
   - `sections`: セクションの配列
-    - `name`: セクション名
+    - `section_name`: セクション名
     - `input_fields`: 入力フィールドの配列
-      - `name`, `type`, `required`, `validation`
-    - `actions`: アクションボタンの配列
-      - `name`, `type`, `action`
-  - `navigation`: 画面遷移定義（optional）
+      - `id`, `type`, `label`, `required`, `description`, `placeholder`, `visible_when` 等
+  - `actions`: アクションボタンの配列
+    - `id`, `type`（submit|navigate|custom|reset）, `label`, `style`, `to`, `confirm`
+  - `related_models`: 関連モデルの配列（optional）
+  - `integration`: 連携サービスの配列（optional）
+  - `related_usecases`: 関連ユースケースの配列（optional）
 
 ## screenflow.md
 
@@ -174,9 +193,9 @@ movements:
       Implement based on the plan and TeamKit specifications.
 
       Requirements:
-      - Implement all workflows defined in workflow.yml
-      - Build UI screens matching ui.yml definitions (input_fields, validations, actions)
-      - Implement use case flows from usecase.yml (normal + alternative flows)
+      - Implement all workflows defined in workflow.yml (actor, aggregate, steps with activity/event/policy)
+      - Build UI screens matching ui.yml definitions (view object map, sections, input_fields, actions)
+      - Implement use case flows from usecase.yml (boundary → control → entity steps)
       - Follow screen navigation from screenflow.md
       - External system integrations: implement as stubs/interfaces only
       - If spec is ambiguous, document the assumption rather than guessing
