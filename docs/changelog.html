@@ -65,6 +65,18 @@
                     <h1><span class="gradient-text">更新履歴</span></h1>
                     <p class="doc-lead">Team Kit の主な変更内容をまとめています。</p>
 
+                    <h2>2026-03-03</h2>
+                    <p><strong>v0.1.1</strong> - 新コマンド追加・バグ修正</p>
+                    <ul>
+                        <li><code>add</code> コマンドを新規追加 — 対話形式で単一機能のfeature specディレクトリとREADME.mdを作成</li>
+                        <li><code>export-to-takt</code> コマンドを新規追加 — TeamKit仕様をTaktタスクキューへ変換</li>
+                        <li><code>takt-init</code> コマンドを新規追加 — Takt連携の初期化</li>
+                        <li><code>generate-manual</code> のMarp PDF生成を修正（タイトルページのレイアウト修正、テーマCSS自動生成、絶対パス対応）</li>
+                        <li><code>takt-init</code> の knowledge facet スキーマを実際の出力に合わせて修正</li>
+                        <li><code>export-to-takt</code> の軽微な不整合を修正</li>
+                        <li><code>--piece/specDir</code> 引数解析の順序を修正</li>
+                    </ul>
+
                     <h2>2026-02-23</h2>
                     <p><strong>PR #28</strong> - mokkun 互換対応・HTML 生成の刷新</p>
                     <ul>

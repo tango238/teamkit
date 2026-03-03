@@ -98,7 +98,7 @@
                     <h1><span class="gradient-text">コマンド一覧</span></h1>
                     <p class="doc-lead">
                         Team Kit
-                        の全19コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
+                        の全22コマンドをカテゴリ別に整理したリファレンスです。すべてのコマンドは
                         Claude Code 上で
                         <code>/teamkit:&lt;command-name&gt;</code>
                         の形式で実行します。
@@ -445,6 +445,42 @@
                     <!-- App Generation -->
                     <h2>アプリ全体生成</h2>
 
+                    <h3>add</h3>
+                    <p>
+                        対話形式で単一機能の要件をヒアリングし、feature specディレクトリとREADME.mdを作成します。
+                    </p>
+                    <pre><code>/teamkit:add &lt;featureName&gt;
+/teamkit:add &lt;featureName&gt; -o &lt;outputDir&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>対話によるヒアリング（背景、目的、主要アクター、業務概要、要件）</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>
+                                    <code>.teamkit/&lt;feature-slug&gt;/README.md</code>、
+                                    <code>status.json</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>オプション</th>
+                                <td>
+                                    <code>-o</code>, <code>--output</code> -
+                                    出力ディレクトリ（デフォルト:
+                                    <code>.teamkit</code>）
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    featureNameからケバブケースのディレクトリ名を自動生成、app-initと同じREADME形式
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
                     <h3>app-init</h3>
                     <p>
                         対話形式でアプリケーションの要件をヒアリングし、機能別のREADME.mdを自動生成します。
@@ -663,6 +699,56 @@
                                 <td>
                                     generate-workflow→workflow, generate-usecase→usecase
                                     等
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- Takt Integration -->
+                    <h2>Takt連携</h2>
+
+                    <h3>export-to-takt</h3>
+                    <p>TeamKit仕様をTaktタスクキュー形式に変換・エクスポートします。</p>
+                    <pre><code>/teamkit:export-to-takt &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>
+                                    <code>workflow.yml</code>,
+                                    <code>usecase.yml</code>,
+                                    <code>ui.yml</code>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>Taktタスクキュー形式のファイル</td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    TeamKitの仕様書からTaktの実装タスクを自動生成
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>takt-init</h3>
+                    <p>Takt連携の初期設定を行います。</p>
+                    <pre><code>/teamkit:takt-init &lt;feature-name&gt;</code></pre>
+                    <table class="doc-table">
+                        <tbody>
+                            <tr>
+                                <th>入力</th>
+                                <td>TeamKit仕様ファイル</td>
+                            </tr>
+                            <tr>
+                                <th>出力</th>
+                                <td>Takt連携用の初期設定ファイル</td>
+                            </tr>
+                            <tr>
+                                <th>特徴</th>
+                                <td>
+                                    knowledge facetの初期化、Taktとの連携基盤をセットアップ
                                 </td>
                             </tr>
                         </tbody>
