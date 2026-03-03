@@ -155,6 +155,7 @@ COMMAND_FILES=(
     "generate-manual.md"
     "generate-acceptance-test.md"
     "get-step-info.md"
+    "add.md"
     "app-init.md"
     "show-event.md"
     "update-status.md"
