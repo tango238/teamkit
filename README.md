@@ -43,7 +43,7 @@ curl -fsSL https://raw.githubusercontent.com/tango238/teamkit/main/install.sh | 
 **Options:**
 - `--yes`, `-y`, `--force`, `-f`: Overwrite existing files without confirmation
 
-The installation script copies all command files under the `.claude/commands/teamkit` directory to the specified project directory with the same structure.
+The installation script copies command files to `.claude/commands/teamkit` and skill files to `.claude/skills/teamkit` in the specified project directory.
 
 ## Basic Usage
 
@@ -182,21 +182,26 @@ After installation, the project will have the following structure:
 ```
 your-project/
 ├── .claude/
-│   └── commands/
-│       └── teamkit/            # Team Kit commands
-│           ├── generate-workflow.md
-│           ├── generate-usecase.md
-│           ├── generate-ui.md
-│           ├── generate-screenflow.md
-│           ├── generate-mock.md
-│           ├── generate-manual.md
-│           ├── generate-acceptance-test.md
+│   ├── commands/
+│   │   └── teamkit/            # Team Kit commands
+│   │       ├── generate-workflow.md
+│   │       ├── generate-usecase.md
+│   │       ├── generate-ui.md
+│   │       ├── generate-screenflow.md
+│   │       ├── generate-mock.md
+│   │       ├── generate-manual.md
+│   │       ├── generate-acceptance-test.md
+│   │       ├── feedback.md
+│   │       ├── apply-feedback.md
+│   │       ├── get-step-info.md
+│   │       └── update-status.md
+│   └── skills/
+│       └── teamkit/            # Team Kit skills
+│           ├── app-init.md
+│           ├── create.md
 │           ├── generate.md
-│           ├── create-mock.md
-│           ├── feedback.md
-│           ├── apply-feedback.md
-│           ├── get-step-info.md
-│           └── update-status.md
+│           ├── feedback-apply.md
+│           └── manual-creator.md
 └── .teamkit/
     └── <feature-name>/
         ├── README.md          # Requirements definition
@@ -235,7 +240,7 @@ Example of a typical development flow:
 /teamkit:apply-feedback OrderManagement
 
 # 7. Regenerate mockups only (after manual ui.yml edits)
-/teamkit:create-mock OrderManagement
+/teamkit:generate-mock OrderManagement
 
 # 8. Generate manual with screenshots from mockups
 /teamkit:generate-manual OrderManagement --capture
