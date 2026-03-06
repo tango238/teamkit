@@ -144,16 +144,19 @@ get_file() {
 COMMAND_FILES=(
     "apply-feedback.md"
     "check-status.md"
+    "create-mock.md"
     "feedback.md"
     "generate-mock.md"
     "generate-screenflow.md"
     "generate-ui.md"
     "generate-usecase.md"
     "generate-workflow.md"
+    "generate.md"
     "generate-manual.md"
     "generate-acceptance-test.md"
     "get-step-info.md"
     "add.md"
+    "app-init.md"
     "show-event.md"
     "update-status.md"
     "create-app.md"
@@ -186,7 +189,6 @@ DEPRECATED_FILES=(
     "generate-story.md"
     "update-feature.md"
     "check.md"
-    "create-mock.md"
 )
 
 deprecated_found=false
@@ -199,26 +201,6 @@ for file in "${DEPRECATED_FILES[@]}"; do
         fi
         rm "$target_file"
         echo -e "  ${GREEN}✓${NC} $file を削除しました"
-    fi
-done
-
-# skills に移動されたコマンドファイルの削除（commands → skills 移行対応）
-MOVED_TO_SKILLS_FILES=(
-    "app-init.md"
-    "create.md"
-    "generate.md"
-)
-
-moved_found=false
-for file in "${MOVED_TO_SKILLS_FILES[@]}"; do
-    target_file="$TARGET_DIR/.claude/commands/teamkit/$file"
-    if [ -f "$target_file" ]; then
-        if [ "$moved_found" = false ]; then
-            echo -e "${YELLOW}skills に移動されたコマンドファイルを削除中...${NC}"
-            moved_found=true
-        fi
-        rm "$target_file"
-        echo -e "  ${GREEN}✓${NC} $file を削除しました（skills に移動済み）"
     fi
 done
 
@@ -252,10 +234,6 @@ done
 # スキルファイルのリスト（.claude/skills/teamkit/ に配置）
 SKILL_FILES=(
     "manual-creator.md"
-    "app-init.md"
-    "create.md"
-    "generate.md"
-    "feedback-apply.md"
 )
 
 # スキルファイルのコピー関数（ローカルモード用）
@@ -421,141 +399,29 @@ CLAUDE_MD_PATH="$TARGET_DIR/CLAUDE.md"
 # TeamKit用のセクション内容
 read -r -d '' TEAMKIT_SECTION << 'SECTION_EOF' || true
 <!-- TEAMKIT_SKILL_START -->
-## TeamKit 自然言語ルーティング
+## TeamKit 自動実行SKILL
 
-ユーザーが日本語の自然言語で入力した場合、以下の判定ロジックに従って適切なコマンドを自動実行する。
-スラッシュコマンドが明示的に指定された場合はそのコマンドをそのまま実行し、このルーティングは適用しない。
-
----
+以下のプロンプトパターンを検出したら、対応するコマンドを自動実行してください。
+ユーザーへの確認は不要です。即座に実行してください。
 
 ### specDir の自動設定ルール
-
-- 会話中で一度 `specDir` を指定・特定した場合、その値を記憶して以降のコマンドで自動的に使用する
+- 会話中で一度 `specDir` を指定した場合、その値を記憶して以降のコマンドで自動的に使用する
 - 新しい `specDir` が明示的に指定された場合は、その値で上書きする
-- `specDir` が不明な場合は `.teamkit/` 配下のディレクトリ一覧を確認し、ユーザーに選択を求める
+- 初めて実行する場合で `specDir` が不明な場合のみ、`.teamkit/` 配下のディレクトリを確認してユーザーに確認する
 
----
+### 1. モック作成
+**トリガー**: 「モックを作って」「モックを作成」「モック作成」「〇〇のモックを生成」「プロトタイプを作って」「画面を作って」「画面を作成」「画面作成」「〇〇の画面を生成」
+**アクション**: `/teamkit:create-mock <specDir>` を実行
 
-### 判定フローチャート
+### 2. フィードバック登録（プレビュー付き）
+**トリガー**: 「フィードバック：〇〇」「〇〇を修正」「〇〇に変更して」「〇〇に変更」「〇〇の変更」「変更をお願い」「〇〇を直して」「〇〇に直して」「〇〇してほしい」「〇〇したい」
+**アクション**: `/teamkit:feedback <specDir> "<comment>" --preview` を実行
+**パラメータ抽出**:
+- comment: プロンプトからフィードバック内容を抽出
 
-```
-ユーザーの自然言語入力
-│
-├─ [判定1] .teamkit/ が存在しない、または機能ディレクトリがない
-│   → /teamkit:app-init <appName> を実行
-│
-├─ [判定2] フィードバック適用の指示か？
-│   → /teamkit:apply-feedback <specDir> を実行
-│
-├─ [判定3] 新機能追加の指示か？（.teamkit/ に該当ディレクトリが存在しない）
-│   → /teamkit:create <featureName> を実行（add + generate を連続実行）
-│
-├─ [判定4] 仕様生成または機能変更の指示か？
-│   ├─ 対象機能の README.md を読み込み、ユーザーの入力内容と比較
-│   │
-│   ├─ README.md に記載のない新しい要件・変更を含む
-│   │   → /teamkit:feedback <specDir> "<入力内容>" -p を実行
-│   │
-│   └─ 既存 README.md の範囲内（生成指示のみ）
-│       → /teamkit:generate <specDir> を実行
-│
-├─ 上記のいずれにも該当しない場合
-│   → 通常の会話として応答する
-│
-└─ 判定できない場合
-    → ユーザーに意図を確認する
-```
-
----
-
-### 判定1: 初期セットアップ（最優先）
-
-**条件**: `.teamkit/` ディレクトリが存在しない、または `.teamkit/` 配下に機能ディレクトリ（README.md を持つサブディレクトリ）が1つもない
-
-**トリガー例**:
-- 「勤怠管理アプリを作りたい」
-- 「ECサイトの管理画面を作ろう」
-- 「タスク管理ツールの要件をまとめたい」
-- アプリの構想や要件に関する自由記述
-
-**アクション**: `/teamkit:app-init <appName>` を実行
-- `appName` はユーザーの入力からアプリケーション名を抽出する
-- 抽出できない場合はユーザーに確認する
-
----
-
-### 判定2: フィードバック適用
-
-**トリガー例**:
-- 「フィードバックを適用して」
-- 「修正を反映して」
-- 「変更を適用して」
-- 「フィードバックを反映して」
-
+### 3. フィードバック適用
+**トリガー**: 「フィードバックを適用」「修正を反映」「変更を適用して」「フィードバックを反映」
 **アクション**: `/teamkit:apply-feedback <specDir>` を実行
-
----
-
-### 判定3: 新機能追加
-
-**条件**: ユーザーの入力が新しい機能の追加を指示しており、`.teamkit/` 配下に該当するディレクトリが存在しない
-
-**トリガー例**:
-- 「在庫管理機能を追加して」（`.teamkit/inventory-management/` が存在しない）
-- 「新しくレポート機能を作って」（`.teamkit/report/` が存在しない）
-
-**アクション**: `/teamkit:create <featureName>` を実行（add + generate を連続実行）
-
----
-
-### 判定4: 仕様生成 vs フィードバック（README.md 差分チェック）
-
-**条件**: `.teamkit/` 配下に対象の機能ディレクトリが存在する
-
-**判定手順**:
-1. 対象の `specDir` を特定する（ユーザーの入力から機能名を抽出し、`.teamkit/` 配下のディレクトリ名と照合）
-2. `<specDir>/README.md` を読み込む
-3. ユーザーの入力内容と README.md の内容を比較する
-
-| ユーザーの入力 | 判定結果 | 実行コマンド |
-|---|---|---|
-| 既存要件の範囲で「仕様を生成して」「生成して」等の生成指示 | 生成 | `/teamkit:generate <specDir>` |
-| README.md にない新機能・変更・追加の記述を含む | フィードバック | `/teamkit:feedback <specDir> "<内容>" -p` |
-| 既存仕様・モックへの修正を明示的に指示 | フィードバック | `/teamkit:feedback <specDir> "<内容>" -p` |
-
-**生成と判定するトリガー例**:
-- 「商品管理の仕様を生成して」
-- 「勤怠管理を生成」
-- 「attendanceの仕様を作って」
-
-**フィードバックと判定するトリガー例**:
-- 「商品管理に在庫アラート機能を追加して」
-- 「注文管理の画面に検索機能を追加して」
-- 「ダッシュボードのレイアウトを変更して」
-- 「〇〇を修正して」「〇〇を直して」「〇〇に変更して」
-
----
-
-### 自動ルーティング対象外コマンド
-
-以下のコマンドは自然言語からの自動ルーティング対象外。使用するにはスラッシュコマンドを直接入力すること。
-
-- `/teamkit:generate-workflow` - ワークフロー単体生成
-- `/teamkit:generate-usecase` - ユースケース単体生成
-- `/teamkit:generate-ui` - UI定義単体生成
-- `/teamkit:generate-screenflow` - 画面遷移単体生成
-- `/teamkit:generate-mock` - モックHTML単体生成
-- `/teamkit:generate-manual` - マニュアル生成
-- `/teamkit:generate-acceptance-test` - 受け入れテスト生成
-- `/teamkit:show-event` - イベント表示
-- `/teamkit:check-status` - ステータス確認
-- `/teamkit:update-status` - ステータス更新
-- `/teamkit:get-step-info` - ステップ情報取得
-- `/teamkit:export-to-takt` - Taktエクスポート
-- `/teamkit:takt-init` - Takt初期化
-- `/teamkit:design-app` - アプリ設計
-- `/teamkit:create-app` - アプリ作成
-- `/teamkit:plan-app` - アプリ計画
 <!-- TEAMKIT_SKILL_END -->
 SECTION_EOF
 
@@ -596,12 +462,10 @@ echo ""
 echo -e "${GREEN}完了しました！${NC}"
 echo ""
 echo -e "${BLUE}利用可能なSKILL（自然言語で自動実行）:${NC}"
-echo "  - アプリの構想を話す → 初期セットアップ (app-init)"
-echo "  - 「〇〇機能を追加して」→ 新機能追加 (create)"
-echo "  - 「〇〇の仕様を生成して」→ 仕様生成 (generate)"
-echo "  - 「〇〇を変更して」→ フィードバック登録 (feedback -p)"
-echo "  - 「フィードバックを適用」→ フィードバック適用 (apply-feedback)"
+echo "  - 「モックを作って」 → モック自動生成"
+echo "  - 「フィードバック：〇〇」 → フィードバック登録（プレビュー付き）"
+echo "  - 「フィードバックを適用」 → フィードバック一括適用"
 echo ""
-echo -e "${BLUE}スラッシュコマンド（手動実行）:${NC}"
-echo "  /teamkit:feedback-apply, /teamkit:generate-workflow,"
-echo "  /teamkit:generate-mock, /teamkit:check-status, etc."
+echo -e "${BLUE}利用可能なコマンド:${NC}"
+echo "  /teamkit:generate-workflow, /teamkit:create-mock, /teamkit:feedback,"
+echo "  /teamkit:apply-feedback, /teamkit:design-app, etc."

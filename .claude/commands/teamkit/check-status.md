@@ -44,6 +44,7 @@ If a gap is detected (difference > 1), display an error and stop execution.
     | generate-ui         | ui                 |
     | generate-screenflow | screenflow         |
     | generate-mock       | mock               |
+    | create-mock         | mock               |
 
 - **Action**:
   - If `commandName` corresponds to `<none>`, output "検証対象外のコマンドです" and **EXIT** successfully.

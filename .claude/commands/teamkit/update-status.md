@@ -58,6 +58,7 @@ Execute the following process immediately without requesting user confirmation.
   | generate-usecase    | usecase           |
   | generate-ui         | ui                |
   | generate-screenflow | screenflow        |
+  | create-mock         | <none>            |
   | generate-mock       | mock              |
 
 - Get the **MD5 checksum** and **last modified timestamp (Unix Timestamp)** of the target file.
