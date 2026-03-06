@@ -184,23 +184,31 @@ your-project/
 ├── .claude/
 │   ├── commands/
 │   │   └── teamkit/            # Team Kit commands
-│   │       ├── generate-workflow.md
-│   │       ├── generate-usecase.md
-│   │       ├── generate-ui.md
-│   │       ├── generate-screenflow.md
-│   │       ├── generate-mock.md
-│   │       ├── generate-manual.md
-│   │       ├── generate-acceptance-test.md
-│   │       ├── feedback.md
+│   │       ├── add.md
 │   │       ├── apply-feedback.md
+│   │       ├── check-status.md
+│   │       ├── create-app.md
+│   │       ├── design-app.md
+│   │       ├── export-to-takt.md
+│   │       ├── feedback.md
+│   │       ├── generate-acceptance-test.md
+│   │       ├── generate-manual.md
+│   │       ├── generate-mock.md
+│   │       ├── generate-screenflow.md
+│   │       ├── generate-ui.md
+│   │       ├── generate-usecase.md
+│   │       ├── generate-workflow.md
 │   │       ├── get-step-info.md
+│   │       ├── plan-app.md
+│   │       ├── show-event.md
+│   │       ├── takt-init.md
 │   │       └── update-status.md
 │   └── skills/
 │       └── teamkit/            # Team Kit skills
 │           ├── app-init.md
 │           ├── create.md
-│           ├── generate.md
 │           ├── feedback-apply.md
+│           ├── generate.md
 │           └── manual-creator.md
 └── .teamkit/
     └── <feature-name>/

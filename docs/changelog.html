@@ -65,6 +65,16 @@
                     <h1><span class="gradient-text">更新履歴</span></h1>
                     <p class="doc-lead">Team Kit の主な変更内容をまとめています。</p>
 
+                    <h2>2026-03-06</h2>
+                    <p><strong>v0.1.2</strong> - SKILL化・対話方式の改善</p>
+                    <ul>
+                        <li><code>app-init</code>, <code>create</code>, <code>generate</code> をコマンドからスキルに移動</li>
+                        <li><code>feedback-apply</code> スキルを新規追加（feedback -p + apply-feedback の連続実行ショートカット）</li>
+                        <li><code>create-mock</code> コマンドを廃止（<code>generate-mock</code> に統一）</li>
+                        <li><code>add</code> コマンドの対話方式を AskUserQuestion から テキスト対話方式に変更（自由記述での空回答問題を解消）</li>
+                        <li><code>install.sh</code> にスキル移行時の旧ファイル削除対応を追加</li>
+                    </ul>
+
                     <h2>2026-03-03</h2>
                     <p><strong>v0.1.1</strong> - 新コマンド追加・バグ修正</p>
                     <ul>
