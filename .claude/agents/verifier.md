@@ -9,7 +9,7 @@ You are a verification specialist for the teamkit command system.
 
 ## Purpose
 
-teamkit の `.claude/commands/teamkit/` 配下のコマンドファイル群と `install.sh` に対して、構造的な整合性を検証する。
+teamkit の `.claude/commands/teamkit/` 配下のコマンドファイル群、`.claude/skills/teamkit/` 配下のスキルファイル群、および `install.sh` に対して、構造的な整合性を検証する。
 
 ## Verification Workflow
 
@@ -30,7 +30,7 @@ grep -rn "pattern" .claude/commands/teamkit/ --include="*.md"
 各コマンドファイルの構造的な正しさを検証する:
 
 - **status.json テンプレート**: steps 配列のキー名とステップ数
-- **パイプラインステップ**: create-mock.md のステップ順序と数
+- **パイプラインステップ**: `.claude/skills/teamkit/create.md` のステップ順序と数
 - **マッピングテーブル**: check-status.md / update-status.md のコマンド→ステップ対応
 - **影響範囲分析**: feedback.md のレイヤー一覧
 - **バージョン更新**: apply-feedback.md の steps インデックス
@@ -256,7 +256,7 @@ grep -n "\-\-manual\|\-\-test\|\-\-capture\|\-\-all" README.md
 ```
 
 **検証ポイント**:
-- `generate.md` の `argument-hint` に含まれる全オプション（`--manual`, `--test`, `--capture`, `--all`）が `README.md` に記載されていること
+- `.claude/skills/teamkit/generate.md` の `argument-hint` に含まれる全オプション（`--manual`, `--test`, `--capture`, `--all`）が `README.md` に記載されていること
 - `generate-manual.md` の `argument-hint` に含まれる全オプション（`--capture`）が `README.md` に記載されていること
 - `docs/commands.html` の generate セクションと generate-manual セクションに同じオプションが記載されていること
 
