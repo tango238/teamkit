@@ -77,7 +77,7 @@ allowed-tools:
   - **サイドバー構成**（sidebar-main の場合）: ロゴ、ナビゲーションメニュー項目
   - **サイトヘッダー構成**（header-main の場合）: ロゴ、検索バー、カテゴリナビ、カート、ユーザーメニュー
   - **コンテンツヘッダー構成**（sidebar-main の場合）: パンくずリスト、通知、ユーザーメニュー
-  - 記載内容については Output Example にある layout.yml を参照
+  - 記載内容については Output Example にある 1_layout.yml を参照
   - href はリンク形式ルールに従うこと
 
 - `{{baseDir}}/{{outputDir}}/1_pages.yml` を作成する
@@ -90,11 +90,11 @@ allowed-tools:
       - ui.yml のページ名と 0_navigation.yml の `label` が一致するページ
       - ui.yml の view キー名と 0_navigation.yml の `href`（拡張子を除いたもの）が一致するページ
       - `screenflow.md` で上記ページから遷移可能なページ（子ページ、モーダル、ダイアログなど）
-    - 記載内容については Output Example にある pages.yml を参照
+    - 記載内容については Output Example にある 1_pages.yml を参照
 
 - `1_pages.yml` に記載されたページ情報と、対応する `screenflow.md` の遷移情報から、アプリケーション全体のサイトマップを作成する
 - 作成したサイトマップを `{{baseDir}}/{{outputDir}}/1_sitemap.yml` に保存する
-  - 記載内容については Output Example にある sitemap.yml を参照
+  - 記載内容については Output Example にある 1_sitemap.yml を参照
   - links はリンク形式ルールに従うこと
   - **file フィールドの決定ルール**:
     - ui.yml に `file` フィールドがある場合: その値を使用
