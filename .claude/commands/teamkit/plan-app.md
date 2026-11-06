@@ -44,7 +44,7 @@ allowed-tools:
 
 # 目的
 
-ユーザーが作成するアプリケーションの概要について聞き、そこからナビゲーションメニューを考えて `{{baseDir}}/{{outputDir}}/navigation.yml` を出力する
+ユーザーが作成するアプリケーションの概要について聞き、そこからナビゲーションメニューを考えて `{{baseDir}}/{{outputDir}}/0_navigation.yml` を出力する
 
 
 # Execution Step
@@ -115,7 +115,7 @@ EC運営に必要なすべての機能を一元的に提供する。
 - カスタマーサポート担当者
 ```
 
-### navigation.yml
+### 0_navigation.yml
 
 ```yaml
 # 生成日: <<current date and time>>

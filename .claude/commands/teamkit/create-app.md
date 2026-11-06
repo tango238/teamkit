@@ -40,9 +40,9 @@ allowed-tools:
 
 # ファイルの役割定義
 
-- **pages.yml**: 生成対象ページの一覧と、UI定義ファイルへの参照
-- **sitemap.yml**: ページ間の遷移関係、ナビゲーション階層、ファイル名の定義
-- **layout.yml**: 共通レイアウトの構造定義
+- **1_pages.yml**: 生成対象ページの一覧と、UI定義ファイルへの参照
+- **1_sitemap.yml**: ページ間の遷移関係、ナビゲーション階層、ファイル名の定義
+- **1_layout.yml**: 共通レイアウトの構造定義
 
 
 # 出力先ディレクトリ
@@ -108,21 +108,21 @@ allowed-tools:
 - `{{baseDir}}/{{outputDir}}` フォルダが存在するか確認する
   - 存在しない場合は、エラーを表示して終了する
 - `{{baseDir}}/{{outputDir}}` フォルダ直下に次のファイルが存在するか確認する
-  - sitemap.yml
+  - 1_sitemap.yml
   - common_layout.html
     - 上記のYAMLファイルが一部でも存在しない場合は、足りないファイル名をエラーとして表示して終了する
     - ヒント: `/teamkit:design-app` コマンドを先に実行してください
 
 ## 2. ページ生成
 
-- `{{baseDir}}/{{outputDir}}/sitemap.yml` を読み込む
+- `{{baseDir}}/{{outputDir}}/1_sitemap.yml` を読み込む
 - `{{baseDir}}/{{outputDir}}/common_layout.html` を読み込み、**サイドバーナビゲーション部分（`<aside>`タグ内全体）を変数として保持する**
-- sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
+- 1_sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
 - **重要**: Taskツール（サブエージェント）を使用した並列処理は禁止する。ナビゲーションの一貫性を保つため、1ページずつ順次生成する
 - 各ページについて以下を実行:
   1. **出力先決定**: `{{baseDir}}/{{outputDir}}/{file}` に新規HTMLファイルを作成
-     - 例: sitemap.ymlの `file: facility_list.html` → `{{baseDir}}/{{outputDir}}/facility_list.html`
-  2. **UI定義の読み込み**: sitemap.ymlの `source` フィールドからパスを解析し、対応する `ui.yml` を読み込む
+     - 例: 1_sitemap.ymlの `file: facility_list.html` → `{{baseDir}}/{{outputDir}}/facility_list.html`
+  2. **UI定義の読み込み**: 1_sitemap.ymlの `source` フィールドからパスを解析し、対応する `ui.yml` を読み込む
      - sourceパスから機能ディレクトリとscreen_idを特定: `{機能ディレクトリ}/ui.yml#{screen_id}` → `{{baseDir}}/{機能ディレクトリ}/ui.yml` の `view.{screen_id}`
      - 例: `source: 2-1_facility/ui.yml#facility_list` → `{{baseDir}}/2-1_facility/ui.yml` の `view.facility_list`
   3. **HTML生成**:
@@ -132,19 +132,19 @@ allowed-tools:
        - **絶対にナビゲーションを省略・簡略化・短縮しない**
        - `<!-- abbreviated -->` や `<!-- 省略 -->` などのコメントで置き換えることは禁止
        - 全てのナビゲーションセクション（施設管理、スタッフ管理、料金管理、予約管理、宿泊者管理、清掃管理、売上分析など）を必ず含める
-     - `{{PAGE_TITLE}}` プレースホルダーを sitemap.yml の `title` 値で置換
+     - `{{PAGE_TITLE}}` プレースホルダーを 1_sitemap.yml の `title` 値で置換
      - `{{CONTENT}}` プレースホルダーに `ui.yml` の画面項目に基づくコンテンツを配置
      - パンくずリストを適切に設定（親ページがある場合は階層を表示）
      - 現在のページに対応するナビゲーション項目に `active` クラスを追加
   4. **コンテンツ生成ルール**:
-     - `sitemap.yml` の `file` からHTMLファイル名を生成
+     - `1_sitemap.yml` の `file` からHTMLファイル名を生成
      - `ui.yml` の該当 view の `sections` > `input_fields` から `type: "data_table"` のフィールドを探し、その `columns` からテーブルヘッダーを生成（`data` からサンプル行を生成、`row_actions` から行アクションを生成）
      - `ui.yml` の該当 view の `sections` > `input_fields` のフィルター用フィールドからフィルター要素を生成
      - `ui.yml` の該当 view の structured `actions`（`id`, `type`, `label`, `style`, `to`）からボタンを生成
      - `ui.yml` の該当 view の `sections` > `input_fields`（`id`, `type`, `label`）からフォーム要素を生成
      - サンプルデータを含めて実際のUIをシミュレート
   5. **リンク先の設定**:
-     - sitemap.yml の `links` に基づいてボタンやリンクの遷移先を設定
+     - 1_sitemap.yml の `links` に基づいてボタンやリンクの遷移先を設定
      - **重要**: リンク先は同一ディレクトリ内のHTMLファイル名のみ（例: `facility_form.html`）
   6. **CSSファイルの生成**:
      - ページごとに必要なスタイルを適用し必要に応じてCSSファイルの修正を行う
@@ -163,10 +163,10 @@ allowed-tools:
 
 ## 4. ページリスト検証
 
-- `{{baseDir}}/{{outputDir}}/sitemap.yml` のページ一覧を確認する
+- `{{baseDir}}/{{outputDir}}/1_sitemap.yml` のページ一覧を確認する
 - `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを確認する
-- sitemap.yml のページ一覧と `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを検証する
-  - sitemap.yml のページ一覧にしかないページがある場合は、`{{baseDir}}/{{outputDir}}` フォルダに追加生成する
+- 1_sitemap.yml のページ一覧と `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを検証する
+  - 1_sitemap.yml のページ一覧にしかないページがある場合は、`{{baseDir}}/{{outputDir}}` フォルダに追加生成する
   - `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルにしかないページがある場合は、HTMLファイルを削除する
 - **削除対象から除外するファイル**:
   - `common_layout.html`（共通レイアウトテンプレート）
@@ -177,7 +177,7 @@ allowed-tools:
 
 - `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを確認する
 - 各HTMLファイルについて、対応する `ui.yml` を参照する
-  - sitemap.yml の `source` フィールドから機能ディレクトリとscreen_idを特定
+  - 1_sitemap.yml の `source` フィールドから機能ディレクトリとscreen_idを特定
   - ui.ymlのパス構築: `{{baseDir}}/{機能ディレクトリ}/ui.yml`
 - `ui.yml` に定義された画面項目と、対応するHTMLファイル内の項目を検証する
   - 検証の際、`ui.yml` をマスターデータとし、過不足があればHTMLファイルを修正する
@@ -189,11 +189,11 @@ allowed-tools:
 ## 6. 画面遷移検証
 
 - `{{baseDir}}/{{outputDir}}` フォルダにあるHTMLファイルを確認する
-- `{{baseDir}}/{{outputDir}}/sitemap.yml` に基づいてHTMLファイル内のリンク先を検証する
-  - sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
+- `{{baseDir}}/{{outputDir}}/1_sitemap.yml` に基づいてHTMLファイル内のリンク先を検証する
+  - 1_sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
   - 各ページの `links` 配列に定義されたリンク先が、HTMLファイル内に正しく設定されているかチェック
   - **重要**: リンク先は同一ディレクトリ内のファイル名のみ（仕様ディレクトリへのパスは不正）
-  - 検証の際、`sitemap.yml` をマスターデータとし、差分があればHTMLファイルを修正する
+  - 検証の際、`1_sitemap.yml` をマスターデータとし、差分があればHTMLファイルを修正する
   - 修正後、再度検証を実行する（最大3回まで）
   - **3回実行しても差分が解消されない場合**:
     1. 残存する差分をエラーログとして出力
@@ -201,11 +201,11 @@ allowed-tools:
 
 ## 7. ナビゲーション検証
 
-- `{{baseDir}}/{{outputDir}}/common_layout.html` と `{{baseDir}}/{{outputDir}}/sitemap.yml` を読み込む
-- sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
+- `{{baseDir}}/{{outputDir}}/common_layout.html` と `{{baseDir}}/{{outputDir}}/1_sitemap.yml` を読み込む
+- 1_sitemap.yml を再帰的に走査し、全ての `pages` 配列内の項目を収集する
 - 各ページの `nav_level` プロパティを確認する
-- `sitemap.yml` の `nav_level: 1` のページと `{{baseDir}}/{{outputDir}}/common_layout.html` のナビゲーションを検証する
-  - 検証の際、`sitemap.yml` の `nav_level: 1` のページをマスターデータとし、`common_layout.html` 内のナビゲーションと一致しているかチェックする
+- `1_sitemap.yml` の `nav_level: 1` のページと `{{baseDir}}/{{outputDir}}/common_layout.html` のナビゲーションを検証する
+  - 検証の際、`1_sitemap.yml` の `nav_level: 1` のページをマスターデータとし、`common_layout.html` 内のナビゲーションと一致しているかチェックする
   - **チェック項目**:
     1. ナビゲーションに `nav_level: 1` のページのみが含まれているか
     2. `nav_level: 2` 以上のページがナビゲーションに含まれていないか
@@ -215,11 +215,11 @@ allowed-tools:
 
 - **nav_level検証**:
   - `common_layout.html` のナビゲーションに含まれる全てのリンクを抽出する
-  - 各リンクが `sitemap.yml` のどのページに対応するか特定する
+  - 各リンクが `1_sitemap.yml` のどのページに対応するか特定する
   - 対応するページの `nav_level` が `2` 以上の場合:
     1. 警告メッセージを表示: `[WARNING] Step 7: '{画面名}' has nav_level: {level} - Removing from navigation menu.`
     2. `common_layout.html` のナビゲーションから該当リンクを削除する
-  - `sitemap.yml` で `nav_level: 1` だが `common_layout.html` のナビゲーションに含まれていないページがある場合:
+  - `1_sitemap.yml` で `nav_level: 1` だが `common_layout.html` のナビゲーションに含まれていないページがある場合:
     1. 警告メッセージを表示: `[WARNING] Step 7: '{画面名}' has nav_level: 1 but is missing from navigation - Adding to navigation menu.`
     2. `common_layout.html` のナビゲーションに該当リンクを追加する
   - 修正後、再度検証を実行する（最大3回まで）
@@ -251,7 +251,7 @@ allowed-tools:
 
 ## Input Example
 
-### sitemap.yml
+### 1_sitemap.yml
 
 ```yaml
 # 生成日時: <<current date and time>>
